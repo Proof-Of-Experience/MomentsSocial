@@ -6,7 +6,7 @@ interface MetaDataProps {
 }
 
 const MetaData = ({
-  title = "DTube Club"
+  title = "Moments"
 }: MetaDataProps) => {
   return (
     <Head>

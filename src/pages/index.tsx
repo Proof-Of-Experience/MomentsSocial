@@ -5,7 +5,7 @@ import { getSession, SessionProvider } from 'next-auth/react'
 export default function Home({ session }: any) {
   return (
     <SessionProvider session={session} refetchInterval={60}>
-      <MainLayout>
+      <MainLayout title='Moments'>
         Home page
       </MainLayout>
     </SessionProvider>

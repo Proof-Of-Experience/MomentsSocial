@@ -1,8 +1,21 @@
 import React from 'react'
 
-const PrimaryButton = () => {
+interface PrimaryButtonProps {
+  text: string,
+  className?: string,
+  [rest: string]: any;
+}
+
+const PrimaryButton: React.FC<PrimaryButtonProps> = ({ text = 'text', className = '', ...rest }) => {
   return (
-    <div>PrimaryButton</div>
+    <button
+      {...rest}
+      className={
+        `bg-blue-400 text-white px-2 transition-all rounded-lg px-10 py-2 font-poppins font-bold hover:opacity-75
+          ${className}
+        `}>
+      {text}
+    </button>
   )
 }
 

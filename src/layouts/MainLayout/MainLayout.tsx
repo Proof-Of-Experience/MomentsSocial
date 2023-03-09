@@ -11,12 +11,19 @@ const MainLayout = ({ title, children }: MainLayoutProps) => {
   return (
     <>
       <MetaData title={title} />
-      <Header />
 
-      <main className='container grid grid-cols-4 gap-4'>
-        <LeftSidebar />
-        {children}
-      </main>
+      <div className='grid grid-cols-12 font-poppins'>
+        <div className='col-span-1 bg-gray-50 h-screen shadow-md'>
+          <LeftSidebar />
+        </div>
+        <div className='col-span-11'>
+          <Header />
+
+          <div className='p-5'>
+            {children}
+          </div>
+        </div>
+      </div>
     </>
   )
 }

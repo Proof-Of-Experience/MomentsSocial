@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 import { signIn, signOut, useSession } from "next-auth/react";
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { PrimaryButton } from '@/components/ui/Button';
 
 const Header = () => {
   const router = useRouter()
@@ -16,8 +17,8 @@ const Header = () => {
 
 
   return (
-    <header className="sticky top-0 z-50 bg-green-300 flex items-center p-2 lg:px-5 shadow-md">
-      <div className="flex flex-wrap md:flex-grow m-1 justify-left md:justify-evenly">
+    <header className="sticky top-0 z-50 p-2 lg:px-5 shadow-md max-h-20">
+      <div className="flex flex-wrap m-1 justify-left md:justify-between">
         {/* Left */}
         <div className="flex flex-wrap">
           <Link href="/" className="flex rounded-md bg-cyan-50 p-2 hover:scale-125 hover:bg-emerald-100">
@@ -35,51 +36,23 @@ const Header = () => {
           {/* search bar */}
           <div>
             {/* <SearchIcon className="hidden h-6 text-gray-600" /> */}
-            <input className="flex mt-5 mb-2 p-2 md:p-5 md:m-3 md:ml-60 h-10 w-64 md:w-96 bg-white outline-none placeholder-gray-500"
+            <input className="flex rounded-md mt-5 mb-2 border p-2 md:p-5 md:m-3 md:ml-60 h-10 w-64 md:w-96 bg-white outline-none placeholder-gray-500"
               placeholder="Search Dtube" />
-          </div>
-          <div className="flex relative" onMouseEnter={() => setPopupOpen(true)} onMouseLeave={() => setPopupOpen(false)}>
-            <button className="flex">
-              {/* <UploadIcon className="flex w-10 h-10 mt-3 ml-10 text-black bg-gray-400" /> */}
-              {/* <UploadIcon className="flex group-hover:opacity-0 w-16 h-12 mt-2 ml-5 bg-lime-400 rounded-md hover:animate-bounce"
-                onClick={() => router.push('/upload')}
-              /> */}
-            </button>
-            {/* {
-                  ({ popupOpen }) => 
-                  (
-                    <>
-                    <span className="flex opacity-100 w-32 h-30 m-4 p-2 transition-opacity bg-emerald-200 px-1 text-black 
-                          font-medium rounded-xl absolute left-1/2 -translate-x-1/2 translate-y-10">
-                            Upload your content
-                    </span>
-                    </>
-                  )
-                } */}
           </div>
         </div>
 
         {/* right */}
-        <div className="flex flex-wrap">
+        <div className="flex justify-end">
           {
             !session &&
-            <div className="flex">
-              <button className="flex btn p-2 m-3 ml-32 bg-blue-300 rounded-xl w-30 font-bold"
-                onClick={() => { }}
-              // onClick={handleLoginButtonClick}
-              >
-                Login
-              </button>
-              <a href="https://signup.dtube.fso.ovh/" target="_blank" rel="noreferrer">
-                <button className="flex btn p-2 m-3 bg-blue-300 rounded-2xl w-30 font-bold">
-                  Signup
-                </button>
-              </a>
+            <div className="flex items-center">
+              <PrimaryButton text='Login' />
+              <PrimaryButton text='Signup' className="ml-3" onClick={() => console.log('hi')} />
             </div>
           }
 
           {
-            session &&
+            !session &&
             <div className="flex">
               {/* balance and voting power */}
               <div className="flex">
@@ -109,76 +82,14 @@ const Header = () => {
               </div>
 
               <div className="flex ml-5 bg-slate-300 rounded-2xl p-0.5 hover:bg-red-200">
-                {/* <button className="flex ">
-                            <img
-                              className="flex rounded-full p-1 mt-2 h-12"
-                              src={session.user.json.profile.avatar}
-                              alt="profile" 
-                            /> 
-                            
-                          </button>  */}
 
                 <div className="">
-                  {/* <Dropdown
-                    className=""
-                    arrowIcon={true}
-                    inline={true}
-                    label={
-                      <div className="flex">
-                        <img
-                          className="flex rounded-full p-1 mt-2 h-12"
-                          src={session.user.json.profile.avatar}
-                          alt="profile"
-                        />
-                        <span className="flex p-1 mt-3 truncate">
-                          {session.user.username}
-                        </span>
-                      </div>
-                    }>
-                    <div className="bg-red-100">
-                      <a href={`https://d.tube/#!/c/${session.user.username}`} target="_blank" rel="noreferrer">
-                        <Dropdown.Item className="w-56 font-medium">
-                          <span className="flex">
-                            Profile
-                          </span>
-                        </Dropdown.Item>
-                      </a>
-
-                      <Dropdown.Item className="w-56 font-medium">
-                        Settings
-                      </Dropdown.Item>
-                      <Dropdown.Item className="w-56 font-medium" onClick={handleSignOut}>
-                        Sign out
-                      </Dropdown.Item>
-                    </div>
-                  </Dropdown> */}
+                  
                 </div>
               </div>
 
               {/* Add socials and accounts */}
               <div className="flex hidden md:block">
-                {/* <Dropdown
-                  className="flex"
-                  arrowIcon={true}
-                  inline={true}
-                  label={
-                    <div className="flex">
-                      <LanguageIcon className="flex w-10 h-10 mt-3 ml-5 bg-gray-400 rounded-xl hover:cursor-pointer hover:bg-red-500 hover:scale-105">
-                        Connect Account
-                      </LanguageIcon>
-                    </div>
-                  }>
-                  <Dropdown.Item className="w-56 font-medium" onClick={handleConnectHive}>
-                    <div className="flex">
-                      <img src="/assets/DTube_files/images/logos/hive.png" alt="hive"
-                        className="flex h-6 w-6 rounded-full cursor-pointer 
-                                          hover:opacity-90 hover:border-2 border-red-400"
-                      />
-                      <span className="flex flex-grow mt-0.5 ml-2 justify-center">Hive</span>
-                    </div>
-                  </Dropdown.Item>
-
-                </Dropdown> */}
 
               </div>
 
