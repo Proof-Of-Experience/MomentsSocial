@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react'
+import React, { Fragment, useCallback, useContext, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import Link from 'next/link'
 // import { SearchIcon } from "@heroicons/react/outline";
@@ -8,12 +8,16 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { PrimaryButton } from '@/components/ui/Button';
+import { identity } from "deso-protocol";
+
+// import { UserContext } from '@/AppContext';
 
 const Header = () => {
   const router = useRouter()
   const [popupOpen, setPopupOpen] = useState(false)
   const { data: session, status } = useSession()
   const [isOpen, setIsOpen] = useState(false);
+  // const { currentUser, isLoading } = useContext(UserContext);
 
 
   return (
@@ -46,7 +50,9 @@ const Header = () => {
           {
             !session &&
             <div className="flex items-center">
-              <PrimaryButton text='Login' />
+              <PrimaryButton text='Login' 
+              // onClick={() => identity.login()} 
+              />
               <PrimaryButton text='Signup' className="ml-3" onClick={() => console.log('hi')} />
             </div>
           }
