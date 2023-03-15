@@ -1,53 +1,28 @@
 import MainLayout from '@/layouts/MainLayout'
 import { getSession, SessionProvider } from 'next-auth/react'
-import { Real } from '@/components/snippets';
-import VideoItem from '@/components/snippets/VideoItem';
-import { LayoutViewContext, useVideoLayoutContext } from '@/contexts/videosContext';
-import { useContext } from 'react';
+import { VideoLayoutProvider } from '@/contexts/VideosContext';
+import Reals from '@/features/home/Reals';
+import Videos from '@/features/home/Videos';
+import Layout from '@/features/home/Layout';
 
 export default function Home({ session }: any) {
-
-  const mockData = [
-    'https://www.w3schools.com/tags/img_girl.jpg',
-    'https://www.w3schools.com/tags/img_girl.jpg',
-    'https://www.w3schools.com/tags/img_girl.jpg',
-    'https://www.w3schools.com/tags/img_girl.jpg',
-    'https://www.w3schools.com/tags/img_girl.jpg',
-    'https://www.w3schools.com/tags/img_girl.jpg',
-    'https://www.w3schools.com/tags/img_girl.jpg',
-    'https://www.w3schools.com/tags/img_girl.jpg',
-    'https://www.w3schools.com/tags/img_girl.jpg',
-    'https://www.w3schools.com/tags/img_girl.jpg',
-    'https://www.w3schools.com/tags/img_girl.jpg',
-    'https://www.w3schools.com/tags/img_girl.jpg',
-  ]
-
-  const test = useVideoLayoutContext();
-
-  console.log('test', test);
-  
-
 
   return (
     <SessionProvider session={session} refetchInterval={60}>
       <MainLayout title='Moments'>
-        <div className='grid lg:grid-cols-8 md:grid-cols-6 gap-4'>
-          {
-            mockData.slice(0, 8).map((item, index) => {
-              return (
-                <div key={`real-${index}`} className="overflow-hidden">
-                  <Real imgUrl={item} />
-                </div>
-              )
-            })
-          }
-        </div>
-
-        <div className="mt-8">
-          <div className="grid">
-            <VideoItem />
+        <VideoLayoutProvider>
+          <div className="flex justify-between items-center">
+            <div>Tags</div>
+            <Layout />
           </div>
-        </div>
+
+          <Reals />
+
+          <hr className="my-10" />
+
+          <Videos />
+
+        </VideoLayoutProvider>
       </MainLayout>
     </SessionProvider>
   )
