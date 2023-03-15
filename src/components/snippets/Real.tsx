@@ -1,5 +1,5 @@
 import React from 'react'
-
+ 
 interface RealProps {
   imgUrl?: string
 }

@@ -1,6 +1,9 @@
 import MainLayout from '@/layouts/MainLayout'
 import { getSession, SessionProvider } from 'next-auth/react'
 import { Real } from '@/components/snippets';
+import VideoItem from '@/components/snippets/VideoItem';
+import { LayoutViewContext, useVideoLayoutContext } from '@/contexts/videosContext';
+import { useContext } from 'react';
 
 export default function Home({ session }: any) {
 
@@ -19,6 +22,12 @@ export default function Home({ session }: any) {
     'https://www.w3schools.com/tags/img_girl.jpg',
   ]
 
+  const test = useVideoLayoutContext();
+
+  console.log('test', test);
+  
+
+
   return (
     <SessionProvider session={session} refetchInterval={60}>
       <MainLayout title='Moments'>
@@ -27,11 +36,17 @@ export default function Home({ session }: any) {
             mockData.slice(0, 8).map((item, index) => {
               return (
                 <div key={`real-${index}`} className="overflow-hidden">
-                  <Real imgUrl={item}/>
+                  <Real imgUrl={item} />
                 </div>
               )
             })
           }
+        </div>
+
+        <div className="mt-8">
+          <div className="grid">
+            <VideoItem />
+          </div>
         </div>
       </MainLayout>
     </SessionProvider>
