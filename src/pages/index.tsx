@@ -1,9 +1,10 @@
 import MainLayout from '@/layouts/MainLayout'
-import { getSession, SessionProvider } from 'next-auth/react'
+import { SessionProvider } from 'next-auth/react'
 import { VideoLayoutProvider } from '@/contexts/VideosContext';
 import Reals from '@/features/home/Reals';
 import Videos from '@/features/home/Videos';
 import Layout from '@/features/home/Layout';
+import { getFeedData } from '@/features/home/API';
 
 export default function Home({ session }: any) {
 
@@ -28,9 +29,12 @@ export default function Home({ session }: any) {
   )
 }
 
-export async function getServerSideProps(context: any) {
-  const session = await getSession(context);
+export const getServerSideProps = async (_context: any) => {
+  const feedData = await getFeedData();
+
   return {
-    props: { session: session }
+    props: {
+      feedData,
+    },
   };
-}
+};
