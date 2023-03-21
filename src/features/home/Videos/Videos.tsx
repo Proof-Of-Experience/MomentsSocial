@@ -5,6 +5,9 @@ import { useContext } from 'react';
 const Videos = () => {
     const { gridView } = useContext(VideoLayoutContext)
 
+    console.log('gridView', gridView);
+    
+
     const mockData = [
         'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
         'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
@@ -18,15 +21,17 @@ const Videos = () => {
 
     const showGridCol = () => {
         if (gridView === 'grid') {
-            return '5'
+            return 'grid-cols-6'
         } else if(gridView === 'list') {
-            return '1'
+            return 'grid-cols-1'
+        } else {
+            return 'grid-cols-3'
         }
     }
 
     return (
         <div className="mt-8">
-            <div className={`grid lg:grid-cols-${showGridCol()} md:grid-cols-6 gap-x-5 gap-y-10`}>
+            <div className={`grid ${showGridCol()} gap-x-5 gap-y-10`}>
                 {
                     mockData.map((item, index) => {
                         return (
