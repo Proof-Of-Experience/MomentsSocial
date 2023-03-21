@@ -1,34 +1,33 @@
 import MainLayout from '@/layouts/MainLayout'
-import { SessionProvider } from 'next-auth/react'
 import { VideoLayoutProvider } from '@/contexts/VideosContext';
 import Reals from '@/features/home/Reals';
 import Videos from '@/features/home/Videos';
 import Layout from '@/features/home/Layout';
 import { getFeedData } from '@/features/home/API';
 import Tags from '@/features/home/Tags';
+import { NextPage } from 'next';
 
- const Home = ({ session }: any) => {
+const Home: NextPage = (props: any) => {
+  console.log('props', props);
 
   return (
-    <SessionProvider session={session} refetchInterval={60}>
-      <MainLayout title='Moments'>
-        <VideoLayoutProvider>
-          <div className="flex justify-between items-center">
-            <div className="mb-3">
-              <Tags />
-            </div>
-            <Layout />
+    <MainLayout title='Moments'>
+      <VideoLayoutProvider>
+        <div className="flex justify-between items-center">
+          <div className="mb-3">
+            <Tags />
           </div>
+          <Layout />
+        </div>
 
-          <Reals />
+        <Reals />
 
-          <hr className="my-10" />
+        <hr className="my-10" />
 
-          <Videos />
+        <Videos />
 
-        </VideoLayoutProvider>
-      </MainLayout>
-    </SessionProvider>
+      </VideoLayoutProvider>
+    </MainLayout>
   )
 }
 

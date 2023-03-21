@@ -8,9 +8,10 @@ export const getFeedData = async () => {
 	};
 
 	await apiService(apiData, (res: any) => {
-        console.log('res', res);
+        // console.log('res', res);
         
 		// if (res) result = res?.data?.results || [];
+		if (res) result = res
 		// console.log('error---', err)
 	});
 	return result;
