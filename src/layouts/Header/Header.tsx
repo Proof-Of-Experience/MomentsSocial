@@ -28,7 +28,7 @@ const Header = () => {
           <Link href="/" className="flex rounded-md bg-cyan-50 p-2 hover:scale-125 hover:bg-emerald-100">
             <img
               className="flex w-[150px] h-[50px]"
-              src="/assets/DTube_files/images/DTube_Black.svg"
+              src="/DTube_Black.svg"
               alt="dtube"
               onClick={() => router.push('/')}
             />

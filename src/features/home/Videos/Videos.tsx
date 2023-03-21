@@ -3,7 +3,7 @@ import VideoLayoutContext from '@/contexts/VideosContext';
 import { useContext } from 'react';
 
 const Videos = () => {
-    const { gridView } = useContext(VideoLayoutContext)
+    const { gridView }: any = useContext(VideoLayoutContext)
 
     console.log('gridView', gridView);
     

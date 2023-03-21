@@ -5,15 +5,18 @@ import Reals from '@/features/home/Reals';
 import Videos from '@/features/home/Videos';
 import Layout from '@/features/home/Layout';
 import { getFeedData } from '@/features/home/API';
+import Tags from '@/features/home/Tags';
 
-export default function Home({ session }: any) {
+ const Home = ({ session }: any) => {
 
   return (
     <SessionProvider session={session} refetchInterval={60}>
       <MainLayout title='Moments'>
         <VideoLayoutProvider>
           <div className="flex justify-between items-center">
-            <div>Tags</div>
+            <div className="mb-3">
+              <Tags />
+            </div>
             <Layout />
           </div>
 
@@ -28,6 +31,8 @@ export default function Home({ session }: any) {
     </SessionProvider>
   )
 }
+
+export default Home
 
 export const getServerSideProps = async (_context: any) => {
   const feedData = await getFeedData();
