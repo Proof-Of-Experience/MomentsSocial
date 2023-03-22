@@ -27,4 +27,20 @@ export const tags: any = [
         name: 'Crypto',
         value: 'crypto',
     },
+    {
+        name: 'Movie',
+        value: 'movie',
+    },
+    {
+        name: 'Technology',
+        value: 'technology',
+    },
+    {
+        name: 'Business',
+        value: 'business',
+    },
+    {
+        name: 'Health',
+        value: 'health',
+    },
 ]

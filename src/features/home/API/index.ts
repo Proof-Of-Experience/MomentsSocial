@@ -11,7 +11,7 @@ export const getFeedData = async (data: FeedParamProps) => {
 		ResponseLimit: 100,
 		SeenPosts: [],
 		SortByNew: false,
-		Tag: data?.Tag
+		Tag: `#${data?.Tag}`
 	}
 	const apiData: ApiDataType = {
 		method: 'post',

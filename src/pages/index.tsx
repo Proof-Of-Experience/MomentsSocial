@@ -6,42 +6,54 @@ import Layout from '@/features/home/Layout';
 import { getFeedData } from '@/features/home/API';
 import Tags from '@/features/home/Tags';
 import { NextPage } from 'next';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const Home: NextPage = () => {
+  const [videoData, setVideoData] = useState<string[]>([]);
+  const [imageData, setImageData] = useState<string[]>([]);
+  const [tag, seTtag] = useState<string>('');
 
   const fetchFeetData = async () => {
     const data = {
-        Tag: '',
+      Tag: tag,
     }
     const feedData = await getFeedData(data);
-
-    console.log('feedData', feedData?.HotFeedPage);
-
-    const newData = feedData?.HotFeedPage.filter((item: any) => item.VideoURLs)
-    console.log('newData', newData);
-  
+    if (feedData?.HotFeedPage) {
+      const newVideoData: any = feedData?.HotFeedPage.filter((item: any) => item.VideoURLs)
+      const newImageData: any = feedData?.HotFeedPage.filter((item: any) => item.ImageURLs)
+      setVideoData(newVideoData)
+      setImageData(newImageData)
+    }
   }
+
+  console.log('videoData', videoData);
+  console.log('imageData', imageData);
+
 
   useEffect(() => {
     fetchFeetData()
-  }, [])
+  }, [tag])
+
+
+  const onClickTag = (value: string) => {
+    seTtag(value)
+  }
 
   return (
     <MainLayout title='Moments'>
       <VideoLayoutProvider>
         <div className="flex justify-between items-center">
           <div className="mb-3">
-            <Tags />
+            <Tags onClick={onClickTag} />
           </div>
           <Layout />
         </div>
 
-        <Reals />
+        <Reals imageData={imageData} />
 
         <hr className="my-10" />
 
-        <Videos />
+        <Videos videoData={videoData} />
 
       </VideoLayoutProvider>
     </MainLayout>
