@@ -7,38 +7,24 @@ import { getFeedData } from '@/features/home/API';
 import Tags from '@/features/home/Tags';
 import { NextPage } from 'next';
 import { useEffect } from 'react';
-import axios from 'axios';
 
 const Home: NextPage = () => {
 
   const fetchFeetData = async () => {
     const data = {
-        Tag: '#game',
+        Tag: '',
     }
     const feedData = await getFeedData(data);
 
-    console.log('feedData', feedData);
+    console.log('feedData', feedData?.HotFeedPage);
+
+    const newData = feedData?.HotFeedPage.filter((item: any) => item.VideoURLs)
+    console.log('newData', newData);
   
   }
 
   useEffect(() => {
     fetchFeetData()
-    
-    // async function getData() {
-    //   const res = await fetch('https://api.bitclout.com/api/v0/get-hot-feed', {
-    //     method: 'POST',
-    //     body: JSON.stringify(body),
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //   });
-    //   const data = await res.json()
-
-    //   console.log('res.json()', data);
-    // }
-
-    // getData();
-
   }, [])
 
   return (

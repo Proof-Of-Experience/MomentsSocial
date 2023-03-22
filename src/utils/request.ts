@@ -8,7 +8,6 @@ export interface ApiDataType {
 	headers?: any;
 }
 
-
 /*
 	-----------------------------------------------------------------------------
 	'apiService' Function accepts two parameters, 'apiData' and 'callback':
@@ -17,6 +16,7 @@ export interface ApiDataType {
 		1.2. 'url' (required) is the string of API url, excluded the baseUrl part (e.g. '/blog').
 		1.3. 'data' is a payload for passing to the post, put and patch request.
 		1.4. 'token' is the access token from session
+		1.5. 'headers' is based on different data type
 	2. 'callback' parameter is a callback function that determines, what we will do with the API response either it is resolved or rejected.
 	-----------------------------------------------------------------------------
 */
@@ -24,17 +24,16 @@ export const apiService = async (apiData: ApiDataType, callback: any) => {
 
 	try {
 		const res = await fetch(`${baseURL}${apiData.url}`, {
-			method: 'POST',
-			body: JSON.stringify(apiData.data),
+			method: apiData.method,
 			headers: {
 				...apiData.headers,
 				'Content-Type': 'application/json',
 			},
+			...apiData.data && { body: JSON.stringify(apiData.data) },
 		});
 
 		const data = await res.json()
 		// console.log('SUCCESS FROM API_SERVICE-----', data)
-
 
 		callback(data, null);
 	} catch (error: any) {

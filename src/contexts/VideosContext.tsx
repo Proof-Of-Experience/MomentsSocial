@@ -21,7 +21,7 @@ export const VideoLayoutProvider = ({ children }: any) => {
 
   return (
     <VideoLayoutContext.Provider
-      value={{gridView: currentLayout, updateLayout}}>
+      value={{gridView: currentLayout || 'grid', updateLayout}}>
       {children}
     </VideoLayoutContext.Provider>
   );

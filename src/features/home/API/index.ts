@@ -4,12 +4,11 @@ interface FeedParamProps {
 	Tag?: string
 }
 
-
 export const getFeedData = async (data: FeedParamProps) => {
 	let result: any = [];
 	const body = {
 		ReaderPublicKeyBase58Check: '',
-		ResponseLimit: 50,
+		ResponseLimit: 100,
 		SeenPosts: [],
 		SortByNew: false,
 		Tag: data?.Tag
@@ -17,15 +16,13 @@ export const getFeedData = async (data: FeedParamProps) => {
 	const apiData: ApiDataType = {
 		method: 'post',
 		url: '/api/v0/get-hot-feed',
-		data: body,	
-};
+		data: body,
+	};
 
-await apiService(apiData, (res: any) => {
-	// console.log('res', res);
+	await apiService(apiData, (res: any, err: any) => {
+		if (err) return err.response
+		if (res) result = res
+	});
 
-	// if (res) result = res?.data?.results || [];
-	if (res) result = res
-	// console.log('error---', err)
-});
-return result;
+	return result;
 };

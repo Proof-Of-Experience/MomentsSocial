@@ -3,10 +3,7 @@ import VideoLayoutContext from '@/contexts/VideosContext';
 import { useContext } from 'react';
 
 const Videos = () => {
-    const { gridView }: any = useContext(VideoLayoutContext)
-
-    console.log('gridView', gridView);
-    
+    const { gridView }: any = useContext(VideoLayoutContext)    
 
     const mockData = [
         'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
