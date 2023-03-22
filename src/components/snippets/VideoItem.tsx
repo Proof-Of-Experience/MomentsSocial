@@ -11,7 +11,7 @@ const VideoItem = ({ imgUrl, ...rest }: VideoItemProps) => {
       overflow: 'hidden',
       width: '100%',
     }}>
-      <video width="100%" autoPlay loop>
+      <video width="100%" autoPlay loop muted>
         <source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
       </video>
       <h4 className="mt-2 text-sm font-bold">Debugging useEffect Issues Made Simple</h4>

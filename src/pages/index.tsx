@@ -6,9 +6,40 @@ import Layout from '@/features/home/Layout';
 import { getFeedData } from '@/features/home/API';
 import Tags from '@/features/home/Tags';
 import { NextPage } from 'next';
+import { useEffect } from 'react';
+import axios from 'axios';
 
-const Home: NextPage = (props: any) => {
-  console.log('props', props);
+const Home: NextPage = () => {
+
+  const fetchFeetData = async () => {
+    const data = {
+        Tag: '#game',
+    }
+    const feedData = await getFeedData(data);
+
+    console.log('feedData', feedData);
+  
+  }
+
+  useEffect(() => {
+    fetchFeetData()
+    
+    // async function getData() {
+    //   const res = await fetch('https://api.bitclout.com/api/v0/get-hot-feed', {
+    //     method: 'POST',
+    //     body: JSON.stringify(body),
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //   });
+    //   const data = await res.json()
+
+    //   console.log('res.json()', data);
+    // }
+
+    // getData();
+
+  }, [])
 
   return (
     <MainLayout title='Moments'>
@@ -33,12 +64,3 @@ const Home: NextPage = (props: any) => {
 
 export default Home
 
-export const getServerSideProps = async (_context: any) => {
-  const feedData = await getFeedData();
-
-  return {
-    props: {
-      feedData,
-    },
-  };
-};
