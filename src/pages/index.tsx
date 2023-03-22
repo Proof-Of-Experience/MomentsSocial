@@ -11,11 +11,11 @@ import { useEffect, useState } from 'react';
 const Home: NextPage = () => {
   const [videoData, setVideoData] = useState<string[]>([]);
   const [imageData, setImageData] = useState<string[]>([]);
-  const [tag, seTtag] = useState<string>('');
+  const [tag, seTtag] = useState<string>('technology');
 
   const fetchFeetData = async () => {
     const data = {
-      Tag: tag,
+      Tag: `#${tag}`,
     }
     const feedData = await getFeedData(data);
     if (feedData?.HotFeedPage) {
@@ -25,10 +25,6 @@ const Home: NextPage = () => {
       setImageData(newImageData)
     }
   }
-
-  console.log('videoData', videoData);
-  console.log('imageData', imageData);
-
 
   useEffect(() => {
     fetchFeetData()

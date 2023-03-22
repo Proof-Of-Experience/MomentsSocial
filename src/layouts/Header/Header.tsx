@@ -53,7 +53,7 @@ const Header = () => {
               <PrimaryButton text='Login' 
               // onClick={() => identity.login()} 
               />
-              <PrimaryButton text='Signup' className="ml-3" onClick={() => console.log('hi')} />
+              <PrimaryButton text='Signup' className="ml-3" />
             </div>
           }
         </div>

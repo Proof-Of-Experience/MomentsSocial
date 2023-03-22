@@ -1,7 +1,7 @@
 export const tags: any = [
     {
-        name: 'All',
-        value: 'all',
+        name: 'Technology',
+        value: 'technology',
     },
     {
         name: 'Blockchain',
@@ -30,10 +30,6 @@ export const tags: any = [
     {
         name: 'Movie',
         value: 'movie',
-    },
-    {
-        name: 'Technology',
-        value: 'technology',
     },
     {
         name: 'Business',
