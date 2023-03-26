@@ -3,7 +3,7 @@ import { VideoLayoutProvider } from '@/contexts/VideosContext';
 import Reals from '@/features/home/Reals';
 import Videos from '@/features/home/Videos';
 import Layout from '@/features/home/Layout';
-import { getFeedData } from '@/features/home/API';
+import { getFeedData } from '@/pages/api/feed';
 import Tags from '@/features/home/Tags';
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';

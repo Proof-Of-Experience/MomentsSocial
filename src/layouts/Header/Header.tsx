@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useContext, useState } from 'react'
+import React, { ChangeEvent, Fragment, useCallback, useContext, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import Link from 'next/link'
 // import { SearchIcon } from "@heroicons/react/outline";
@@ -8,15 +8,31 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { PrimaryButton } from '@/components/ui/Button';
+import { getSearchProfileData } from '@/pages/api/profile';
 
 // import { UserContext } from '@/AppContext';
 
 const Header = () => {
   const router = useRouter()
   const [popupOpen, setPopupOpen] = useState(false)
+  const [search, setSearch] = useState('')
   const { data: session, status } = useSession()
   const [isOpen, setIsOpen] = useState(false);
   // const { currentUser, isLoading } = useContext(UserContext);
+
+  const onChangeSearch = async (e: ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    const data = {
+      UsernamePrefix: e.target.value
+    }
+    
+    const result = await getSearchProfileData(data);
+    console.log('result', result);
+    
+  }
+
+  console.log('search', search);
+  
 
 
   return (
@@ -39,8 +55,11 @@ const Header = () => {
           {/* search bar */}
           <div>
             {/* <SearchIcon className="hidden h-6 text-gray-600" /> */}
-            <input className="flex rounded-md mt-5 mb-2 border p-2 md:p-5 md:m-3 md:ml-60 h-10 w-64 md:w-96 bg-white outline-none placeholder-gray-500"
-              placeholder="Search Dtube" />
+            <input
+              className="flex rounded-md mt-5 mb-2 border p-2 md:p-5 md:m-3 md:ml-60 h-10 w-64 md:w-96 bg-white outline-none placeholder-gray-500"
+              placeholder="Search Dtube"
+              value={search}
+              onChange={onChangeSearch}/>
           </div>
         </div>
 
