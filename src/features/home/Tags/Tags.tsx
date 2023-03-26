@@ -1,6 +1,6 @@
 import { tags } from './mockData';
 
-const Tags = ({ onClick }: any) => {
+const Tags = ({ onClick, tagParam }: any) => {  
 
   return (
     <div>
@@ -9,7 +9,7 @@ const Tags = ({ onClick }: any) => {
           return (
             <button
               key={`tag-${index}`}
-              className="bg-gray-200 text-black py-1 px-5 rounded-md mr-4 focus:bg-gray-600 focus:text-white"
+              className={`${tagParam == item.value ? 'bg-gray-600 text-white' : 'bg-gray-200 text-black'} py-1 px-5 rounded-md mr-4 focus:bg-gray-600 focus:text-white`}
               title={item.name}
               onClick={() => onClick(item.value.toLowerCase())}>
               {item.name}

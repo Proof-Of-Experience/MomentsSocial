@@ -7,8 +7,12 @@ import { getFeedData, getStatelessPostData } from '@/pages/api/feed';
 import Tags from '@/features/home/Tags';
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 
 const Home: NextPage = () => {
+  const router = useRouter();
+  const tagParam: any = router.query.tag
+
   const [videoData, setVideoData] = useState<string[]>([]);
   const [imageData, setImageData] = useState<string[]>([]);
 
@@ -36,13 +40,25 @@ const Home: NextPage = () => {
   }
 
   useEffect(() => {
-    fetchStatelessPostData()
-  }, [])
+    if(!router.isReady) return
+    
+
+    if (tagParam) {
+      fetchFeedData(tagParam)
+    } else {
+      fetchStatelessPostData()
+    }
+  }, [router.isReady])
 
   const onClickTag = (value: string) => {
     if (value === 'all') {
+      router.replace('/', undefined, { shallow: true });
       fetchStatelessPostData()
+      
     } else {
+      router.replace({
+        query: { ...router.query, tag: value },
+      })
       fetchFeedData(value)
     }
   }
@@ -52,7 +68,7 @@ const Home: NextPage = () => {
       <VideoLayoutProvider>
         <div className="flex justify-between items-center">
           <div className="mb-3">
-            <Tags onClick={onClickTag} />
+            <Tags tagParam={tagParam} onClick={onClickTag} />
           </div>
           <Layout />
         </div>
