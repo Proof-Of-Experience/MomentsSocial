@@ -3,7 +3,7 @@ import { VideoLayoutProvider } from '@/contexts/VideosContext';
 import Reals from '@/features/home/Reals';
 import Videos from '@/features/home/Videos';
 import Layout from '@/features/home/Layout';
-import { getFeedData } from '@/pages/api/feed';
+import { getFeedData, getStatelessPostData } from '@/pages/api/feed';
 import Tags from '@/features/home/Tags';
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
@@ -11,9 +11,18 @@ import { useEffect, useState } from 'react';
 const Home: NextPage = () => {
   const [videoData, setVideoData] = useState<string[]>([]);
   const [imageData, setImageData] = useState<string[]>([]);
-  const [tag, seTtag] = useState<string>('technology');
 
-  const fetchFeetData = async () => {
+  const fetchStatelessPostData = async () => {
+    const postData = await getStatelessPostData()
+    if (postData?.PostsFound) {
+      const newVideoData: any = postData?.PostsFound.filter((item: any) => item.VideoURLs)
+      const newImageData: any = postData?.PostsFound.filter((item: any) => item.ImageURLs)
+      setVideoData(newVideoData)
+      setImageData(newImageData)
+    }
+  }
+
+  const fetchFeedData = async (tag: string) => {
     const data = {
       Tag: `#${tag}`,
     }
@@ -27,12 +36,15 @@ const Home: NextPage = () => {
   }
 
   useEffect(() => {
-    fetchFeetData()
-  }, [tag])
-
+    fetchStatelessPostData()
+  }, [])
 
   const onClickTag = (value: string) => {
-    seTtag(value)
+    if (value === 'all') {
+      fetchStatelessPostData()
+    } else {
+      fetchFeedData(value)
+    }
   }
 
   return (

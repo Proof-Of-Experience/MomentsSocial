@@ -7,7 +7,7 @@ interface RealProps {
 const Real = ({ item }: RealProps) => {
 
   return (
-    <button className="block border rounded-xl px-2 pb-3">
+    <div className="block border rounded-xl px-2 pb-3">
       <img src={item?.ImageURLs[0]} className="rounded-xl w-full h-[300px]" />
       <p className="mt-2 font-bold text-sm line-clamp-2 text-left">{item?.Body}</p>
       <p className="text-sm mt-2">
@@ -18,7 +18,7 @@ const Real = ({ item }: RealProps) => {
           <span className="ml-1">{item?.LikeCount}</span>
         </button>
       </p>
-    </button>
+    </div>
   )
 }
 

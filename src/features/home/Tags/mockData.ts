@@ -1,5 +1,9 @@
 export const tags: any = [
     {
+        name: 'All',
+        value: 'all',
+    },
+    {
         name: 'Technology',
         value: 'technology',
     },
