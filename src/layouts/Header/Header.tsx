@@ -1,38 +1,43 @@
-import React, { ChangeEvent, Fragment, useCallback, useContext, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
+import React, { ChangeEvent, Fragment, useState } from 'react'
+import { Combobox, Transition } from '@headlessui/react'
 import Link from 'next/link'
-// import { SearchIcon } from "@heroicons/react/outline";
-// import { UploadIcon, BellIcon } from "@heroicons/react/solid"
+import { CheckIcon, MagnifyingGlassIcon} from "@heroicons/react/20/solid";
 import { useRouter } from 'next/router'
-import { signIn, signOut, useSession } from "next-auth/react";
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { PrimaryButton } from '@/components/ui/Button';
 import { getSearchProfileData } from '@/pages/api/profile';
 
-// import { UserContext } from '@/AppContext';
-
 const Header = () => {
   const router = useRouter()
-  const [popupOpen, setPopupOpen] = useState(false)
-  const [search, setSearch] = useState('')
-  const { data: session, status } = useSession()
-  const [isOpen, setIsOpen] = useState(false);
-  // const { currentUser, isLoading } = useContext(UserContext);
+  const [selected, setSelected] = useState([]);
+  const [searchResult, setSearchResult] = useState([]);
+  const [query, setQuery] = useState("");
+  const [loadedQuery, setLoadedQuery] = useState(false);
 
   const onChangeSearch = async (e: ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
+    setQuery(e.target.value)
     const data = {
       UsernamePrefix: e.target.value
     }
-    
+
     const result = await getSearchProfileData(data);
-    console.log('result', result);
-    
+
+    const filteredPeople =
+      query === ""
+        ? result?.ProfilesFound
+        : result?.ProfilesFound.filter((person: any) =>
+          person.Username
+            .toLowerCase()
+            .replace(/\s+/g, "")
+            .includes(query.toLowerCase().replace(/\s+/g, ""))
+        );
+
+    setSearchResult(filteredPeople)
+
   }
 
-  console.log('search', search);
-  
+  console.log('selectedPerson', selected);
+
 
 
   return (
@@ -55,28 +60,86 @@ const Header = () => {
           {/* search bar */}
           <div>
             {/* <SearchIcon className="hidden h-6 text-gray-600" /> */}
-            <input
-              className="flex rounded-md mt-5 mb-2 border p-2 md:p-5 md:m-3 md:ml-60 h-10 w-64 md:w-96 bg-white outline-none placeholder-gray-500"
-              placeholder="Search Dtube"
-              value={search}
-              onChange={onChangeSearch}/>
+
+            <Combobox value={selected} onChange={setSelected}>
+              <div className="relative mt-1">
+                <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
+                  <Combobox.Input
+                    // className="w-full border py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
+                    className="flex rounded-md border p-2 md:p-5 h-10 w-64 md:w-96 bg-white outline-none placeholder-gray-500"
+                    displayValue={(person: any) => person.Username}
+                    onChange={onChangeSearch}
+                  />
+                  <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
+                  <MagnifyingGlassIcon className="hidden h-6 text-gray-600" />
+                  </Combobox.Button>
+                </div>
+
+                <Transition
+                  as={Fragment}
+                  leave="transition ease-in duration-100"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                  afterLeave={() => setQuery("")}
+                >
+                  <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                    {searchResult.length === 0 && query !== "" ? (
+                      <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
+                        Nothing found.
+                      </div>
+                    ) : (
+                      searchResult.map((person: any) => (
+                        <Combobox.Option
+                          key={person.Username}
+                          className={({ active }) =>
+                            `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? "bg-teal-600 text-white" : "text-gray-900"
+                            }`
+                          }
+                          value={person}
+                        >
+                          {({ selected, active }) => (
+                            <>
+                              <span
+                                className={`block truncate ${selected ? "font-medium" : "font-normal"
+                                  }`}
+                              >
+                                {person.Username}
+                              </span>
+                              {selected ? (
+                                <span
+                                  className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? "text-white" : "text-teal-600"
+                                    }`}
+                                >
+                                  <CheckIcon
+                                    className="h-5 w-5"
+                                    aria-hidden="true"
+                                  />
+                                </span>
+                              ) : null}
+                            </>
+                          )}
+                        </Combobox.Option>
+                      ))
+                    )}
+                  </Combobox.Options>
+                </Transition>
+              </div>
+            </Combobox>
+
           </div>
         </div>
 
         {/* right */}
         <div className="flex justify-end">
-          {
-            !session &&
-            <div className="flex items-center">
-              <PrimaryButton text='Login'
-                onClick={async () => {
-                  const { identity } = (await import('deso-protocol'))
-                  identity.login()
-                }}
-              />
-              <PrimaryButton text='Signup' className="ml-3" />
-            </div>
-          }
+          <div className="flex items-center">
+            <PrimaryButton text='Login'
+              onClick={async () => {
+                const { identity } = (await import('deso-protocol'))
+                identity.login()
+              }}
+            />
+            <PrimaryButton text='Signup' className="ml-3" />
+          </div>
         </div>
       </div>
     </header>
