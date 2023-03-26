@@ -8,7 +8,6 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { PrimaryButton } from '@/components/ui/Button';
-import { identity } from "deso-protocol";
 
 // import { UserContext } from '@/AppContext';
 
@@ -50,8 +49,11 @@ const Header = () => {
           {
             !session &&
             <div className="flex items-center">
-              <PrimaryButton text='Login' 
-              // onClick={() => identity.login()} 
+              <PrimaryButton text='Login'
+                onClick={async () => {
+                  const { identity } = (await import('deso-protocol'))
+                  identity.login()
+                }}
               />
               <PrimaryButton text='Signup' className="ml-3" />
             </div>
