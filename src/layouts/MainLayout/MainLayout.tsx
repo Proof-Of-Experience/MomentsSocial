@@ -8,10 +8,12 @@ import {
   identity,
   NOTIFICATION_EVENTS,
 } from "deso-protocol";
+import { LoadingSpinner } from '@/components/ui/Loader';
 
 interface MainLayoutProps {
   children: JSX.Element | JSX.Element[] | string;
   title?: string;
+  isLoading?: boolean;
 }
 
 // configure({
@@ -24,7 +26,7 @@ interface MainLayoutProps {
 // });
 
 
-const MainLayout = ({ title, children }: MainLayoutProps) => {
+const MainLayout = ({ title, isLoading, children }: MainLayoutProps) => {
   const [userState, setUserState] = useState({
     currentUser: null,
     alternateUsers: null,
@@ -136,14 +138,15 @@ const MainLayout = ({ title, children }: MainLayoutProps) => {
     <>
       <MetaData title={title} />
 
-      <div className='grid grid-cols-12 font-poppins'>
-        <div className='col-span-1 bg-gray-50 h-screen shadow-md'>
+      <div className='flex font-poppins'>
+        <div className='w-[80px] bg-gray-50 h-screen shadow-md'>
           <LeftSidebar />
         </div>
-        <div className='col-span-11'>
+        <div className='w-full'>
           <Header />
 
-          <div className='p-5'>
+          <LoadingSpinner isLoading={isLoading} />
+          <div className="p-5">
             {children}
           </div>
         </div>

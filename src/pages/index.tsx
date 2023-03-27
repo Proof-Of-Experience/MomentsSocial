@@ -8,16 +8,21 @@ import Tags from '@/features/home/Tags';
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { LoadingSpinner } from '@/components/ui/Loader';
 
 const Home: NextPage = () => {
   const router = useRouter();
   const tagParam: any = router.query.tag
 
+  const [videoLoaded, setVideoLoaded] = useState<boolean>(true);
   const [videoData, setVideoData] = useState<string[]>([]);
   const [imageData, setImageData] = useState<string[]>([]);
 
   const fetchStatelessPostData = async () => {
+    setVideoLoaded(true)
     const postData = await getStatelessPostData()
+    setVideoLoaded(false)
+
     if (postData?.PostsFound) {
       const newVideoData: any = postData?.PostsFound.filter((item: any) => item.VideoURLs)
       const newImageData: any = postData?.PostsFound.filter((item: any) => item.ImageURLs)
@@ -27,10 +32,14 @@ const Home: NextPage = () => {
   }
 
   const fetchFeedData = async (tag: string) => {
+    setVideoLoaded(true)
+
     const data = {
       Tag: `#${tag}`,
     }
     const feedData = await getFeedData(data);
+    setVideoLoaded(false)
+
     if (feedData?.HotFeedPage) {
       const newVideoData: any = feedData?.HotFeedPage.filter((item: any) => item.VideoURLs)
       const newImageData: any = feedData?.HotFeedPage.filter((item: any) => item.ImageURLs)
@@ -40,8 +49,8 @@ const Home: NextPage = () => {
   }
 
   useEffect(() => {
-    if(!router.isReady) return
-    
+    if (!router.isReady) return
+
 
     if (tagParam) {
       fetchFeedData(tagParam)
@@ -54,7 +63,7 @@ const Home: NextPage = () => {
     if (value === 'all') {
       router.replace('/', undefined, { shallow: true });
       fetchStatelessPostData()
-      
+
     } else {
       router.replace({
         query: { ...router.query, tag: value },
@@ -64,14 +73,15 @@ const Home: NextPage = () => {
   }
 
   return (
-    <MainLayout title='Moments'>
+    <MainLayout title='Moments' isLoading={videoLoaded}>
+
       <VideoLayoutProvider>
         <div className="flex justify-between items-center">
           <div className="mb-3">
             <Tags tagParam={tagParam} onClick={onClickTag} />
           </div>
           <Layout />
-        </div>
+        </div >
 
         <Reals imageData={imageData} />
 
@@ -79,8 +89,8 @@ const Home: NextPage = () => {
 
         <Videos videoData={videoData} />
 
-      </VideoLayoutProvider>
-    </MainLayout>
+      </VideoLayoutProvider >
+    </MainLayout >
   )
 }
 
