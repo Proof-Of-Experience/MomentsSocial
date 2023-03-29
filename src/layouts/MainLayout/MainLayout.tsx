@@ -137,20 +137,21 @@ const MainLayout = ({ title, isLoading, children }: MainLayoutProps) => {
   return (
     <>
       <MetaData title={title} />
+      <>
+        <Header />
 
-      <div className='flex font-poppins'>
-        <div className='w-[80px] bg-gray-50 h-screen shadow-md'>
-          <LeftSidebar />
-        </div>
-        <div className='w-full'>
-          <Header />
-
-          <LoadingSpinner isLoading={isLoading} />
-          <div className="p-5">
-            {children}
+        <div className='flex font-poppins'>
+          <div className='w-[80px] bg-gray-50 h-screen shadow-md'>
+            <LeftSidebar />
+          </div>
+          <div className='w-full'>
+            <LoadingSpinner isLoading={isLoading} />
+            <div className="p-5">
+              {children}
+            </div>
           </div>
         </div>
-      </div>
+      </>
     </>
   )
 }
