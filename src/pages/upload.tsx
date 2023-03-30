@@ -9,7 +9,7 @@ import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-const Home: NextPage = () => {
+const Upload: NextPage = () => {
   const router = useRouter();
   const tagParam: any = router.query.tag
 
@@ -74,24 +74,13 @@ const Home: NextPage = () => {
   return (
     <MainLayout title='Moments' isLoading={videoLoaded}>
 
-      <VideoLayoutProvider>
-        <div className="flex justify-between items-center">
-          <div className="mb-3">
-            <Tags tagParam={tagParam} onClick={onClickTag} />
-          </div>
-          <Layout />
-        </div >
+      <div>
+          hi
+      </div>
 
-        <Reals imageData={imageData} />
-
-        <hr className="my-10" />
-
-        <Videos videoData={videoData} />
-
-      </VideoLayoutProvider >
     </MainLayout >
   )
 }
 
-export default Home
+export default Upload
 

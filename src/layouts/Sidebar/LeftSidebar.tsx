@@ -1,32 +1,48 @@
-import { HomeIcon, BoltIcon, FireIcon, ArrowPathRoundedSquareIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline'
 import React from 'react'
+import { HomeIcon, BoltIcon, FireIcon, ArrowPathRoundedSquareIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline'
+import { useRouter } from 'next/router'
 
 const LeftSidebar = () => {
+  const router = useRouter();
+
+  const onClickItem = (url: string) => {
+    router.push(url)
+  }
+
   return (
     <div className="flex flex-col items-center pt-5 bg-gray-200 h-full">
       <button
         className="mb-3 hover:bg-gray-300 transition-all rounded-md px-2 py-1 text-gray-600 focus:bg-gray-300"
-        title="Home">
+        title="Home"
+        onClick={() => onClickItem('/')}>
         <HomeIcon className="mx-auto h-7 w-7" />
       </button>
+
       <button
         className="mb-3 hover:bg-gray-300 transition-all rounded-md px-2 py-1 text-gray-600 focus:bg-gray-300"
-        title="Moments">
+        title="Moments"
+        onClick={() => onClickItem('/')}>
         <BoltIcon className="mx-auto h-7 w-7" />
       </button>
+
       <button
         className="mb-3 hover:bg-gray-300 transition-all rounded-md px-2 py-1 text-gray-600 focus:bg-gray-300"
-        title="Explore">
+        title="Explore"
+        onClick={() => onClickItem('/')}>
         <ArrowPathRoundedSquareIcon className="mx-auto h-7 w-7" />
       </button>
+
       <button
         className="mb-3 hover:bg-gray-300 transition-all rounded-md px-2 py-1 text-gray-600 focus:bg-gray-300"
-        title="Trending">
+        title="Trending"
+        onClick={() => onClickItem('/')}>
         <FireIcon className="mx-auto h-7 w-7" />
       </button>
+
       <button
         className="mb-3 hover:bg-gray-300 transition-all rounded-md px-2 py-1 text-gray-600 focus:bg-gray-300"
-        title="Upload">
+        title="Upload"
+        onClick={() => onClickItem('/upload')}>
         <ArrowUpTrayIcon className="mx-auto h-7 w-7" />
       </button>
     </div>
