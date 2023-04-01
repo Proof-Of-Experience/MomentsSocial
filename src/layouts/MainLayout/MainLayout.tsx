@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import Header from '../Header';
 import { LeftSidebar } from '../Sidebar';
 import { LoadingSpinner } from '@/components/ui/Loader';
+import { useDispatch } from 'react-redux';
+import { setAuthUser } from '@/slices/authSlice';
 
 interface MainLayoutProps {
   children: JSX.Element | JSX.Element[] | string;
@@ -21,11 +23,16 @@ interface MainLayoutProps {
 
 
 const MainLayout = ({ title, isLoading, children }: MainLayoutProps) => {
+  const dispatch = useDispatch();
   const [userState, setUserState] = useState({
     currentUser: null,
     alternateUsers: null,
     isLoading: true,
   });
+
+  useEffect(() => {
+    dispatch(setAuthUser(userState));
+  }, [userState])
 
   console.log('userState', userState);
 

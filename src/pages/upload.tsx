@@ -1,9 +1,15 @@
 import UploadCard from '@/features/upload';
 import MainLayout from '@/layouts/MainLayout'
+import { selectAuthUser } from '@/slices/authSlice';
 import { ArrowUpTrayIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
 import { NextPage } from 'next';
+import { useSelector } from 'react-redux';
 
 const Upload: NextPage = () => {
+  const authUser = useSelector(selectAuthUser);
+
+  console.log('authUser', authUser);
+  
 
   return (
     <MainLayout title='Upload'>
