@@ -6,8 +6,12 @@ import { useRouter } from 'next/router'
 import 'react-toastify/dist/ReactToastify.css'
 import { PrimaryButton } from '@/components/ui/Button';
 import { getSearchProfileData } from '@/pages/api/profile';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectAuthUser, setAuthUser } from '@/slices/authSlice';
 
 const Header = () => {
+  const authUser = useSelector(selectAuthUser);
+  const dispatch = useDispatch();
   const router = useRouter()
   const [selected, setSelected] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
@@ -35,10 +39,6 @@ const Header = () => {
     setSearchResult(filteredPeople)
 
   }
-
-  console.log('selectedPerson', selected);
-
-
 
   return (
     <header className="sticky top-0 z-50 p-2 lg:px-5 shadow max-h-20">
@@ -121,15 +121,30 @@ const Header = () => {
 
         {/* right */}
         <div className="flex justify-end">
-          <div className="flex items-center">
-            <PrimaryButton text='Login'
-              onClick={async () => {
-                const { identity } = (await import('deso-protocol'))
-                identity.login()
-              }}
-            />
-            <PrimaryButton text='Signup' className="ml-3" />
-          </div>
+          {
+            authUser?.currentUser ?
+              <PrimaryButton
+                text='Logout'
+                className="ml-3"
+                onClick={async () => {
+                  const { identity } = (await import('deso-protocol'))
+                  await identity.logout()
+                  dispatch(setAuthUser({}));
+                }} /> :
+              <div className="flex items-center">
+                <PrimaryButton
+                  text='Login'
+                  onClick={async () => {
+                    const { identity } = (await import('deso-protocol'))
+                    identity.login()
+                  }}
+                />
+                <PrimaryButton
+                  text='Signup'
+                  className="ml-3"
+                />
+              </div>
+          }
         </div>
       </div>
     </header>
