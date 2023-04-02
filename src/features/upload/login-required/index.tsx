@@ -1,5 +1,5 @@
 import React from 'react'
-import { PrimaryButton } from '@/components/ui/button'
+import { PrimaryButton } from '@/components/core/button'
 
 const LoginRequired = () => {
   return (

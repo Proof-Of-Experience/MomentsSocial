@@ -2,7 +2,7 @@ import MetaData from '@/components/snippets/meta-data';
 import { useEffect, useState } from 'react';
 import Header from '../header';
 import { LeftSidebar } from '../sidebar';
-import { LoadingSpinner } from '@/components/ui/loader';
+import { LoadingSpinner } from '@/components/core/loader';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAuthUser, setAuthUser } from '@/slices/authSlice';
 

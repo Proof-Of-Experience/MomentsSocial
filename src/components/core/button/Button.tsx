@@ -1,10 +1,5 @@
 import React from 'react'
-
-interface PrimaryButtonProps {
-  text: string,
-  className?: string,
-  [rest: string]: any;
-}
+import { PrimaryButtonProps } from '@/model/core'
 
 const PrimaryButton: React.FC<PrimaryButtonProps> = ({ text = 'text', className = '', ...rest }) => {
   return (

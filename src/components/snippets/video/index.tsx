@@ -1,7 +1,7 @@
 import React from 'react'
 import { VideoItemProps } from '@/model/video'
 
-const VideoItem = ({ item, imgUrl, ...rest }: VideoItemProps) => {
+const VideoItem = ({ item }: VideoItemProps) => {
 
   return (
     <div>
