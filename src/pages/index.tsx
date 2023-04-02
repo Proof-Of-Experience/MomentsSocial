@@ -1,10 +1,10 @@
 import MainLayout from '@/layouts/MainLayout'
 import { VideoLayoutProvider } from '@/contexts/VideosContext';
-import Reals from '@/features/home/Reals';
-import Videos from '@/features/home/Videos';
-import Layout from '@/features/home/Layout';
+import Reals from '@/features/home/reals';
+import Videos from '@/features/home/videos';
+import Layout from '@/features/home/layout';
 import { getFeedData, getStatelessPostData } from '@/pages/api/feed';
-import Tags from '@/features/home/Tags';
+import Tags from '@/features/home/tags';
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';

@@ -1,6 +1,6 @@
 import { MetaData } from '@/components/snippets';
 import { useEffect, useState } from 'react';
-import Header from '../Header';
+import Header from '../header';
 import { LeftSidebar } from '../Sidebar';
 import { LoadingSpinner } from '@/components/ui/Loader';
 import { useDispatch } from 'react-redux';
