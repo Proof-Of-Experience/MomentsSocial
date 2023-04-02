@@ -1,14 +1,11 @@
 import { createContext, useState } from "react";
+import { LayoutProps } from "@/model/layout";
 
 const initialState = {
   gridView: 'grid',
   updateLayout: () => {}
 }
 
-interface LayoutProps {
-  gridView: string,
-  updateLayout?: (gridView: string) => void
-}
 
 const VideoLayoutContext = createContext<LayoutProps | null>(initialState);
 

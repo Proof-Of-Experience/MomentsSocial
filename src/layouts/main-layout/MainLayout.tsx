@@ -1,16 +1,12 @@
-import MetaData from '@/components/snippets/meta-data';
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import MetaData from '@/components/snippets/meta-data';
+import { LoadingSpinner } from '@/components/core/loader';
+import { selectAuthUser, setAuthUser } from '@/slices/authSlice';
+import { MainLayoutProps } from '@/model/layout';
 import Header from '../header';
 import { LeftSidebar } from '../sidebar';
-import { LoadingSpinner } from '@/components/core/loader';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectAuthUser, setAuthUser } from '@/slices/authSlice';
 
-interface MainLayoutProps {
-  children: JSX.Element | JSX.Element[] | string;
-  title?: string;
-  isLoading?: boolean;
-}
 
 // configure({
 //   spendingLimitOptions: {

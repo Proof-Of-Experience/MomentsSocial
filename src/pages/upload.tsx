@@ -1,10 +1,11 @@
+
+import { NextPage } from 'next';
+import { useSelector } from 'react-redux';
 import UploadCard from '@/features/upload/card';
 import LoginRequired from '@/features/upload/login-required';
 import MainLayout from '@/layouts/main-layout'
 import { selectAuthUser } from '@/slices/authSlice';
 import { ArrowUpTrayIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
-import { NextPage } from 'next';
-import { useSelector } from 'react-redux';
 
 const Upload: NextPage = () => {
   const authUser = useSelector(selectAuthUser);

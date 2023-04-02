@@ -1,9 +1,5 @@
 import React from 'react'
-
-interface UploadCardProps {
-    icon?: any,
-    [x: string]: any;
-}
+import { UploadCardProps } from '@/model/card'
 
 const UploadCard = ({ icon, ...rest }: UploadCardProps) => {
     return (
