@@ -1,4 +1,4 @@
-import { MetaData } from '@/components/snippets';
+import MetaData from '@/components/snippets/meta-data';
 import { useEffect, useState } from 'react';
 import Header from '../header';
 import { LeftSidebar } from '../sidebar';

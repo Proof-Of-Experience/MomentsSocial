@@ -1,10 +1,10 @@
 import React from 'react'
 
-interface RealProps {
+interface MomentProps {
   item: any,
 }
 
-const Real = ({ item }: RealProps) => {
+const Moment = ({ item }: MomentProps) => {
 
   return (
     <div className="block border rounded-xl px-2 pb-3">
@@ -22,4 +22,4 @@ const Real = ({ item }: RealProps) => {
   )
 }
 
-export default Real
+export default Moment

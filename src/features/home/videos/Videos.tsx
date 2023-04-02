@@ -1,4 +1,4 @@
-import VideoItem from '@/components/snippets/VideoItem';
+import VideoItem from '@/components/snippets/video';
 import VideoLayoutContext from '@/contexts/VideosContext';
 import { useContext } from 'react';
 
@@ -21,7 +21,7 @@ const Videos = ({ videoData }: any) => {
                 {
                     videoData.map((item: any, index: any) => {
                         return (
-                            <div key={`real-${index}`} className="overflow-hidden">
+                            <div key={`moment-${index}`} className="overflow-hidden">
                                 <VideoItem item={item} />
                             </div>
                         )

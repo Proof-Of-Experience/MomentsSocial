@@ -1,6 +1,6 @@
 import MainLayout from '@/layouts/main-layout'
 import { VideoLayoutProvider } from '@/contexts/VideosContext';
-import Reals from '@/features/home/reals';
+import Moments from '@/features/home/moments';
 import Videos from '@/features/home/videos';
 import Layout from '@/features/home/layout';
 import { getFeedData, getStatelessPostData } from '@/pages/api/feed';
@@ -82,7 +82,7 @@ const Home: NextPage = () => {
           <Layout />
         </div >
 
-        <Reals imageData={imageData} />
+        <Moments imageData={imageData} />
 
         <hr className="my-10" />
 
