@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import Header from '../header';
 import { LeftSidebar } from '../sidebar';
 import { LoadingSpinner } from '@/components/ui/loader';
-import { useDispatch } from 'react-redux';
-import { setAuthUser } from '@/slices/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectAuthUser, setAuthUser } from '@/slices/authSlice';
 
 interface MainLayoutProps {
   children: JSX.Element | JSX.Element[] | string;
@@ -23,6 +23,11 @@ interface MainLayoutProps {
 
 
 const MainLayout = ({ title, isLoading, children }: MainLayoutProps) => {
+  const authUser = useSelector(selectAuthUser);
+
+  console.log('authUser', authUser);
+  
+
   const dispatch = useDispatch();
   const [userState, setUserState] = useState({
     currentUser: null,
@@ -33,9 +38,6 @@ const MainLayout = ({ title, isLoading, children }: MainLayoutProps) => {
   useEffect(() => {
     dispatch(setAuthUser(userState));
   }, [userState])
-
-  console.log('userState', userState);
-
 
   const initDeso = async () => {
     // Typically, you will want access to the current user throughout your

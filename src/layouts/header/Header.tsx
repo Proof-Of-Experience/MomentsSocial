@@ -18,7 +18,11 @@ const Header = () => {
   const [query, setQuery] = useState("");
   const [loadedQuery, setLoadedQuery] = useState(false);
 
+  console.log('loadedQuery', loadedQuery);
+
+
   const onChangeSearch = async (e: ChangeEvent<HTMLInputElement>) => {
+    setLoadedQuery(true)
     setQuery(e.target.value)
     const data = {
       UsernamePrefix: e.target.value
@@ -35,7 +39,7 @@ const Header = () => {
             .replace(/\s+/g, "")
             .includes(query.toLowerCase().replace(/\s+/g, ""))
         );
-
+    setLoadedQuery(false)
     setSearchResult(filteredPeople)
 
   }
@@ -76,44 +80,37 @@ const Header = () => {
               afterLeave={() => setQuery("")}
             >
               <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                {searchResult.length === 0 && query !== "" ? (
-                  <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
-                    Nothing found.
-                  </div>
-                ) : (
-                  searchResult.map((person: any) => (
-                    <Combobox.Option
-                      key={person.Username}
-                      className={({ active }) =>
-                        `relative cursor-pointer select-none py-2 pl-10 pr-4 ${active ? "bg-gray-400 text-white" : "text-gray-900"
-                        }`
-                      }
-                      value={person}
-                    >
-                      {({ selected, active }) => (
-                        <>
-                          <span
-                            className={`block truncate ${selected ? "font-medium" : "font-normal"
-                              }`}
-                          >
-                            {person.Username}
+
+                {
+                  loadedQuery ? (
+                    <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
+                      Searching
+                    </div>
+                  ) : (
+                    searchResult.length > 0 ? searchResult.map((person: any) => (
+                      <Combobox.Option
+                        onClick={() => router.push(`/@${person.Username}`)}
+                        key={person.Username}
+                        className={({ active }) =>
+                          `relative cursor-pointer select-none py-2 pl-5 pr-4 ${active ? "bg-gray-400 text-white" : "text-gray-900"
+                          }`
+                        }
+                        value={person}
+                      >
+                        {({ selected, active }) => (
+                          <span className={`block truncate ${selected ? "font-medium" : "font-normal"}`} >
+                            @{person.Username}
                           </span>
-                          {selected ? (
-                            <span
-                              className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? "text-white" : "text-teal-600"
-                                }`}
-                            >
-                              <CheckIcon
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            </span>
-                          ) : null}
-                        </>
-                      )}
-                    </Combobox.Option>
-                  ))
-                )}
+                        )}
+                      </Combobox.Option>
+                    )) : (
+                      <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
+                        Not found
+                      </div>
+                    )
+                  )
+                }
+
               </Combobox.Options>
             </Transition>
           </div>
