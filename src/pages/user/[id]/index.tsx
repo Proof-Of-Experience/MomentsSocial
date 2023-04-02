@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import About from '@/features/public-profile/about'
 import Banner from '@/features/public-profile/banner'
 import Info from '@/features/public-profile/info'
-import Moments from '@/features/home/moments';
-import Videos from '@/features/home/videos';
+import Moments from '@/components/snippets/moments';
+import Videos from '@/components/snippets/videos';
 import MainLayout from '@/layouts/main-layout'
 import { Tab } from '@headlessui/react'
 import { useRouter } from 'next/router'

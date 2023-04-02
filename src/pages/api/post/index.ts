@@ -1,11 +1,11 @@
-import { PublicPostProps } from "@/model/post";
+import { PublicPostProps, StatelessPostProps } from "@/model/post";
 import { ApiDataType, apiService } from "@/utils/request";
 
-export const getStatelessPostData = async () => {
+export const getStatelessPostData = async (data: StatelessPostProps) => {
 	let result: any = [];
 	const body = {
-		NumToFetch: 100,
-		OrderBy: 'VideoURLs'
+		NumToFetch: data.NumToFetch,
+		OrderBy: data.OrderBy
 	}
 	const apiData: ApiDataType = {
 		method: 'post',

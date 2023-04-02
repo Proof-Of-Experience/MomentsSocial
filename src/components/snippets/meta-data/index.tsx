@@ -1,9 +1,6 @@
-import Head from 'next/head'
 import React from 'react'
-
-interface MetaDataProps {
-  title?: string
-}
+import Head from 'next/head'
+import { MetaDataProps } from '@/model/meta'
 
 const MetaData = ({
   title = "Moments"

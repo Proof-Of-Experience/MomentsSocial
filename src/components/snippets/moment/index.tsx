@@ -1,8 +1,6 @@
 import React from 'react'
+import { MomentProps } from '@/model/moment'
 
-interface MomentProps {
-  item: any,
-}
 
 const Moment = ({ item }: MomentProps) => {
 

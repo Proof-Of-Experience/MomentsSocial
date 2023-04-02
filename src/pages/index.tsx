@@ -1,7 +1,7 @@
 import MainLayout from '@/layouts/main-layout'
 import { VideoLayoutProvider } from '@/contexts/VideosContext';
-import Moments from '@/features/home/moments';
-import Videos from '@/features/home/videos';
+import Moments from '@/components/snippets/moments';
+import Videos from '@/components/snippets/videos';
 import Layout from '@/features/home/layout';
 import { getFeedData } from '@/pages/api/feed';
 import { getStatelessPostData } from '@/pages/api/post';
@@ -20,7 +20,11 @@ const Home: NextPage = () => {
 
   const fetchStatelessPostData = async () => {
     setVideoLoaded(true)
-    const postData = await getStatelessPostData()
+    const formData = {
+      NumToFetch: 50,
+      OrderBy: 'VideoURLs',
+    }
+    const postData = await getStatelessPostData(formData)
     setVideoLoaded(false)
 
     if (postData?.PostsFound) {
