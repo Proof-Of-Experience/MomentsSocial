@@ -1,6 +1,6 @@
 import UploadCard from '@/features/upload';
 import LoginRequired from '@/features/upload/login';
-import MainLayout from '@/layouts/MainLayout'
+import MainLayout from '@/layouts/main-layout'
 import { selectAuthUser } from '@/slices/authSlice';
 import { ArrowUpTrayIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
 import { NextPage } from 'next';

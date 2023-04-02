@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { CheckIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { useRouter } from 'next/router'
 import 'react-toastify/dist/ReactToastify.css'
-import { PrimaryButton } from '@/components/ui/Button';
+import { PrimaryButton } from '@/components/ui/button';
 import { getSearchProfileData } from '@/pages/api/profile';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAuthUser, setAuthUser } from '@/slices/authSlice';

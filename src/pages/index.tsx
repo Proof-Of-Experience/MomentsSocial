@@ -1,4 +1,4 @@
-import MainLayout from '@/layouts/MainLayout'
+import MainLayout from '@/layouts/main-layout'
 import { VideoLayoutProvider } from '@/contexts/VideosContext';
 import Reals from '@/features/home/reals';
 import Videos from '@/features/home/videos';
