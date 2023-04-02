@@ -1,6 +1,8 @@
-import React from 'react'
+import { getSingleProfile } from '@/pages/api/profile';
+import React, { useEffect } from 'react'
 
 const Info = () => {
+
   return (
     <>
       <div className="flex flex-wrap justify-center">
@@ -26,6 +28,10 @@ const Info = () => {
             <img alt="..."
               src="https://www.w3schools.com/howto/img_avatar.png"
               className=" shadow-xl rounded-full h-[160px] w-[160px] align-middle border-none" />
+
+              <h3 className="text-2xl font-semibold text-center mt-3">
+                @jenna
+              </h3>
           </div>
         </div>
 
@@ -33,17 +39,6 @@ const Info = () => {
           <button className="bg-pink-500 active:bg-pink-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150" type="button">
             Subscribe
           </button>
-        </div>
-      </div>
-
-
-      <div className="text-center">
-        <h3 className="text-2xl font-semibold text-blueGray-700">
-          Jenna Stones
-        </h3>
-        <div className="text-sm text-blueGray-400 font-bold uppercase">
-          <i className="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400"></i>
-          @jeena
         </div>
       </div>
     </>

@@ -18,9 +18,6 @@ const Header = () => {
   const [query, setQuery] = useState("");
   const [loadedQuery, setLoadedQuery] = useState(false);
 
-  console.log('loadedQuery', loadedQuery);
-
-
   const onChangeSearch = async (e: ChangeEvent<HTMLInputElement>) => {
     setLoadedQuery(true)
     setQuery(e.target.value)
@@ -89,7 +86,7 @@ const Header = () => {
                   ) : (
                     searchResult.length > 0 ? searchResult.map((person: any) => (
                       <Combobox.Option
-                        onClick={() => router.push(`/@${person.Username}`)}
+                        onClick={() => router.push(`/user/${person.Username}`)}
                         key={person.Username}
                         className={({ active }) =>
                           `relative cursor-pointer select-none py-2 pl-5 pr-4 ${active ? "bg-gray-400 text-white" : "text-gray-900"

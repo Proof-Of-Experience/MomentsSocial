@@ -1,28 +1,5 @@
+import { FeedParamProps } from "@/model/feed";
 import { ApiDataType, apiService } from "@/utils/request";
-
-interface FeedParamProps {
-	Tag?: string
-}
-
-export const getStatelessPostData = async () => {
-	let result: any = [];
-	const body = {
-		NumToFetch: 100,
-		OrderBy: 'VideoURLs'
-	}
-	const apiData: ApiDataType = {
-		method: 'post',
-		url: '/api/v0/get-posts-stateless',
-		data: body,
-	};
-
-	await apiService(apiData, (res: any, err: any) => {
-		if (err) return err.response
-		if (res) result = res
-	});
-
-	return result;
-};
 
 
 export const getFeedData = async (data: FeedParamProps) => {
