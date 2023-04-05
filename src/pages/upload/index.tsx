@@ -6,8 +6,10 @@ import LoginRequired from '@/features/upload/login-required';
 import MainLayout from '@/layouts/main-layout'
 import { selectAuthUser } from '@/slices/authSlice';
 import { ArrowUpTrayIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
+import { useRouter } from 'next/router';
 
 const Upload: NextPage = () => {
+  const router = useRouter();
   const authUser = useSelector(selectAuthUser);
 
   return (
@@ -32,6 +34,7 @@ const Upload: NextPage = () => {
                 <UploadCard
                   icon={<ArrowUpTrayIcon className="h-[100px] text-gray-600" />}
                   title="File Upload"
+                  onClick={() => router.push('/upload/file')}
                 />
               </div>
             </div>
