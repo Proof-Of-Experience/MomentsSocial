@@ -23,12 +23,15 @@ const Upload: NextPage = () => {
               <div className="mt-5 grid grid-cols-3 gap-8">
                 <UploadCard
                   icon={<GlobeAltIcon className="h-[100px] text-gray-600" />}
+                  title="Peer to Peer"
                 />
                 <UploadCard
                   icon={<GlobeAltIcon className="h-[100px] text-gray-600" />}
+                  title="Third Party"
                 />
                 <UploadCard
                   icon={<ArrowUpTrayIcon className="h-[100px] text-gray-600" />}
+                  title="File Upload"
                 />
               </div>
             </div>
