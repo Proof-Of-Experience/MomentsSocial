@@ -107,7 +107,7 @@ const UploadFile = () => {
                         </div>
                         <div>
                             <h5 className="mb-1 font-semibold text-lg">Community</h5>
-                            <p>Join the world’s best community of talented, supportive creators.</p>
+                            <p>Join one of the world’s best community of talented, supportive creators.</p>
                         </div>
                     </div>
 
