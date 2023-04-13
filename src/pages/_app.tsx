@@ -1,6 +1,5 @@
 import { wrapper } from '@/store'
 import '@/styles/globals.css'
-import { SessionProvider } from 'next-auth/react'
 import type { AppProps } from 'next/app'
 import { Provider } from 'react-redux'
 import {
@@ -22,9 +21,7 @@ export default function App({ Component, ...rest }: AppProps) {
   return (
     <Provider store={store}>
       <LivepeerConfig client={livepeerClient}>
-        <SessionProvider refetchInterval={60}>
-          <Component {...pageProps} />
-        </SessionProvider>
+        <Component {...pageProps} />
       </LivepeerConfig>
     </Provider>
   )
