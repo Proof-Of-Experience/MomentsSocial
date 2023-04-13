@@ -3,3 +3,8 @@ export interface PrimaryButtonProps {
 	className?: string,
 	[rest: string]: any;
 }
+
+export interface PrimaryInputProps {
+	className?: string,
+	[rest: string]: any;
+}

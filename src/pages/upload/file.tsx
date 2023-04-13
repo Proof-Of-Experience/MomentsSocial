@@ -1,6 +1,8 @@
 
 
 import { PrimaryButton } from '@/components/core/button';
+import { PrimaryInput } from '@/components/core/input/Input';
+import { PrimaryTextArea } from '@/components/core/textarea/textarea';
 import LeftContent from '@/features/upload/left-content';
 import MainLayout from '@/layouts/main-layout';
 import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/20/solid';
@@ -25,6 +27,9 @@ const UploadFile = () => {
             }
             : null,
     );
+
+    const livepeerSuccess = status === 'success'
+    // const livepeerSuccess = true
 
 
     console.log('asset', asset);
@@ -77,7 +82,7 @@ const UploadFile = () => {
         }
         createAsset?.();
 
-        if (status === 'success') {
+        if (livepeerSuccess) {
             asset?.[0].downloadUrl
         }
 
@@ -123,6 +128,18 @@ const UploadFile = () => {
     const renderPreviewVideo = () => {
         return (
             <>
+                {
+                    videoFile &&
+                    <XMarkIcon
+                        role="button"
+                        color="#ff0000"
+                        className="h-8 w-8 absolute -right-3 -top-3 border rounded-full bg-white cursor-pointer z-10"
+                        onClick={() => {
+                            setVideoFile(null)
+                            setPreviewUrl('')
+                        }}
+                    />
+                }
                 <div className="flex justify-between mb-4">
                     <video
                         className="h-[330px] w-full"
@@ -151,44 +168,40 @@ const UploadFile = () => {
 
                 <div className="col-span-2">
 
-                    <form onSubmit={status === 'success' ? submitPost : handleSubmit}>
+                    <form onSubmit={livepeerSuccess ? submitPost : handleSubmit}>
                         <div className="text-center mx-auto border border-dashed border-[#5798fb] py-8 px-7 relative rounded-2xl mb-5">
                             {
-                                videoFile &&
-                                <XMarkIcon
-                                    role="button"
-                                    color="#ff0000"
-                                    className="h-8 w-8 absolute -right-3 -top-3 border rounded-full bg-white cursor-pointer z-10"
-                                    onClick={() => {
-                                        setVideoFile(null)
-                                        setPreviewUrl('')
-                                    }}
-                                />
-                            }
+                                !livepeerSuccess ?
+                                    previewUrl ? (renderPreviewVideo()) :
 
-                            {
-                                previewUrl ? (renderPreviewVideo()) :
+                                        <div className="flex flex-col items-center justify-center text-center relative mb-10 h-[330px]">
+                                            <input
+                                                type="file"
+                                                id="fileInput"
+                                                accept="video/*"
+                                                required
+                                                className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+                                                onChange={handleFileSelect}
+                                            />
+                                            <label htmlFor="fileInput" className="cursor-pointer">
+                                                <div className="flex flex-col justify-center items-center">
+                                                    <ArrowUpTrayIcon
+                                                        className="h-20 w-20 z-10 text-black"
+                                                    />
+                                                    <h4 className="my-5 text-3xl">Drag & drop a file to upload</h4>
+                                                    <h5 className="mb-5">Or <span className="text-blue-500">browse file </span>from device</h5>
+                                                </div>
 
-                                    <div className="flex flex-col items-center justify-center text-center relative mb-10 h-[330px]">
-                                        <input
-                                            type="file"
-                                            id="fileInput"
-                                            accept="video/*"
-                                            required
-                                            className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-                                            onChange={handleFileSelect}
+                                            </label>
+                                        </div> :
+
+                                    <div className="">
+                                        <h4 className="text-left font-semibold mb-2">Other information</h4>
+                                        <PrimaryTextArea
+                                            placeholder="Please write something"
+                                            className="w-full min-h-[120px]"
+                                            required={livepeerSuccess}
                                         />
-                                        <label htmlFor="fileInput" className="cursor-pointer">
-                                            <div className="flex flex-col justify-center items-center">
-                                                <ArrowUpTrayIcon
-                                                    className="h-20 w-20 z-10 text-black"
-                                                />
-                                                <h4 className="my-5 text-3xl">Drag & drop a file to upload</h4>
-                                                <h5 className="mb-5">Or <span className="text-blue-500">browse file </span>from device</h5>
-                                            </div>
-
-                                            {/* <p className="bg-blue-400 text-white py-2 px-4 rounded cursor-pointer block">Select a file</p> */}
-                                        </label>
                                     </div>
                             }
 
@@ -207,9 +220,9 @@ const UploadFile = () => {
                         <PrimaryButton
                             className="w-full mt-1 py-3 text-lg"
                             type="submit"
-                            text={status === 'success' ? 'Next' : 'Submit Post'}
-                            loader={status === 'success' ? isLoading || !createAsset : processing}
-                            disabled={status === 'success' ? isLoading || !createAsset : processing}
+                            text={!livepeerSuccess ? 'Next' : 'Submit Post'}
+                            loader={livepeerSuccess ? isLoading || !createAsset : processing}
+                            disabled={!livepeerSuccess ? isLoading || !createAsset : processing}
                         />
                     </form >
                 </div>
