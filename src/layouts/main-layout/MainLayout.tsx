@@ -22,7 +22,7 @@ const MainLayout = ({ title, isLoading, children }: MainLayoutProps) => {
   const authUser = useSelector(selectAuthUser);
 
   console.log('authUser', authUser);
-  
+
 
   const dispatch = useDispatch();
   const [userState, setUserState] = useState({
@@ -50,7 +50,8 @@ const MainLayout = ({ title, isLoading, children }: MainLayoutProps) => {
     // NOTE: This function could be chatty. You might want to implement some
     // caching or memoization to reduce unnecessary network calls. We have not
     // done so here for simplicity and to reduce noise from the example.
-    const { identity } = await import('deso-protocol')
+    const { identity, api } = await import('deso-protocol')
+    api.configure({ nodeURI: process.env.NEXT_PUBLIC_BASE_URL })
     identity.subscribe(async ({ event, currentUser, alternateUsers }) => {
       // The event property tells us what triggered the subscription callback.
       // The authorize derived key flow is a multi-step asynchronous process. We can use the start

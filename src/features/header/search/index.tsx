@@ -43,7 +43,7 @@ const Search = ({ searchResult, loadedQuery, selected, onChangeSelect, onChangeS
                                     Searching
                                 </div>
                             ) : (
-                                searchResult.length > 0 ? searchResult.map((person: any) => (
+                                searchResult?.length > 0 ? searchResult.map((person: any) => (
                                     <Combobox.Option
                                         onClick={() => router.push(`/user/${person.Username}`)}
                                         key={person.Username}
