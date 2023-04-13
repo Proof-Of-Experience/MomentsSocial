@@ -1,4 +1,4 @@
-import { PublicPostProps, StatelessPostProps } from "@/model/post";
+import { PostTransactionProps, PublicPostProps, StatelessPostProps, SubmitPostProps } from "@/model/post";
 import { ApiDataType, apiService } from "@/utils/request";
 
 export const getStatelessPostData = async (data: StatelessPostProps) => {
@@ -43,3 +43,50 @@ export const getPublicPostData = async (data: PublicPostProps) => {
 
 	return result;
 };
+
+
+export const fetchtSubmitPost = async (data: SubmitPostProps) => {
+	let result: any = [];
+	const body = {
+		BodyObj: data.BodyObj,
+		IsHidden: data.IsHidden,
+		MinFeeRateNanosPerKB: data.MinFeeRateNanosPerKB,
+		ParentStakeID: data.ParentStakeID,
+		PostExtraData: data.PostExtraData,
+		RepostedPostHashHex: data.RepostedPostHashHex,
+		UpdaterPublicKeyBase58Check: data.UpdaterPublicKeyBase58Check,
+	}
+	const apiData: ApiDataType = {
+		method: 'post',
+		url: '/api/v0/submit-post',
+		data: body,
+	};
+
+	await apiService(apiData, (res: any, err: any) => {
+		if (err) return err.response
+		if (res) result = res
+	});
+
+	return result;
+};
+
+
+export const fetchPostTransaction = async (data: PostTransactionProps) => {
+	let result: any = [];
+	const body = {
+		TransactionHex: data.TransactionHex,
+	}
+	const apiData: ApiDataType = {
+		method: 'post',
+		url: '/api/v0/submit-transaction',
+		data: body,
+	};
+
+	await apiService(apiData, (res: any, err: any) => {
+		if (err) return err.response
+		if (res) result = res
+	});
+
+	return result;
+};
+

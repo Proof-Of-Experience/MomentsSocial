@@ -2,7 +2,6 @@ import React, { ChangeEvent, useState } from 'react'
 import Link from 'next/link'
 import { getSearchProfileData } from '@/pages/api/profile';
 import AuthButtons from '@/features/header/auth-buttons';
-import 'react-toastify/dist/ReactToastify.css'
 import Search from '@/features/header/search';
 
 const Header = () => {

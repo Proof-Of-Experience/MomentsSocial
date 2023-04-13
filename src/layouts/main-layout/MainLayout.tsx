@@ -6,6 +6,8 @@ import { selectAuthUser, setAuthUser } from '@/slices/authSlice';
 import { MainLayoutProps } from '@/model/layout';
 import Header from '../header';
 import { LeftSidebar } from '../sidebar';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 // configure({
@@ -148,6 +150,7 @@ const MainLayout = ({ title, isLoading, children }: MainLayoutProps) => {
       <MetaData title={title} />
       <>
         <Header />
+        <ToastContainer />
 
         <div className='flex font-poppins'>
           <div className='w-[80px] bg-gray-50 h-screen shadow-md'>

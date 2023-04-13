@@ -1,18 +1,22 @@
 
 
 import { PrimaryButton } from '@/components/core/button';
-import { PrimaryInput } from '@/components/core/input/Input';
 import { PrimaryTextArea } from '@/components/core/textarea/textarea';
 import LeftContent from '@/features/upload/left-content';
 import MainLayout from '@/layouts/main-layout';
+import { selectAuthUser } from '@/slices/authSlice';
 import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import { useCreateAsset } from '@livepeer/react';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { fetchPostTransaction, fetchtSubmitPost } from '../api/post';
+import { toast } from 'react-toastify';
 
 const UploadFile = () => {
     const [videoFile, setVideoFile] = useState<File | undefined | null>();
     const [previewUrl, setPreviewUrl] = useState<string>('');
-    const [processing, setProcessing] = useState<boolean>(false);
+    const [videoProcessing, setVideoPostProcessing] = useState<boolean>(false);
+    const [postProcessing, setPostProcessing] = useState<boolean>(false);
 
     const {
         mutate: createAsset,
@@ -27,9 +31,18 @@ const UploadFile = () => {
             }
             : null,
     );
+    const [description, setDescription] = useState<string>('');
+    const [livepeerSuccess, setLivepeerSuccess] = useState<boolean>(status === 'success');
+    // const [livepeerSuccess, setLivepeerSuccess] = useState<boolean>(false);
+    const authUser = useSelector(selectAuthUser);
 
-    const livepeerSuccess = status === 'success'
-    // const livepeerSuccess = true
+    console.log('postProcessing', postProcessing);
+    console.log('livepeerSuccess', livepeerSuccess);
+
+    useEffect(() => {
+        setLivepeerSuccess(status === 'success')
+    }, [status])
+
 
 
     console.log('asset', asset);
@@ -73,31 +86,33 @@ const UploadFile = () => {
 
     };
 
-
-    const handleSubmit = async (e: any) => {
+    const handleVideoToLivepeer = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+
+        // const data = {
+        //     TransactionHex: "000005680000577b22426f6479223a227465737420706f7374222c22566964656f55524c73223a5b2268747470733a2f2f6c702d706c61796261636b2e636f6d2f686c732f373164306f666b32667a796a35716d682f766964656f225d7de807d461a9b1a8ae89bde6aa170021021a750e3941487413ac7d8e15452d1cb57c6a80a04ae7b77972012ea9dc4ba53003084c616e677561676502656e0f4c697665706565724173736574496400044e6f6465013300019502fde529b6f8e9cf949291b95f"
+        // }
+
+        // const result = await fetchPostTransaction(data);
+        // console.log('result', result);
+
+        // return
+
 
         if (!videoFile) {
             return;
         }
-        createAsset?.();
 
-        if (livepeerSuccess) {
-            asset?.[0].downloadUrl
-        }
+        createAsset?.()
 
     }
+    const submitPost = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        setPostProcessing(true)
 
-
-    const submitPost = async (e: any) => {
-        setProcessing(true)
-
-        // Submit Post
-        // /api/v0/submit-post
-
-        const body = {
+        const data = {
             BodyObj: {
-                Body: 'Test',
+                Body: description,
                 ImageURLs: [],
                 VideoURLs: [asset?.[0].downloadUrl]
             },
@@ -109,20 +124,26 @@ const UploadFile = () => {
                 LivepeerAssetId: '',
                 Node: '3',
             },
-            // LoggedIn User Key
-            PostHashHexToModify: 'ed66b7ff6a8af9efcd0bd35cea0cb229bf4c9f463df7b8ee1bffdcea1a9e7779',
             RepostedPostHashHex: '',
-            UpdaterPublicKeyBase58Check: 'BC1YLfsXHb15rC9FCtmy4QbjZ5YSibqQnqjAJALkbVeWu221wGUgnP9'
+            UpdaterPublicKeyBase58Check: authUser.currentUser.PublicKeyBase58Check || ''
         }
 
+        const response = await fetchtSubmitPost(data);
+        console.log('response', response);
 
-        // Submit Transaction
-        // /api/v0/submit-transaction
-        const transactionBody = {
-            // Get TransactionHex from submit post response
-            TransactionHex: ''
-        }
+        const result = await fetchPostTransaction(response?.TransactionHex);
+        console.log('result', result);
+
+        setPostProcessing(false)
+        setLivepeerSuccess(false)
+
+        toast.success('Post created successfully');
+
     }
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        setDescription(e.target.value);
+    };
 
 
     const renderPreviewVideo = () => {
@@ -140,7 +161,7 @@ const UploadFile = () => {
                         }}
                     />
                 }
-                <div className="flex justify-between mb-4">
+                <div className="mb-4">
                     <video
                         className="h-[330px] w-full"
                         src={previewUrl}
@@ -159,6 +180,42 @@ const UploadFile = () => {
     }
 
 
+    const renderFileUpload = () => {
+        return (
+            <div className="flex flex-col items-center justify-center text-center relative mb-10 h-[330px]">
+                <input
+                    type="file"
+                    id="fileInput"
+                    accept="video/*"
+                    required
+                    className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+                    onChange={handleFileSelect}
+                />
+                <label htmlFor="fileInput" className="cursor-pointer">
+                    <div className="flex flex-col justify-center items-center">
+                        <ArrowUpTrayIcon
+                            className="h-20 w-20 z-10 text-black"
+                        />
+                        <h4 className="my-5 text-3xl">Drag & drop a file to upload</h4>
+                        <h5 className="mb-5">Or <span className="text-blue-500">browse file </span>from device</h5>
+                    </div>
+                </label>
+            </div>
+        )
+    }
+
+    const renderProgressAndError = () => {
+        return (
+            <>
+                {error?.message && <div className="my-2 text-center text-red-700"><p>{error.message}</p></div>}
+
+                {progressFormatted &&
+                    <p className="text-center">{progressFormatted}</p>}
+            </>
+        )
+    }
+
+
     return (
         <MainLayout title='Upload'>
 
@@ -168,61 +225,34 @@ const UploadFile = () => {
 
                 <div className="col-span-2">
 
-                    <form onSubmit={livepeerSuccess ? submitPost : handleSubmit}>
+                    <form onSubmit={livepeerSuccess ? submitPost : handleVideoToLivepeer}>
                         <div className="text-center mx-auto border border-dashed border-[#5798fb] py-8 px-7 relative rounded-2xl mb-5">
                             {
                                 !livepeerSuccess ?
                                     previewUrl ? (renderPreviewVideo()) :
-
-                                        <div className="flex flex-col items-center justify-center text-center relative mb-10 h-[330px]">
-                                            <input
-                                                type="file"
-                                                id="fileInput"
-                                                accept="video/*"
-                                                required
-                                                className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-                                                onChange={handleFileSelect}
-                                            />
-                                            <label htmlFor="fileInput" className="cursor-pointer">
-                                                <div className="flex flex-col justify-center items-center">
-                                                    <ArrowUpTrayIcon
-                                                        className="h-20 w-20 z-10 text-black"
-                                                    />
-                                                    <h4 className="my-5 text-3xl">Drag & drop a file to upload</h4>
-                                                    <h5 className="mb-5">Or <span className="text-blue-500">browse file </span>from device</h5>
-                                                </div>
-
-                                            </label>
-                                        </div> :
-
+                                        renderFileUpload() :
                                     <div className="">
                                         <h4 className="text-left font-semibold mb-2">Other information</h4>
                                         <PrimaryTextArea
                                             placeholder="Please write something"
                                             className="w-full min-h-[120px]"
                                             required={livepeerSuccess}
+                                            value={description}
+                                            onChange={handleChange}
                                         />
                                     </div>
                             }
 
                         </div>
 
-
-
-                        {error?.message && <div className="my-2 text-center text-red-700"><p>{error.message}</p></div>}
-
-
-                        {
-                            progressFormatted &&
-                            <p className="text-center">{progressFormatted}</p>
-                        }
+                        {renderProgressAndError()}
 
                         <PrimaryButton
                             className="w-full mt-1 py-3 text-lg"
                             type="submit"
                             text={!livepeerSuccess ? 'Next' : 'Submit Post'}
-                            loader={livepeerSuccess ? isLoading || !createAsset : processing}
-                            disabled={!livepeerSuccess ? isLoading || !createAsset : processing}
+                            loader={postProcessing ? postProcessing : isLoading || !createAsset}
+                            disabled={postProcessing ? postProcessing : isLoading || !createAsset}
                         />
                     </form >
                 </div>
