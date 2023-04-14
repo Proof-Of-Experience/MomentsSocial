@@ -15,7 +15,6 @@ import { toast } from 'react-toastify';
 const UploadFile = () => {
     const [videoFile, setVideoFile] = useState<File | undefined | null>();
     const [previewUrl, setPreviewUrl] = useState<string>('');
-    const [videoProcessing, setVideoPostProcessing] = useState<boolean>(false);
     const [postProcessing, setPostProcessing] = useState<boolean>(false);
 
     const {
@@ -33,21 +32,11 @@ const UploadFile = () => {
     );
     const [description, setDescription] = useState<string>('');
     const [livepeerSuccess, setLivepeerSuccess] = useState<boolean>(status === 'success');
-    // const [livepeerSuccess, setLivepeerSuccess] = useState<boolean>(false);
     const authUser = useSelector(selectAuthUser);
-
-    console.log('postProcessing', postProcessing);
-    console.log('livepeerSuccess', livepeerSuccess);
 
     useEffect(() => {
         setLivepeerSuccess(status === 'success')
     }, [status])
-
-
-
-    console.log('asset', asset);
-    console.log('status', status);
-    console.log('videoFile', videoFile);
 
 
     const isLoading = useMemo(

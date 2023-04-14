@@ -34,8 +34,8 @@ const Header = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 p-2 lg:px-5 shadow max-h-20">
-      <div className="flex flex-wrap m-1 justify-left md:justify-between">
+    <header className="sticky top-0 z-50 p-2 lg:px-5 shadow h-[72px] leading-[30px]">
+      <div className="flex items-center flex-wrap m-1 justify-left md:justify-between">
 
         <div className="flex flex-wrap">
           <Link href="/" className="flex rounded-md">

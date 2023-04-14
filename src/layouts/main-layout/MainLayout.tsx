@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import MetaData from '@/components/snippets/meta-data';
 import { LoadingSpinner } from '@/components/core/loader';
-import { selectAuthUser, setAuthUser } from '@/slices/authSlice';
+import { setAuthUser } from '@/slices/authSlice';
 import { MainLayoutProps } from '@/model/layout';
 import Header from '../header';
 import { LeftSidebar } from '../sidebar';
@@ -21,11 +21,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 const MainLayout = ({ title, isLoading, children }: MainLayoutProps) => {
-  const authUser = useSelector(selectAuthUser);
-
-  console.log('authUser', authUser);
-
-
   const dispatch = useDispatch();
   const [userState, setUserState] = useState({
     currentUser: null,
