@@ -1,3 +1,4 @@
 export interface MomentProps {
-    item: any,
-  }
+  onClick?: (item: any) => void,
+  item: any,
+}

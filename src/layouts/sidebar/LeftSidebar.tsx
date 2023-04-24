@@ -21,7 +21,7 @@ const LeftSidebar = () => {
       <button
         className="mb-3 hover:bg-gray-300 transition-all rounded-md px-2 py-1 text-gray-600 focus:bg-gray-300"
         title="Moments"
-        onClick={() => onClickItem('/')}>
+        onClick={() => onClickItem('/moments')}>
         <BoltIcon className="mx-auto h-7 w-7" />
       </button>
 

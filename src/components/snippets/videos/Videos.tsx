@@ -4,7 +4,7 @@ import { useContext } from 'react';
 
 const Videos = ({ videoData }: any) => {
     const { gridView }: any = useContext(VideoLayoutContext)
-    
+
     const showGridCol = () => {
         if (gridView === 'grid') {
             return 'grid-cols-5'
@@ -16,18 +16,16 @@ const Videos = ({ videoData }: any) => {
     }
 
     return (
-        <div className="mt-8">
-            <div className={`grid ${showGridCol()} gap-x-5 gap-y-10`}>
-                {
-                    videoData.map((item: any, index: any) => {
-                        return (
-                            <div key={`moment-${index}`} className="overflow-hidden">
-                                <VideoItem item={item} />
-                            </div>
-                        )
-                    })
-                }
-            </div>
+        <div className={`grid ${showGridCol()} gap-x-5 gap-y-10`}>
+            {
+                videoData.map((item: any, index: any) => {
+                    return (
+                        <div key={`moment-${index}`} className="overflow-hidden">
+                            <VideoItem item={item} />
+                        </div>
+                    )
+                })
+            }
         </div>
     )
 }

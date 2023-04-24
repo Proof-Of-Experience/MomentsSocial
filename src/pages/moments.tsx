@@ -100,62 +100,7 @@ const Home: NextPage = () => {
 
   return (
     <MainLayout title='Moments' isLoading={videoLoaded}>
-
-      <VideoLayoutProvider>
-
-        <div className={`flex justify-between items-center ${videoData.length > 0 ? 'mb-4' : 'mb-4'}`}>
-          <Tags tagParam={tagParam} onClick={onClickTag} />
-          <Layout />
-        </div >
-
-        {
-          videoData.length > 0 &&
-          <>
-            <Videos videoData={videoData} />
-            <hr className="border-t-2 my-10" />
-          </>
-        }
-
-        {
-          imageData.length > 0 &&
-          <>
-            <div className="flex justify-between items-center mr-10 mb-3">
-              <h3 className="font-semibold text-3xl">Moments</h3>
-              <div>
-                <button
-                  className="mr-4"
-                  onClick={() => slider?.current?.slickPrev()}>
-                  <ChevronLeftIcon className="h-5 w-5" />
-                </button>
-                <button
-                  onClick={() => slider?.current?.slickNext()}>
-                  <ChevronRightIcon className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
-
-            <Slider ref={slider}  {...momentSliderSettings}>
-              {
-                imageData.map((item: any, index: any) => {
-                  return (
-                    <Moment key={`moment-${index}`} item={item} onClick={() => onClickMoment(item)} />
-                  )
-                })
-              }
-            </Slider>
-            {
-              videoData.length > 0 &&
-              <hr className="border-t-2 my-10" />
-            }
-          </>
-        }
-
-        {
-          videoData.length > 0 &&
-          <Videos videoData={videoData} />
-        }
-
-      </VideoLayoutProvider >
+      Moment
     </MainLayout >
   )
 }
