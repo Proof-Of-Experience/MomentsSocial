@@ -10,7 +10,7 @@ const LeftSidebar = () => {
   }
 
   return (
-    <div className="flex flex-col items-center pt-5 bg-gray-200 h-full">
+    <div className="w-[80px] flex flex-col items-center pt-5 bg-gray-200 h-full">
       <button
         className="mb-3 hover:bg-gray-300 transition-all rounded-md px-2 py-1 text-gray-600 focus:bg-gray-300"
         title="Home"

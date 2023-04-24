@@ -28,10 +28,10 @@ const Home: NextPage = () => {
   const momentSliderSettings = {
     dots: false,
     infinite: true,
-    arrows: true,
+    arrows: false,
     // centerPadding: true,
     speed: 500,
-    slidesToShow: imageData.length > 7 ? 8 : imageData.length,
+    slidesToShow: imageData.length > 6 ? 7 : imageData.length,
     slidesToScroll: 3
   };
 

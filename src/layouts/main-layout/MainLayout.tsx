@@ -151,7 +151,7 @@ const MainLayout = ({ title, isLoading, children }: MainLayoutProps) => {
           <div className='w-[80px] bg-gray-50 h-screen shadow-md'>
             <LeftSidebar />
           </div>
-          <div className='w-full'>
+          <div className='w-[calc(100%_-_80px)]'>
             <LoadingSpinner isLoading={isLoading} />
             <div className="p-5">
               {children}
