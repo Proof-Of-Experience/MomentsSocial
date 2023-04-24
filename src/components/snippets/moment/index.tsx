@@ -2,12 +2,12 @@ import React from 'react'
 import { MomentProps } from '@/model/moment'
 
 
-const Moment = ({ onClick, item }: MomentProps) => {
+const Moment = ({className, onClick, item }: MomentProps) => {
 
   return (
-    <div className="block border rounded-xl cursor-pointer h-[300px] mr-6" onClick={onClick}>
+    <div className={`block border rounded-xl cursor-pointer h-[368px] ${className ? className : ''}`} onClick={onClick}>
       <div className="flex flex-wrap">
-        <img src={item?.ImageURLs[0]} className="rounded-xl w-full h-[300px] object-cover" />
+        <img src={item?.ImageURLs[0]} className="border rounded-xl w-full h-[280px] object-cover" />
       </div>
 
       <div className="px-2 pb-3 mt-2">

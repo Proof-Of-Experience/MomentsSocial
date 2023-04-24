@@ -1,18 +1,14 @@
 import MainLayout from '@/layouts/main-layout'
-import { VideoLayoutProvider } from '@/contexts/VideosContext';
-import Videos from '@/components/snippets/videos';
 import Layout from '@/features/home/layout';
 import { getFeedData } from '@/pages/api/feed';
 import { getStatelessPostData } from '@/pages/api/post';
 import Tags from '@/features/home/tags';
 import { NextPage } from 'next';
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
 import Moment from '@/components/snippets/moment';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 
 
@@ -20,51 +16,35 @@ const Home: NextPage = () => {
   const router = useRouter();
   const tagParam: any = router.query.tag
 
-  const [videoLoaded, setVideoLoaded] = useState<boolean>(true);
-  const [videoData, setVideoData] = useState<string[]>([]);
+  const [dataLoaded, setDataLoaded] = useState<boolean>(true);
   const [imageData, setImageData] = useState<string[]>([]);
-  const slider: any = useRef(null);
-
-  const momentSliderSettings = {
-    dots: false,
-    infinite: true,
-    arrows: true,
-    // centerPadding: true,
-    speed: 500,
-    slidesToShow: imageData.length > 7 ? 8 : imageData.length,
-    slidesToScroll: 3
-  };
 
   const fetchStatelessPostData = async () => {
-    setVideoLoaded(true)
+    setDataLoaded(true)
     const formData = {
       NumToFetch: 50,
       OrderBy: 'VideoURLs',
     }
     const postData = await getStatelessPostData(formData)
-    setVideoLoaded(false)
+    setDataLoaded(false)
 
     if (postData?.PostsFound) {
-      const newVideoData: any = postData?.PostsFound.filter((item: any) => item.VideoURLs)
       const newImageData: any = postData?.PostsFound.filter((item: any) => item.ImageURLs)
-      setVideoData(newVideoData)
       setImageData(newImageData)
     }
   }
 
   const fetchFeedData = async (tag: string) => {
-    setVideoLoaded(true)
+    setDataLoaded(true)
 
     const data = {
       Tag: `#${tag}`,
     }
     const feedData = await getFeedData(data);
-    setVideoLoaded(false)
+    setDataLoaded(false)
 
     if (feedData?.HotFeedPage) {
-      const newVideoData: any = feedData?.HotFeedPage.filter((item: any) => item.VideoURLs)
       const newImageData: any = feedData?.HotFeedPage.filter((item: any) => item.ImageURLs)
-      setVideoData(newVideoData)
       setImageData(newImageData)
     }
   }
@@ -95,12 +75,31 @@ const Home: NextPage = () => {
 
   const onClickMoment = (item: any) => {
     console.log('item', item);
-    
+
   }
 
   return (
-    <MainLayout title='Moments' isLoading={videoLoaded}>
-      Moment
+    <MainLayout title='Moments' isLoading={dataLoaded}>
+      <Fragment>
+        <div className={`flex justify-between items-center mb-4`}>
+          <Tags tagParam={tagParam} onClick={onClickTag} />
+        </div>
+
+        <div className="grid grid-flow-row lg:grid-cols-6 md:grid-cols-6 gap-4">
+          {
+            imageData.map((item: any, index: any) => {
+              return (
+                <Moment
+                  key={`moment-${index}`}
+                  item={item}
+                  onClick={() => onClickMoment(item)}
+                />
+              )
+            })
+          }
+        </div>
+      </Fragment>
+
     </MainLayout >
   )
 }

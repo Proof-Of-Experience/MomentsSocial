@@ -95,7 +95,7 @@ const Home: NextPage = () => {
 
   const onClickMoment = (item: any) => {
     console.log('item', item);
-    
+
   }
 
   return (
@@ -138,11 +138,17 @@ const Home: NextPage = () => {
               {
                 imageData.map((item: any, index: any) => {
                   return (
-                    <Moment key={`moment-${index}`} item={item} onClick={() => onClickMoment(item)} />
+                    <Moment
+                      key={`moment-${index} overflow-hidden`}
+                      className="mr-6"
+                      item={item}
+                      onClick={() => onClickMoment(item)}
+                    />
                   )
                 })
               }
             </Slider>
+
             {
               videoData.length > 0 &&
               <hr className="border-t-2 my-10" />
