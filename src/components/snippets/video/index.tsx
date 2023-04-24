@@ -16,7 +16,7 @@ const VideoItem = ({ item }: VideoItemProps) => {
       </div>
 
       <h4 className="mt-2 text-md font-bold capitalize">{item?.ProfileEntryResponse?.Username}</h4>
-      <p className="text-sm line-clamp-2 text-left">{item?.Body}</p>
+      <p className="text-sm line-clamp-2 text-left min-h-[40px]">{item?.Body}</p>
 
       <div className="flex justify-between mt-2">
         <button className="flex items-center text-lg font-bold text-gray-700">
