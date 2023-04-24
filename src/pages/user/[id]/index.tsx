@@ -8,24 +8,32 @@ import MainLayout from '@/layouts/main-layout'
 import { Tab } from '@headlessui/react'
 import { useRouter } from 'next/router'
 import { getPublicPostData } from '../../api/post'
-import { getSingleProfile } from '@/pages/api/profile'
 
 const PublicProfile = () => {
     const router = useRouter()
     const { id }: any = router.query
-    const [publiKey, setPubliKey] = useState("");
+    const [publiKey, setPubliKey] = useState<string>("");
+    const [userDetails, setUserDetails] = useState<any>({});
     const [videoData, setVideoData] = useState<string[]>([]);
     const [imageData, setImageData] = useState<string[]>([]);
 
     console.log('id', id);
     console.log('publiKey', publiKey);
-
+    console.log('userDetails', userDetails);
 
     const fetchSingleProfile = async () => {
-        const data = {
+        const { getSingleProfile, buildProfilePictureUrl } = await import('deso-protocol')
+        const params = {
             Username: id,
+            PublicKeyBase58Check: ''
         }
-        const profileData = await getSingleProfile(data);
+
+        const profileData: any = await getSingleProfile(params)
+        const Avatar = await buildProfilePictureUrl(profileData?.Profile?.PublicKeyBase58Check, {
+            fallbackImageUrl: ''
+        })
+
+        setUserDetails({...profileData, Avatar})
         setPubliKey(profileData?.Profile?.PublicKeyBase58Check)
     }
 
@@ -45,8 +53,6 @@ const PublicProfile = () => {
             setImageData(newImageData)
         }
     }
-
-
 
     useEffect(() => {
         if (id) {
@@ -70,7 +76,7 @@ const PublicProfile = () => {
                 <div className="container mx-auto px-4">
                     <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg">
 
-                        <Info />
+                        <Info userDetails={userDetails} />
 
                         <div className="mt-5">
                             <Tab.Group>

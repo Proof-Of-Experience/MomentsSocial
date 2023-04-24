@@ -1,7 +1,6 @@
-import { getSingleProfile } from '@/pages/api/profile';
-import React, { useEffect } from 'react'
+import React from 'react'
 
-const Info = () => {
+const Info = ({ userDetails }: any) => {
 
   return (
     <>
@@ -26,12 +25,12 @@ const Info = () => {
         <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
           <div className="relative -mt-[80px]">
             <img alt="..."
-              src="https://www.w3schools.com/howto/img_avatar.png"
-              className=" shadow-xl rounded-full h-[160px] w-[160px] align-middle border-none" />
+              src={userDetails?.Avatar}
+              className=" shadow-xl rounded-full h-[160px] w-[160px] align-middle border-none mx-auto" />
 
-              <h3 className="text-2xl font-semibold text-center mt-3">
-                @jenna
-              </h3>
+            <h3 className="text-2xl font-semibold text-center mt-3">
+              {userDetails?.Profile?.Username}
+            </h3>
           </div>
         </div>
 
