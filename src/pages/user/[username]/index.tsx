@@ -20,7 +20,7 @@ const PublicProfile = () => {
     const [isLoaded, setisLoaded] = useState<boolean>(true);
 
     console.log('router', router);
-    
+
     const fetchSingleProfile = async () => {
         const { getSingleProfile, buildProfilePictureUrl } = await import('deso-protocol')
         const params = {
@@ -35,7 +35,6 @@ const PublicProfile = () => {
 
         setUserDetails({ ...profileData, Avatar })
         setPubliKey(profileData?.Profile?.PublicKeyBase58Check)
-        setisLoaded(false)
     }
 
     const fetchPublicPost = async () => {
@@ -53,6 +52,7 @@ const PublicProfile = () => {
             setVideoData(newVideoData)
             setImageData(newImageData)
         }
+        setisLoaded(false)
     }
 
     useEffect(() => {
@@ -110,6 +110,7 @@ const PublicProfile = () => {
                                         {
                                             videoData.length > 0 ?
                                                 <Videos videoData={videoData} /> :
+                                                !isLoaded &&
                                                 <div className="mt-10">
                                                     <Placeholder
                                                         text="No video available"
@@ -121,10 +122,13 @@ const PublicProfile = () => {
                                         {
                                             imageData.length > 0 ?
                                                 <Moments imageData={imageData} /> :
+
+                                                !isLoaded &&
                                                 <div className="mt-10">
                                                     <Placeholder
                                                         text="No moment available"
                                                     />
+
                                                 </div>
                                         }
                                     </Tab.Panel>
