@@ -93,11 +93,6 @@ const Home: NextPage = () => {
     }
   }
 
-  const onClickMoment = (item: any) => {
-    console.log('item', item);
-
-  }
-
   return (
     <MainLayout title='Moments' isLoading={videoLoaded}>
 
@@ -142,7 +137,7 @@ const Home: NextPage = () => {
                       key={`moment-${index} overflow-hidden`}
                       className="mr-6"
                       item={item}
-                      onClick={() => onClickMoment(item)}
+                      onClick={() => router.push(`moment/${item?.PostHashHex}`)}
                     />
                   )
                 })

@@ -1,5 +1,4 @@
 import MainLayout from '@/layouts/main-layout'
-import Layout from '@/features/home/layout';
 import { getFeedData } from '@/pages/api/feed';
 import { getStatelessPostData } from '@/pages/api/post';
 import Tags from '@/features/home/tags';
@@ -12,12 +11,22 @@ import Moment from '@/components/snippets/moment';
 
 
 
-const Home: NextPage = () => {
-  const router = useRouter();
+const Moments: NextPage = () => {
+  const router = useRouter()
   const tagParam: any = router.query.tag
 
-  const [dataLoaded, setDataLoaded] = useState<boolean>(true);
-  const [imageData, setImageData] = useState<string[]>([]);
+  const [dataLoaded, setDataLoaded] = useState<boolean>(true)
+  const [imageData, setImageData] = useState<string[]>([])
+
+  useEffect(() => {
+    if (!router.isReady) return
+
+    if (tagParam) {
+      fetchFeedData(tagParam)
+    } else {
+      fetchStatelessPostData()
+    }
+  }, [router.isReady])
 
   const fetchStatelessPostData = async () => {
     setDataLoaded(true)
@@ -49,17 +58,6 @@ const Home: NextPage = () => {
     }
   }
 
-  useEffect(() => {
-    if (!router.isReady) return
-
-
-    if (tagParam) {
-      fetchFeedData(tagParam)
-    } else {
-      fetchStatelessPostData()
-    }
-  }, [router.isReady])
-
   const onClickTag = (value: string) => {
     if (value === 'all') {
       router.replace('/', undefined, { shallow: true });
@@ -71,11 +69,6 @@ const Home: NextPage = () => {
       })
       fetchFeedData(value)
     }
-  }
-
-  const onClickMoment = (item: any) => {
-    console.log('item', item);
-
   }
 
   return (
@@ -92,7 +85,7 @@ const Home: NextPage = () => {
                 <Moment
                   key={`moment-${index}`}
                   item={item}
-                  onClick={() => onClickMoment(item)}
+                  onClick={() => router.push(`moment/${item?.PostHashHex}`)}
                 />
               )
             })
@@ -104,5 +97,5 @@ const Home: NextPage = () => {
   )
 }
 
-export default Home
+export default Moments
 
