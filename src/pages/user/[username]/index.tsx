@@ -17,12 +17,10 @@ const PublicProfile = () => {
     const [userDetails, setUserDetails] = useState<any>({});
     const [videoData, setVideoData] = useState<string[]>([]);
     const [imageData, setImageData] = useState<string[]>([]);
-    const [isLoaded, setisLoaded] = useState<boolean>(true);
-
-    console.log('router', router);
+    const [isLoaded, setisLoaded] = useState<boolean>(true);    
 
     const fetchSingleProfile = async () => {
-        const { getSingleProfile, buildProfilePictureUrl } = await import('deso-protocol')
+        const { getSingleProfile, buildProfilePictureUrl, getFollowersForUser } = await import('deso-protocol')
         const params = {
             Username: username,
             PublicKeyBase58Check: ''
@@ -33,7 +31,29 @@ const PublicProfile = () => {
             fallbackImageUrl: ''
         })
 
-        setUserDetails({ ...profileData, Avatar })
+        const followParams = {
+            PublicKeyBase58Check: profileData?.Profile?.PublicKeyBase58Check,
+            Username: username,
+            LastPublicKeyBase58Check: '',
+            NumToFetch: 0,
+        }
+
+        const followerParams = {
+            ...followParams,
+            GetEntriesFollowingUsername: true,
+        }
+
+        const followingParams = {
+            ...followParams,
+            GetEntriesFollowingUsername: false,
+        }
+
+        const followers = await getFollowersForUser(followerParams)
+        const following = await getFollowersForUser(followingParams)
+
+        setUserDetails({
+            ...profileData, Avatar, Followers: followers.NumFollowers, Following: following.NumFollowers
+        })
         setPubliKey(profileData?.Profile?.PublicKeyBase58Check)
     }
 
@@ -70,7 +90,7 @@ const PublicProfile = () => {
 
     return (
 
-        <MainLayout title='Upload' isLoading={isLoaded}>
+        <MainLayout title={username} isLoading={isLoaded}>
             <Banner />
 
             <section className="relative py-[216px]">

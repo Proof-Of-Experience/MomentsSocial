@@ -56,8 +56,6 @@ const MainLayout = ({ title, isLoading, children }: MainLayoutProps) => {
     // done so here for simplicity and to reduce noise from the example.
     const { identity, api } = await import('deso-protocol')
     api.configure({ nodeURI: process.env.NEXT_PUBLIC_BASE_URL })
-    console.log('process.env.NEXT_PUBLIC_BASE_URL', process.env.NEXT_PUBLIC_BASE_URL);
-
     identity.subscribe(async ({ event, currentUser, alternateUsers }) => {
       // The event property tells us what triggered the subscription callback.
       // The authorize derived key flow is a multi-step asynchronous process. We can use the start
