@@ -15,18 +15,14 @@ const Info = ({ userDetails }: any) => {
               <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">10</span>
               <span className="text-sm text-blueGray-400">Moments</span>
             </div>
-            <div className="lg:mr-4 p-3 text-center">
-              <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">89</span>
-              <span className="text-sm text-blueGray-400">Comments</span>
-            </div>
           </div>
         </div>
 
         <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
-          <div className="relative -mt-[80px] text-center">
+          <div className="relative -mt-[60px] text-center">
             <img alt="..."
               src={userDetails?.Avatar}
-              className=" shadow-xl rounded-full h-[160px] w-[160px] align-middle border-none mx-auto" />
+              className=" shadow-xl rounded-full h-[120px] w-[120px] align-middle border-none mx-auto" />
 
             <h3 className="text-2xl font-semibold text-center mt-3">
               {userDetails?.Profile?.Username}

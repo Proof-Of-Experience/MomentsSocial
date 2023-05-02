@@ -9,6 +9,7 @@ import { Tab } from '@headlessui/react'
 import { useRouter } from 'next/router'
 import { getPublicPostData } from '../../api/post'
 import { Placeholder } from '@/components/core/placeholder';
+import CreatorCoin from '@/features/profile/creator-coin';
 
 const PublicProfile = () => {
     const router = useRouter()
@@ -17,7 +18,7 @@ const PublicProfile = () => {
     const [userDetails, setUserDetails] = useState<any>({});
     const [videoData, setVideoData] = useState<string[]>([]);
     const [imageData, setImageData] = useState<string[]>([]);
-    const [isLoaded, setisLoaded] = useState<boolean>(true);    
+    const [isLoaded, setisLoaded] = useState<boolean>(true);
 
     const fetchSingleProfile = async () => {
         const { getSingleProfile, buildProfilePictureUrl, getFollowersForUser } = await import('deso-protocol')
@@ -119,6 +120,13 @@ const PublicProfile = () => {
                                     <Tab as={Fragment}>
                                         {({ selected }) =>
                                             <button className={`${selected ? 'text-white bg-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
+                                                Creator Coin
+                                            </button>
+                                        }
+                                    </Tab>
+                                    <Tab as={Fragment}>
+                                        {({ selected }) =>
+                                            <button className={`${selected ? 'text-white bg-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
                                                 About
                                             </button>
                                         }
@@ -151,6 +159,9 @@ const PublicProfile = () => {
 
                                                 </div>
                                         }
+                                    </Tab.Panel>
+                                    <Tab.Panel>
+                                        <CreatorCoin username={username} />
                                     </Tab.Panel>
                                     <Tab.Panel>
                                         <About />
