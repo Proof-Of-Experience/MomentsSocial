@@ -13,9 +13,6 @@ const AuthButtons = () => {
   const [username, setUsername] = useState<string | undefined>('');
 
 
-  console.log('username', username);
-
-
   const getUserInfo = async () => {
     const { getSingleProfile } = await import('deso-protocol')
     const params = {
@@ -97,7 +94,7 @@ const AuthButtons = () => {
             <PrimaryButton
               text='Login'
               onClick={async () => {
-                const { identity } = (await import('deso-protocol'))
+                const { identity } = await import('deso-protocol')
                 identity.login()
               }}
             />
