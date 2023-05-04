@@ -1,16 +1,28 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { HomeIcon, BoltIcon, FireIcon, ArrowPathRoundedSquareIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/router'
 
 const LeftSidebar = () => {
   const router = useRouter();
+  const [isSticky, setSticky] = useState(false);
+
+  useEffect(() => {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY >= 30) {
+        setSticky(true);
+      } else {
+        setSticky(false);
+      }
+    });
+  }, []);
+
 
   const onClickItem = (url: string) => {
     router.push(url)
   }
 
   return (
-    <div className="w-[80px] flex flex-col items-center pt-5 bg-gray-200 h-full">
+    <div className={`${isSticky ? 'mt-[72px]' : ''} fixed w-[80px] flex flex-col items-center pt-5 bg-gray-200 h-full`}>
       <button
         className="mb-3 hover:bg-gray-300 transition-all rounded-md px-2 py-1 text-gray-600 focus:bg-gray-300"
         title="Home"

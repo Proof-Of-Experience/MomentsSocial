@@ -100,33 +100,33 @@ const PublicProfile = () => {
 
                         <Info userDetails={userDetails} />
 
-                        <div className="mt-5">
+                        <div className="mt-5 min-h-[200px]">
                             <Tab.Group>
                                 <Tab.List className="border-b px-10">
                                     <Tab as={Fragment}>
                                         {({ selected }) =>
-                                            <button className={`${selected ? 'text-white bg-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`}>
+                                            <button className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`}>
                                                 Videos
                                             </button>
                                         }
                                     </Tab>
                                     <Tab as={Fragment}>
                                         {({ selected }) =>
-                                            <button className={`${selected ? 'text-white bg-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
+                                            <button className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
                                                 Moments
                                             </button>
                                         }
                                     </Tab>
                                     <Tab as={Fragment}>
                                         {({ selected }) =>
-                                            <button className={`${selected ? 'text-white bg-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
+                                            <button className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
                                                 Creator Coin
                                             </button>
                                         }
                                     </Tab>
                                     <Tab as={Fragment}>
                                         {({ selected }) =>
-                                            <button className={`${selected ? 'text-white bg-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
+                                            <button className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
                                                 About
                                             </button>
                                         }

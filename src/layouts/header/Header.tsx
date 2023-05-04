@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { getSearchProfileData } from '@/pages/api/profile';
 import AuthButtons from '@/features/header/auth-buttons';
@@ -9,6 +9,17 @@ const Header = () => {
   const [searchResult, setSearchResult] = useState([]);
   const [query, setQuery] = useState("");
   const [loadedQuery, setLoadedQuery] = useState(false);
+  const [isSticky, setSticky] = useState(false);
+
+  useEffect(() => {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY >= 30) {
+        setSticky(true);
+      } else {
+        setSticky(false);
+      }
+    });
+  }, []);
 
   const onChangeSearch = async (e: ChangeEvent<HTMLInputElement>) => {
     setLoadedQuery(true)
@@ -34,7 +45,7 @@ const Header = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 p-2 lg:px-5 shadow h-[72px] leading-[30px]">
+    <header className={`${isSticky ? 'fixed' : 'relative'} bg-white top-0 left-0 right-0 z-50 p-2 lg:px-5 shadow h-[72px] leading-[30px]`}>
       <div className="flex items-center flex-wrap m-1 justify-left md:justify-between">
 
         <div className="flex flex-wrap">

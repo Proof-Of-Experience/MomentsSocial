@@ -159,7 +159,7 @@ const MainLayout = ({ title, isLoading, children }: MainLayoutProps) => {
             <LeftSidebar />
           </div>
           <div className='w-[calc(100%_-_80px)]'>
-            <LoadingSpinner isLoading={isLoading} />
+            <LoadingSpinner fullHeight isLoading={isLoading} />
             <div className="p-5">
               {children}
             </div>
