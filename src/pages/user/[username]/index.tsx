@@ -11,12 +11,10 @@ import { getPublicPostData } from '../../api/post'
 import { Placeholder } from '@/components/core/placeholder';
 import CreatorCoin from '@/features/profile/creator-coin';
 import Diamonds from '@/features/profile/diamonds';
-import { setAuthUser } from '@/slices/authSlice';
-import { useDispatch } from 'react-redux';
+
 
 const PublicProfile = () => {
     const router = useRouter()
-    const dispatch = useDispatch();
     const { username }: any = router.query
     const [publiKey, setPubliKey] = useState<string>("");
     const [userDetails, setUserDetails] = useState<any>({});
@@ -58,9 +56,6 @@ const PublicProfile = () => {
         const updatedData = {
             ...profileData, Avatar, Followers: followers.NumFollowers, Following: following.NumFollowers
         }
-
-        dispatch(setAuthUser(updatedData));
-
         setUserDetails(updatedData)
         setPubliKey(profileData?.Profile?.PublicKeyBase58Check)
     }

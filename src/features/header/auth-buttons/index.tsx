@@ -3,24 +3,25 @@ import { useDispatch, useSelector } from 'react-redux';
 import { PrimaryButton } from '@/components/core/button'
 import { selectAuthUser, setAuthUser } from '@/slices/authSlice';
 import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, UserCircleIcon } from '@heroicons/react/20/solid'
 import { useRouter } from 'next/router';
 
 const AuthButtons = () => {
   const router = useRouter()
   const dispatch = useDispatch();
   const authUser = useSelector(selectAuthUser);
-  const [username, setUsername] = useState<string | undefined>('');
-
 
   const getUserInfo = async () => {
-    const { getSingleProfile } = await import('deso-protocol')
+    const { getSingleProfile, buildProfilePictureUrl } = await import('deso-protocol')
     const params = {
       PublicKeyBase58Check: authUser?.currentUser?.PublicKeyBase58Check,
     }
-    const result = await getSingleProfile(params)
-    setUsername(result?.Profile?.Username)
+    const userData = await getSingleProfile(params)
+    const Avatar = await buildProfilePictureUrl(authUser?.Profile?.PublicKeyBase58Check, {
+      fallbackImageUrl: ''
+    })
 
+    dispatch(setAuthUser({ ...authUser, ...userData, Avatar }));
   }
 
 
@@ -38,10 +39,19 @@ const AuthButtons = () => {
           <Menu as="div" className="relative inline-block text-left">
 
             <Menu.Button className="inline-flex w-full justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-              <img
-                src="https://tecdn.b-cdn.net/img/new/avatars/2.webp"
-                className="w-10 rounded-full"
-                alt="Avatar" />
+
+              {
+                authUser?.Avatar ?
+                  <img
+                    src={authUser.Avatar}
+                    className="w-10 rounded-full"
+                    alt="Avatar" /> :
+                  <UserCircleIcon
+                    className="h-12 w-12"
+                    aria-hidden="true"
+                  />
+              }
+
               <ChevronDownIcon
                 className="ml-2 -mr-1 h-5 w-5 text-blue-400 hover:text-blue-200"
                 aria-hidden="true"
@@ -62,7 +72,7 @@ const AuthButtons = () => {
                   <Menu.Item>
                     {({ active }) => (
                       <button
-                        onClick={() => router.push(`/user/${username}`)}
+                        onClick={() => router.push(`/user/${authUser?.Profile?.Username}`)}
                         className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'
                           } group flex w-full items-center px-3 py-2 text-sm`}
                       >

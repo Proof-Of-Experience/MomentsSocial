@@ -1,14 +1,12 @@
 import React from 'react'
 
 const Info = ({ userDetails }: any) => {
-  console.log('userDetails', userDetails);
-  
 
   return (
     <>
       <div className="flex flex-wrap justify-center">
         <div className="w-full lg:w-4/12 px-4 lg:order-1">
-          <div className="flex justify-center py-4 lg:pt-4 pt-8">
+          <div className="flex py-4 lg:pt-4 pt-8">
             <div className="mr-4 p-3 text-center">
               <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">22</span>
               <span className="text-sm text-blueGray-400">Videos</span>
@@ -38,7 +36,7 @@ const Info = ({ userDetails }: any) => {
                 <span className="font-semibold">{userDetails?.Following} </span>Following
               </p>
               <p className="mr-3 font-medium text-sm">
-                <span className="font-semibold">{(userDetails?.Profile?.CoinEntry?.CreatorBasisPoints) / 100}% </span>FR
+                <span className="font-semibold">{((userDetails?.Profile?.CoinEntry?.CreatorBasisPoints) / 100) || 0}% </span>FR
               </p>
             </div>
           </div>
