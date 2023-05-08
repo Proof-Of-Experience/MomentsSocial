@@ -176,7 +176,7 @@ const PublicProfile = () => {
                                         <Diamonds username={username} />
                                     </Tab.Panel>
                                     <Tab.Panel>
-                                        <About />
+                                        <About username={username} userDetails={userDetails} />
                                     </Tab.Panel>
                                 </Tab.Panels>
                             </Tab.Group>

@@ -6,6 +6,7 @@ export interface PrimaryButtonProps {
 
 export interface PrimaryInputProps {
 	className?: string,
+	label?: string,
 	[rest: string]: any;
 }
 

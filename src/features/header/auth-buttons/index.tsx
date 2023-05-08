@@ -12,16 +12,13 @@ const AuthButtons = () => {
   const authUser = useSelector(selectAuthUser);
 
   const getUserInfo = async () => {
-    const { getSingleProfile, buildProfilePictureUrl } = await import('deso-protocol')
+    const { getSingleProfile } = await import('deso-protocol')
     const params = {
       PublicKeyBase58Check: authUser?.currentUser?.PublicKeyBase58Check,
     }
     const userData = await getSingleProfile(params)
-    const Avatar = await buildProfilePictureUrl(authUser?.Profile?.PublicKeyBase58Check, {
-      fallbackImageUrl: ''
-    })
 
-    dispatch(setAuthUser({ ...authUser, ...userData, Avatar }));
+    dispatch(setAuthUser({ ...authUser, ...userData }));
   }
 
 
@@ -41,9 +38,9 @@ const AuthButtons = () => {
             <Menu.Button className="inline-flex w-full justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
 
               {
-                authUser?.Avatar ?
+                authUser?.currentUser?.PublicKeyBase58Check ?
                   <img
-                    src={authUser.Avatar}
+                    src={`https://node.deso.org/api/v0/get-single-profile-picture/${authUser?.currentUser?.PublicKeyBase58Check}`}
                     className="w-10 rounded-full"
                     alt="Avatar" /> :
                   <UserCircleIcon
