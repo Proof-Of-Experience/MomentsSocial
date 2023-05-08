@@ -10,6 +10,7 @@ const Diamonds = ({ username }: any) => {
     const authUser = useSelector(selectAuthUser);
     const [isLoaded, setisLoaded] = useState<boolean>(true);
     const [diamonds, setDiamonds] = useState<any>([]);
+    const [diamondInfo, setDiamondInfo] = useState<any>({});
 
     const fetchDiamonds = async () => {
         const { getDiamondsForUser } = await import('deso-protocol')
@@ -21,9 +22,8 @@ const Diamonds = ({ username }: any) => {
 
         const response = await getDiamondsForUser(diamondParams)
         setDiamonds(response?.DiamondSenderSummaryResponses)
+        setDiamondInfo(response)
         setisLoaded(false)
-
-
     }
 
     useEffect(() => {
@@ -56,37 +56,45 @@ const Diamonds = ({ username }: any) => {
 
     const _renderHolders = () => {
         return (
-            <table className="table-auto w-full">
-                <thead>
-                    <tr>
-                        <th className="border-b border-black py-2 text-left">Username</th>
-                        <th className="border-b border-black py-2 text-center">Most Diamonds</th>
-                        <th className="border-b border-black py-2 text-right">Total Diamonds</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {diamonds.map((diamond: any, index: number) => (
-                        <tr key={index}>
-                            <td className="border-b py-3">
-                                <div className="flex items-center">
-                                    <img
-                                        src={`${process.env.NEXT_PUBLIC_BASE_URL}/api/v0/get-single-profile-picture/${diamond.SenderPublicKeyBase58Check}?fallback=https://diamondapp.com/assets/img/default-profile-pic.png`}
-                                        alt="avatar"
-                                        className="rounded-full h-10 w-10 mr-2" />
-                                    <span className="flex w-[150px] truncate">
-                                        {diamond.ProfileEntryResponse?.Username ? diamond.ProfileEntryResponse?.Username : diamond.SenderPublicKeyBase58Check}
-                                        {diamond.ProfileEntryResponse?.IsVerified && <CheckBadgeIcon className="ml-1 w-5 h-5 text-blue-500" />}
-                                    </span>
-                                </div>
-                            </td>
-                            <td className="border-b py-3 text-center">
-                                <DiamondList number={diamond.HighestDiamondLevel} />
-                            </td>
-                            <td className="border-b py-3 text-right">{diamond.TotalDiamonds}</td>
+            <>
+
+                <div className="flex justify-between items-center mb-4 pb-2 border-b">
+                    <h3 className="font-semibold text-xl">Total</h3>
+                    <h3 className="font-semibold text-xl">{diamondInfo?.TotalDiamonds}</h3>
+                </div>
+
+                <table className="table-auto w-full">
+                    <thead>
+                        <tr>
+                            <th className="border-b border-black py-2 text-left">Username</th>
+                            <th className="border-b border-black py-2 text-center">Most Diamonds</th>
+                            <th className="border-b border-black py-2 text-right">Total Diamonds</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {diamonds.map((diamond: any, index: number) => (
+                            <tr key={index}>
+                                <td className="border-b py-3">
+                                    <div className="flex items-center">
+                                        <img
+                                            src={`${process.env.NEXT_PUBLIC_BASE_URL}/api/v0/get-single-profile-picture/${diamond.SenderPublicKeyBase58Check}?fallback=https://diamondapp.com/assets/img/default-profile-pic.png`}
+                                            alt="avatar"
+                                            className="rounded-full h-10 w-10 mr-2" />
+                                        <span className="flex w-[150px] truncate">
+                                            {diamond.ProfileEntryResponse?.Username ? diamond.ProfileEntryResponse?.Username : diamond.SenderPublicKeyBase58Check}
+                                            {diamond.ProfileEntryResponse?.IsVerified && <CheckBadgeIcon className="ml-1 w-5 h-5 text-blue-500" />}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td className="border-b py-3 text-center">
+                                    <DiamondList number={diamond.HighestDiamondLevel} />
+                                </td>
+                                <td className="border-b py-3 text-right">{diamond.TotalDiamonds}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </>
         )
     }
 
