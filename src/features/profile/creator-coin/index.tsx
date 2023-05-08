@@ -11,7 +11,7 @@ const CreatorCoin = ({ username }: any) => {
     const [holders, setHolders] = useState<any>([]);
     console.log('holders', holders);
 
-    const fetchSingleProfile = async () => {
+    const fetchCreatorCoin = async () => {
         const { getHodlersForUser, HodlersSortType } = await import('deso-protocol')
         const params = {
             FetchAll: false,
@@ -33,7 +33,7 @@ const CreatorCoin = ({ username }: any) => {
 
     useEffect(() => {
         if (username) {
-            fetchSingleProfile()
+            fetchCreatorCoin()
         }
     }, [username])
 
