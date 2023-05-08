@@ -1,6 +1,8 @@
 import React from 'react'
 
 const Info = ({ userDetails }: any) => {
+  console.log('userDetails', userDetails);
+  
 
   return (
     <>
@@ -36,7 +38,7 @@ const Info = ({ userDetails }: any) => {
                 <span className="font-semibold">{userDetails?.Following} </span>Following
               </p>
               <p className="mr-3 font-medium text-sm">
-                <span className="font-semibold">1% </span>FR
+                <span className="font-semibold">{(userDetails?.Profile?.CoinEntry?.CreatorBasisPoints) / 100}% </span>FR
               </p>
             </div>
           </div>
