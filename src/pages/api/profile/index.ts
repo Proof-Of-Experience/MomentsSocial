@@ -1,4 +1,4 @@
-import { FollowersOrFollowingProps, SearchProfileProps, SingleProfileProps } from "@/model/profile";
+import { FollowersOrFollowingProps, SearchProfileProps } from "@/model/profile";
 import { ApiDataType, apiService } from "@/utils/request";
 
 export const getSearchProfileData = async (data: SearchProfileProps) => {
@@ -21,24 +21,6 @@ export const getSearchProfileData = async (data: SearchProfileProps) => {
 	return result;
 };
 
-export const getSingleProfile = async (data: SingleProfileProps) => {
-	let result: any = [];
-	const body = {
-		Username: data?.Username
-	}
-	const apiData: ApiDataType = {
-		method: 'post',
-		url: '/api/v0/get-single-profile',
-		data: body,
-	};
-
-	await apiService(apiData, (res: any, err: any) => {
-		if (err) return err.response
-		if (res) result = res
-	});
-
-	return result;
-};
 
 export const getFollowersOrFollowing = async (data: FollowersOrFollowingProps) => {
 	let result: any = [];
