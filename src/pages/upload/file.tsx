@@ -257,8 +257,10 @@ const UploadFile = () => {
                             className="w-full mt-1 py-3 text-lg"
                             type="submit"
                             text={!livepeerSuccess ? 'Next' : 'Submit Post'}
-                            loader={postProcessing ? postProcessing : isLoading || !createAsset}
-                            disabled={postProcessing ? postProcessing : isLoading || !createAsset}
+                            // loader={postProcessing ? postProcessing : isLoading || !createAsset}
+                            // disabled={postProcessing ? postProcessing : isLoading || !createAsset}
+                            loader={postProcessing ? postProcessing : isLoading}
+                            disabled={postProcessing ? postProcessing : isLoading}
                         />
                     </form >
                 </div>
