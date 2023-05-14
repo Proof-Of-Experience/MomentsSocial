@@ -1,6 +1,5 @@
 import { PrimaryInput } from '@/components/core/input/Input';
 import { PrimaryTextArea } from '@/components/core/textarea/Textarea';
-import { fetchPostTransaction } from '@/pages/api/post';
 import { selectAuthUser } from '@/slices/authSlice';
 import { Dialog, Transition } from '@headlessui/react';
 import { ArrowUpTrayIcon, PencilIcon } from '@heroicons/react/20/solid';
@@ -54,7 +53,7 @@ const About = ({ username, userDetails }: any) => {
   const updateProfileInfo = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     try {
-      const { updateProfile, } = await import('deso-protocol')
+      const { identity, updateProfile, } = await import('deso-protocol')
 
       const profileParams = {
         ExtraData: {
@@ -72,11 +71,7 @@ const About = ({ username, userDetails }: any) => {
 
       const profileResponse: any = await updateProfile(profileParams)
 
-      const transactionParams = {
-        TransactionHex: profileResponse?.TransactionHex
-      }
-
-      const result = await fetchPostTransaction(transactionParams)
+      const result = await identity.submitTx(profileResponse?.TransactionHex)
 
       setShowEditModal(false)
       toast.success('Profile updated successfully');

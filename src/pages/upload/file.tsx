@@ -6,7 +6,6 @@ import { selectAuthUser } from '@/slices/authSlice';
 import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import { useCreateAsset } from '@livepeer/react';
 import { useSelector } from 'react-redux';
-import { fetchPostTransaction, fetchtSubmitPost } from '../api/post';
 import { toast } from 'react-toastify';
 import dynamic from 'next/dynamic';
 
@@ -43,7 +42,7 @@ const UploadFile = () => {
 
     useEffect(() => {
         setLivepeerSuccess(status === 'success')
-    }, [status])
+    }, [status === 'success'])
 
     useEffect(() => {
         setEditorLoaded(true);
@@ -85,15 +84,15 @@ const UploadFile = () => {
 
     };
 
+    console.log('asset', asset);
+    
+
     const handleVideoToLivepeer = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
         // const data = {
         //     TransactionHex: "000005680000577b22426f6479223a227465737420706f7374222c22566964656f55524c73223a5b2268747470733a2f2f6c702d706c61796261636b2e636f6d2f686c732f373164306f666b32667a796a35716d682f766964656f225d7de807d461a9b1a8ae89bde6aa170021021a750e3941487413ac7d8e15452d1cb57c6a80a04ae7b77972012ea9dc4ba53003084c616e677561676502656e0f4c697665706565724173736574496400044e6f6465013300019502fde529b6f8e9cf949291b95f"
         // }
-
-        // const result = await fetchPostTransaction(data);
-        // console.log('result', result);
 
         // return
 
@@ -106,8 +105,9 @@ const UploadFile = () => {
 
     }
 
-    const submitPost = async (e: React.FormEvent<HTMLFormElement>) => {
+    const fetchSubmitPost = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        const { submitPost } = await import('deso-protocol')
 
         if (!isDescriptionValid) {
             toast.error('Description is required')
@@ -116,30 +116,40 @@ const UploadFile = () => {
 
         setPostProcessing(true)
 
-        const data = {
-            BodyObj: {
-                Body: description,
-                ImageURLs: [],
-                VideoURLs: [asset?.[0].downloadUrl]
-            },
-            IsHidden: false,
-            MinFeeRateNanosPerKB: 1000,
-            ParentStakeID: '',
-            PostExtraData: {
-                Language: 'en',
-                LivepeerAssetId: '',
-                Node: '3',
-            },
-            RepostedPostHashHex: '',
-            UpdaterPublicKeyBase58Check: authUser.currentUser.PublicKeyBase58Check || ''
+        try {
+            const postParams = {
+                BodyObj: {
+                    Body: description,
+                    ImageURLs: [],
+                    VideoURLs: [asset?.[0].downloadUrl || '']
+                },
+                IsHidden: false,
+                MinFeeRateNanosPerKB: 1000,
+                ParentStakeID: '',
+                PostExtraData: {
+                    Language: 'en',
+                    LivepeerAssetId: '',
+                    Node: '3',
+                },
+                RepostedPostHashHex: '',
+                UpdaterPublicKeyBase58Check: authUser.currentUser.PublicKeyBase58Check || ''
+            }
+
+            const response: any = await submitPost(postParams)
+            // const result = await identity.submitTx(response?.TransactionHex)
+
+            // console.log('result', result);
+            
+
+            toast.success('Post created successfully')
+            setPostProcessing(false)
+            setVideoFile(null)
+            setPreviewUrl('')
+            setDescription('')
+            setLivepeerSuccess(false)
+        } catch (error) {
+            console.log('error', error);
         }
-
-        const response = await fetchtSubmitPost(data);
-        const result = await fetchPostTransaction(response?.TransactionHex);
-        setPostProcessing(false)
-        setLivepeerSuccess(false)
-
-        toast.success('Post created successfully');
 
     }
 
@@ -227,7 +237,7 @@ const UploadFile = () => {
 
                 <div className="col-span-2">
 
-                    <form onSubmit={livepeerSuccess ? submitPost : handleVideoToLivepeer}>
+                    <form onSubmit={livepeerSuccess ? fetchSubmitPost : handleVideoToLivepeer}>
                         <div className="text-center mx-auto border border-dashed border-[#5798fb] py-8 px-7 relative rounded-2xl mb-5">
                             {
                                 !livepeerSuccess ?
