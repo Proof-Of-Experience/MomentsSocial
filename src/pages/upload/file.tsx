@@ -1,16 +1,21 @@
-
-
+import React, { useEffect, useMemo, useState } from 'react';
 import { PrimaryButton } from '@/components/core/button';
-import { PrimaryTextArea } from '@/components/core/textarea/Textarea';
 import LeftContent from '@/features/upload/left-content';
 import MainLayout from '@/layouts/main-layout';
 import { selectAuthUser } from '@/slices/authSlice';
 import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import { useCreateAsset } from '@livepeer/react';
-import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { fetchPostTransaction, fetchtSubmitPost } from '../api/post';
 import { toast } from 'react-toastify';
+import dynamic from 'next/dynamic';
+
+const DynamicEditor = dynamic(
+    () => import('@ckeditor/ckeditor5-react').then((mod) => mod.CKEditor),
+    { ssr: false }
+);
+const ClassicEditor = typeof window !== 'undefined' ? require('@ckeditor/ckeditor5-build-classic') : null;
+
 
 const UploadFile = () => {
     const [videoFile, setVideoFile] = useState<File | undefined | null>();
@@ -31,6 +36,8 @@ const UploadFile = () => {
             : null,
     );
     const [description, setDescription] = useState<string>('');
+    const [editorLoaded, setEditorLoaded] = useState<boolean>(false);
+    const [isDescriptionValid, setIsDescriptionValid] = useState<boolean>(true);
     const [livepeerSuccess, setLivepeerSuccess] = useState<boolean>(status === 'success');
     const authUser = useSelector(selectAuthUser);
 
@@ -38,6 +45,9 @@ const UploadFile = () => {
         setLivepeerSuccess(status === 'success')
     }, [status])
 
+    useEffect(() => {
+        setEditorLoaded(true);
+    }, []);
 
     const isLoading = useMemo(
         () =>
@@ -95,8 +105,15 @@ const UploadFile = () => {
         createAsset?.()
 
     }
+
     const submitPost = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+
+        if (!isDescriptionValid) {
+            toast.error('Description is required')
+            return
+        }
+
         setPostProcessing(true)
 
         const data = {
@@ -118,22 +135,13 @@ const UploadFile = () => {
         }
 
         const response = await fetchtSubmitPost(data);
-        console.log('response', response);
-
         const result = await fetchPostTransaction(response?.TransactionHex);
-        console.log('result', result);
-
         setPostProcessing(false)
         setLivepeerSuccess(false)
 
         toast.success('Post created successfully');
 
     }
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        setDescription(e.target.value);
-    };
-
 
     const renderPreviewVideo = () => {
         return (
@@ -204,6 +212,11 @@ const UploadFile = () => {
         )
     }
 
+    const handleEditorChange = (event: any, editor: any) => {
+        const data = editor.getData();
+        setDescription(data)
+        setIsDescriptionValid(data.length > 0);
+    };
 
     return (
         <MainLayout title='Upload'>
@@ -222,13 +235,17 @@ const UploadFile = () => {
                                         renderFileUpload() :
                                     <div className="">
                                         <h4 className="text-left font-semibold mb-2">Other information</h4>
-                                        <PrimaryTextArea
-                                            placeholder="Please write something"
-                                            className="w-full min-h-[120px]"
-                                            required={livepeerSuccess}
-                                            value={description}
-                                            onChange={handleChange}
-                                        />
+
+                                        {editorLoaded ? (
+                                            <DynamicEditor
+                                                editor={ClassicEditor}
+                                                data={description}
+                                                onChange={handleEditorChange}
+
+                                            />
+                                        ) : (
+                                            <div>Loading CKEditor...</div>
+                                        )}
                                     </div>
                             }
 

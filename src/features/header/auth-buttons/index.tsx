@@ -26,7 +26,7 @@ const AuthButtons = () => {
     if (authUser?.currentUser) {
       getUserInfo()
     }
-  }, [authUser?.currentUser])
+  }, [])
 
 
   return (
