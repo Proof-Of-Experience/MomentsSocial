@@ -1,2 +1,2 @@
-import { PrimaryTextArea } from './textarea';
+import { PrimaryTextArea } from './Textarea';
 export default { PrimaryTextArea };

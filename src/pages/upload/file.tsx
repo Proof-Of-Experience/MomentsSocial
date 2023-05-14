@@ -1,7 +1,7 @@
 
 
 import { PrimaryButton } from '@/components/core/button';
-import { PrimaryTextArea } from '@/components/core/textarea/textarea';
+import { PrimaryTextArea } from '@/components/core/textarea/Textarea';
 import LeftContent from '@/features/upload/left-content';
 import MainLayout from '@/layouts/main-layout';
 import { selectAuthUser } from '@/slices/authSlice';

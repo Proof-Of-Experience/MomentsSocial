@@ -5,6 +5,7 @@ export interface PrimaryButtonProps {
 }
 
 export interface PrimaryInputProps {
+	id?: string,
 	className?: string,
 	label?: string,
 	[rest: string]: any;
