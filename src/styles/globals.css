@@ -25,3 +25,13 @@ a {
 .ck-content {
   height: 200px;
 }
+
+
+/* Emoji reaction */
+.emoji-reaction {
+  @apply relative inline-flex items-center;
+}
+
+.emoji-reaction button {
+  @apply p-1 rounded-full transition duration-200 ease-in-out hover:bg-gray-200;
+}
