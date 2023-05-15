@@ -69,7 +69,13 @@ const AuthButtons = () => {
                   <Menu.Item>
                     {({ active }) => (
                       <button
-                        onClick={() => router.push(`/user/${authUser?.Profile?.Username}`)}
+                        onClick={() => {                          
+                          if(authUser?.currentUser) {
+                            router.push(`/user/${authUser?.currentUser?.ProfileEntryResponse?.Username}`)
+                          } else {
+                            location.reload()
+                          }
+                        }}
                         className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'
                           } group flex w-full items-center px-3 py-2 text-sm`}
                       >

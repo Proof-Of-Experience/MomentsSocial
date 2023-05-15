@@ -7,7 +7,6 @@ import Videos from '@/components/snippets/videos';
 import MainLayout from '@/layouts/main-layout'
 import { Tab } from '@headlessui/react'
 import { useRouter } from 'next/router'
-import { getPublicPostData } from '../../api/post'
 import { Placeholder } from '@/components/core/placeholder';
 import CreatorCoin from '@/features/profile/creator-coin';
 import Diamonds from '@/features/profile/diamonds';
@@ -61,19 +60,26 @@ const PublicProfile = () => {
     }
 
     const fetchPublicPost = async () => {
+
+        const { getPostsForUser } = await import('deso-protocol')
         const data = {
             MediaRequired: true,
             NumToFetch: 20,
             ReaderPublicKeyBase58Check: publiKey,
             Username: username,
         }
-        const publicData = await getPublicPostData(data);
+        const publicData = await getPostsForUser(data);
+        console.log('publicData', publicData);
+        
 
         if (publicData?.Posts) {
             const newVideoData: any = publicData?.Posts.filter((item: any) => item.VideoURLs)
             const newImageData: any = publicData?.Posts.filter((item: any) => item.ImageURLs)
             setVideoData(newVideoData)
             setImageData(newImageData)
+        } else {
+            setVideoData([])
+            setImageData([])
         }
         setisLoaded(false)
     }

@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { HomeIcon, BoltIcon, FireIcon, ArrowPathRoundedSquareIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/router'
+import { useSelector } from 'react-redux';
+import { selectAuthUser } from '@/slices/authSlice';
 
 const LeftSidebar = () => {
   const router = useRouter();
+  const authUser = useSelector(selectAuthUser);
   const [isSticky, setSticky] = useState(false);
 
   useEffect(() => {
@@ -51,12 +54,15 @@ const LeftSidebar = () => {
         <FireIcon className="mx-auto h-7 w-7" />
       </button>
 
-      <button
-        className="mb-3 hover:bg-gray-300 transition-all rounded-md px-2 py-1 text-gray-600 focus:bg-gray-300"
-        title="Upload"
-        onClick={() => onClickItem('/upload')}>
-        <ArrowUpTrayIcon className="mx-auto h-7 w-7" />
-      </button>
+      {
+        authUser?.currentUser &&
+        <button
+          className="mb-3 hover:bg-gray-300 transition-all rounded-md px-2 py-1 text-gray-600 focus:bg-gray-300"
+          title="Upload"
+          onClick={() => onClickItem('/upload')}>
+          <ArrowUpTrayIcon className="mx-auto h-7 w-7" />
+        </button>
+      }
     </div>
   )
 }
