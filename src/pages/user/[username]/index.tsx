@@ -69,8 +69,6 @@ const PublicProfile = () => {
             Username: username,
         }
         const publicData = await getPostsForUser(data);
-        console.log('publicData', publicData);
-        
 
         if (publicData?.Posts) {
             const newVideoData: any = publicData?.Posts.filter((item: any) => item.VideoURLs)

@@ -45,3 +45,26 @@ const creatorCoinNanosToUSDNaive = (creatorCoinNanos: any, coinPriceDeSoNanos: a
     const usdValue = nanosToUSDNumber((creatorCoinNanos / 1e9) * coinPriceDeSoNanos);
     return abbreviate ? abbreviateNumber(usdValue, 2, true) : formatUSDFunc(usdValue, 2);
 }
+
+const formatUSD = (num: number, decimal: number): string => {
+    if (formatUSDMemo[num] && formatUSDMemo[num][decimal]) {
+        return formatUSDMemo[num][decimal];
+    }
+
+    formatUSDMemo[num] = formatUSDMemo[num] || {};
+
+    formatUSDMemo[num][decimal] = Number(num).toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: decimal,
+        maximumFractionDigits: decimal,
+    });
+    return formatUSDMemo[num][decimal];
+}
+
+export const nanosToUSD = (nanos: number, decimal?: number): string => {
+    if (decimal == null) {
+        decimal = 4;
+    }
+    return formatUSD(nanosToUSDNumber(nanos), decimal);
+}

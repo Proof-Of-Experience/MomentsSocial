@@ -20,4 +20,3 @@ export const getStatelessPostData = async (data: StatelessPostProps) => {
 
 	return result;
 };
-

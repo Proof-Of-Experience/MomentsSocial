@@ -8,6 +8,8 @@ export interface PrimaryInputProps {
 	id?: string,
 	className?: string,
 	label?: string,
+	hasLeftDropdown?: boolean,
+	dropdownOptions?: any,
 	[rest: string]: any;
 }
 
