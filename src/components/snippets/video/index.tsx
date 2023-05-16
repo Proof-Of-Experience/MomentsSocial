@@ -1,39 +1,63 @@
-import React, { useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { VideoItemProps } from '@/model/video'
+import { useSelector } from 'react-redux';
+import { selectAuthUser } from '@/slices/authSlice';
 
-interface ReactionButtonProps {
-	onSelect?: (reaction: string) => void;
-}
-
-const ReactionButton: React.FC<ReactionButtonProps> = ({ onSelect }) => {
-
-	const handleReactionSelect = (selectedReaction: string) => {
-		if (onSelect) {
-			onSelect(selectedReaction);
-		}
-	};
-
-	const emojiList = ['👍', '❤️', '😂', '😮‍💨', '😢', '😡', '😀'];
-
-	return (
-		<div
-			className="emoji-reaction"
-		>
-			<div className="emoji-list">
-				{emojiList.map((emoji) => (
-					<button key={emoji} onClick={() => handleReactionSelect(emoji)}>
-						{emoji}
-					</button>
-				))}
-			</div>
-		</div>
-	);
-}
+const emojiList = [
+	{
+		name: 'LIKE',
+		emoji: '👍',
+	},
+	{
+		name: 'DISLIKE',
+		emoji: '👎',
+	},
+	{
+		name: 'LOVE',
+		emoji: '❤️',
+	},
+	{
+		name: 'LAUGH',
+		emoji: '😀',
+	},
+	{
+		name: 'ASTONISHED',
+		emoji: '😲',
+	},
+	{
+		name: 'SAD',
+		emoji: '😢',
+	},
+	{
+		name: 'ANGRY',
+		emoji: '😡',
+	},
+];
 
 
 const VideoItem = ({ item }: VideoItemProps) => {
-	const [currentReaction, setcurrentReaction] = useState('👍')
-	const [isReactionHovered, setIsReactionHovered] = useState(false)
+	const authUser = useSelector(selectAuthUser);
+	const [currentReaction, setCurrentReaction] = useState<string>('👍')
+	const [isReactionHovered, setIsReactionHovered] = useState<boolean>(false)
+	const [totalReaction, setTotalReaction] = useState<any>({})
+
+	console.log('authUser', authUser);
+
+	const getReactions = async () => {
+		const { countPostAssociations } = await import('deso-protocol')
+		const reactionParams = {
+			AssociationType: 'REACTION',
+			AssociationValues: ["LIKE", "DISLIKE", "LOVE", "LAUGH", "ASTONISHED", "SAD", "ANGRY"],
+			PostHashHex: item?.PostHashHex,
+		}
+
+		const result = await countPostAssociations(reactionParams)
+		setTotalReaction(result)
+	}
+
+	useEffect(() => {
+		getReactions()
+	}, [])
 
 	const handleButtonHover = () => {
 		setIsReactionHovered(true)
@@ -43,8 +67,19 @@ const VideoItem = ({ item }: VideoItemProps) => {
 		setIsReactionHovered(false)
 	}
 
-	const handleReactionSelect = (selectedReaction: string) => {
-		setcurrentReaction(selectedReaction)
+	const handleReactionSelect = async (reactionName: string, selectedReaction: string) => {
+		const { createPostAssociation } = await import('deso-protocol')
+		const reactionParams = {
+			AppPublicKeyBase58Check: '',
+			AssociationType: 'REACTION',
+			AssociationValue: reactionName,
+			AssociationValues: ["LIKE", "DISLIKE", "LOVE", "LAUGH", "ASTONISHED", "SAD", "ANGRY"],
+			PostHashHex: item?.PostHashHex,
+			TransactorPublicKeyBase58Check: authUser?.currentUser?.PublicKeyBase58Check
+		}
+		const result = await createPostAssociation(reactionParams)
+		setCurrentReaction(selectedReaction)
+
 	}
 
 	return (
@@ -69,11 +104,23 @@ const VideoItem = ({ item }: VideoItemProps) => {
 					onMouseEnter={handleButtonHover}
 					onMouseLeave={handleButtonMouseLeave}>
 					{currentReaction}
-					<span className="ml-1">{item?.LikeCount}</span>
+					<span className="ml-1">{totalReaction?.Total}</span>
 
 					{isReactionHovered && (
 						<div className={`absolute bottom-7 left-0 bg-white rounded-3xl border-2 shadow px-3`}>
-							<ReactionButton onSelect={handleReactionSelect} />
+							<div
+								className="relative inline-flex items-center"
+							>
+								{emojiList.map((emojiItem) => (
+									<button
+										key={emojiItem.name}
+										className="p-1 rounded-full transition duration-200 ease-in-out hover:bg-gray-200"
+										onClick={() => handleReactionSelect(emojiItem.name, emojiItem.emoji)}
+										title={emojiItem.name}>
+										{emojiItem.emoji}
+									</button>
+								))}
+							</div>
 						</div>
 					)}
 				</button>
@@ -89,4 +136,4 @@ const VideoItem = ({ item }: VideoItemProps) => {
 	)
 }
 
-export default VideoItem
+export default memo(VideoItem)
