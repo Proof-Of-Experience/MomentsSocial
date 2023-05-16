@@ -20,6 +20,7 @@ const PublicProfile = () => {
     const [videoData, setVideoData] = useState<string[]>([]);
     const [imageData, setImageData] = useState<string[]>([]);
     const [isLoaded, setisLoaded] = useState<boolean>(true);
+    const [reactionClick, onReactionClick] = useState<any>(null);
 
     const fetchSingleProfile = async () => {
         const { getSingleProfile, buildProfilePictureUrl, getFollowersForUser } = await import('deso-protocol')
@@ -92,7 +93,8 @@ const PublicProfile = () => {
         if (username && publiKey) {
             fetchPublicPost()
         }
-    }, [username, publiKey])
+    }, [username, publiKey, reactionClick])
+
 
 
     return (
@@ -150,7 +152,7 @@ const PublicProfile = () => {
                                     <Tab.Panel>
                                         {
                                             videoData.length > 0 ?
-                                                <Videos videoData={videoData} /> :
+                                                <Videos videoData={videoData} onReactionClick={onReactionClick} /> :
                                                 !isLoaded &&
                                                 <div className="mt-10">
                                                     <Placeholder

@@ -34,14 +34,13 @@ const emojiList = [
 	},
 ];
 
-
-const VideoItem = ({ item }: VideoItemProps) => {
+const VideoItem = ({ item, onReactionClick }: VideoItemProps) => {
 	const authUser = useSelector(selectAuthUser);
-	const [currentReaction, setCurrentReaction] = useState<string>('👍')
+	const [selectedReaction, setSelectedReaction] = useState<string>('')
+	const [currentReaction, setCurrentReaction] = useState<string>('')
 	const [isReactionHovered, setIsReactionHovered] = useState<boolean>(false)
 	const [totalReaction, setTotalReaction] = useState<any>({})
 
-	console.log('authUser', authUser);
 
 	const getReactions = async () => {
 		const { countPostAssociations } = await import('deso-protocol')
@@ -52,6 +51,12 @@ const VideoItem = ({ item }: VideoItemProps) => {
 		}
 
 		const result = await countPostAssociations(reactionParams)
+		const modifiedEmojiList = emojiList.filter(({ name }) => result?.Counts[name] > 0);
+		modifiedEmojiList.sort((a, b) => result?.Counts[b.name] - result?.Counts[a.name]);
+		const appendedString = modifiedEmojiList.reduce((accumulator, emojiItem) => accumulator + emojiItem.emoji, '');
+		const uniqueEmojis = Array.from(new Set(appendedString)).join('');
+		setCurrentReaction(uniqueEmojis)
+		setSelectedReaction(uniqueEmojis)
 		setTotalReaction(result)
 	}
 
@@ -68,17 +73,25 @@ const VideoItem = ({ item }: VideoItemProps) => {
 	}
 
 	const handleReactionSelect = async (reactionName: string, selectedReaction: string) => {
+		setSelectedReaction([...new Set(selectedReaction + currentReaction)].join(''))
 		const { createPostAssociation } = await import('deso-protocol')
-		const reactionParams = {
-			AppPublicKeyBase58Check: '',
-			AssociationType: 'REACTION',
-			AssociationValue: reactionName,
-			AssociationValues: ["LIKE", "DISLIKE", "LOVE", "LAUGH", "ASTONISHED", "SAD", "ANGRY"],
-			PostHashHex: item?.PostHashHex,
-			TransactorPublicKeyBase58Check: authUser?.currentUser?.PublicKeyBase58Check
+		try {
+			const reactionParams = {
+				// AppPublicKeyBase58Check: 'BC1YLgTKfwSeHuNWtuqQmwduJM2QZ7ZQ9C7HFuLpyXuunUN7zTEr5WL',
+				AssociationType: 'REACTION',
+				MinFeeRateNanosPerKB: 1000,
+				AssociationValue: reactionName,
+				PostHashHex: item?.PostHashHex,
+				TransactorPublicKeyBase58Check: authUser?.currentUser?.PublicKeyBase58Check
+			}
+			const result = await createPostAssociation(reactionParams)
+			if (onReactionClick) {
+				onReactionClick();
+			}
+			getReactions()
+		} catch (error) {
+			console.log('reaction error', error);
 		}
-		const result = await createPostAssociation(reactionParams)
-		setCurrentReaction(selectedReaction)
 
 	}
 
@@ -103,7 +116,7 @@ const VideoItem = ({ item }: VideoItemProps) => {
 					className="flex items-center text-lg font-bold text-gray-700"
 					onMouseEnter={handleButtonHover}
 					onMouseLeave={handleButtonMouseLeave}>
-					{currentReaction}
+					{selectedReaction ? selectedReaction : '👍'}
 					<span className="ml-1">{totalReaction?.Total}</span>
 
 					{isReactionHovered && (

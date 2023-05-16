@@ -1,3 +1,4 @@
 export interface VideoItemProps {
-  item: any,
+    item: any,
+    onReactionClick?: () => void;
 }
