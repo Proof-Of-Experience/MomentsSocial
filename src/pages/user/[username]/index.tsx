@@ -106,7 +106,7 @@ const PublicProfile = () => {
                 <div className="container mx-auto px-4">
                     <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg">
 
-                        <Info userDetails={userDetails} />
+                        <Info username={username} userDetails={userDetails} />
 
                         <div className="mt-5 min-h-[200px]">
                             <Tab.Group>

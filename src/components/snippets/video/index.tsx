@@ -34,7 +34,7 @@ const emojiList = [
 	},
 ];
 
-const VideoItem = ({ item, onReactionClick }: VideoItemProps) => {
+const VideoItem = ({ item, onReactionClick, ...rest }: VideoItemProps) => {
 	const authUser = useSelector(selectAuthUser);
 	const [selectedReaction, setSelectedReaction] = useState<string>('')
 	const [currentReaction, setCurrentReaction] = useState<string>('')
@@ -100,6 +100,7 @@ const VideoItem = ({ item, onReactionClick }: VideoItemProps) => {
 
 			<div className="relative overflow-hidden w-full pt-[75%]">
 				<iframe
+					{...rest}
 					className="absolute top-0 left-0 right-0 bottom-0 w-full h-full"
 					src={`${item?.VideoURLs[0]}`}
 					title="YouTube video player"

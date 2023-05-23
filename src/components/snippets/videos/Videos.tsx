@@ -2,8 +2,8 @@ import VideoItem from '@/components/snippets/video';
 import VideoLayoutContext from '@/contexts/VideosContext';
 import { useContext, useState } from 'react';
 
-const Videos = ({ videoData, onReactionClick }: any) => {
-    
+const Videos = ({ videoData, onReactionClick, ...rest }: any) => {
+
     const { gridView }: any = useContext(VideoLayoutContext)
 
 
@@ -23,7 +23,7 @@ const Videos = ({ videoData, onReactionClick }: any) => {
                 videoData.map((item: any, index: any) => {
                     return (
                         <div key={`moment-${index}`} className="overflow-hidden">
-                            <VideoItem item={item} onReactionClick={() => onReactionClick(new Date())} />
+                            <VideoItem {...rest} item={item} onReactionClick={() => onReactionClick(new Date())} />
                         </div>
                     )
                 })

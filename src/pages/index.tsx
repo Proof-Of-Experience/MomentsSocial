@@ -3,7 +3,6 @@ import { VideoLayoutProvider } from '@/contexts/VideosContext';
 import Videos from '@/components/snippets/videos';
 import Layout from '@/features/home/layout';
 import { getFeedData } from '@/pages/api/feed';
-import { getStatelessPostData } from '@/pages/api/post';
 import Tags from '@/features/home/tags';
 import { NextPage } from 'next';
 import { useEffect, useRef, useState } from 'react';
@@ -36,12 +35,13 @@ const Home: NextPage = () => {
   };
 
   const fetchStatelessPostData = async () => {
+    const { getPostsStateless } = await import('deso-protocol')
     setVideoLoaded(true)
     const formData = {
       NumToFetch: 50,
       OrderBy: 'VideoURLs',
     }
-    const postData = await getStatelessPostData(formData)
+    const postData = await getPostsStateless(formData)
     setVideoLoaded(false)
 
     if (postData?.PostsFound) {

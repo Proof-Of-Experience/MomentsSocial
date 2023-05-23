@@ -1,14 +1,12 @@
 import MainLayout from '@/layouts/main-layout'
 import { getFeedData } from '@/pages/api/feed';
-import { getStatelessPostData } from '@/pages/api/post';
 import Tags from '@/features/home/tags';
 import { NextPage } from 'next';
 import { Fragment, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Moment from '@/components/snippets/moment';
-
+import Videos from '@/components/snippets/videos';
 
 
 const Moments: NextPage = () => {
@@ -16,7 +14,8 @@ const Moments: NextPage = () => {
   const tagParam: any = router.query.tag
 
   const [dataLoaded, setDataLoaded] = useState<boolean>(true)
-  const [imageData, setImageData] = useState<string[]>([])
+  const [videoData, setVideoData] = useState<string[]>([])
+
 
   useEffect(() => {
     if (!router.isReady) return
@@ -30,37 +29,50 @@ const Moments: NextPage = () => {
 
   const fetchStatelessPostData = async () => {
     setDataLoaded(true)
-    const formData = {
-      NumToFetch: 50,
-      OrderBy: 'VideoURLs',
-    }
-    const postData = await getStatelessPostData(formData)
-    setDataLoaded(false)
 
-    if (postData?.PostsFound) {
-      const newImageData: any = postData?.PostsFound.filter((item: any) => item.ImageURLs)
-      setImageData(newImageData)
+    try {
+      const { getPostsStateless } = await import('deso-protocol')
+      const params = {
+        NumToFetch: 100,
+        OrderBy: 'VideoURLs',
+      }
+      const postData = await getPostsStateless(params)
+
+      setDataLoaded(false)
+
+      if (postData?.PostsFound) {
+        const newVideoData: any = postData?.PostsFound.filter((item: any) => item.VideoURLs)
+        setVideoData(newVideoData)
+      }
+    } catch (error) {
+      setDataLoaded(false)
+      console.log('statelesspost error', error);
     }
   }
 
   const fetchFeedData = async (tag: string) => {
     setDataLoaded(true)
 
-    const data = {
-      Tag: `#${tag}`,
-    }
-    const feedData = await getFeedData(data);
-    setDataLoaded(false)
+    try {
+      const data = {
+        Tag: `#${tag}`,
+      }
+      const feedData = await getFeedData(data);
+      setDataLoaded(false)
 
-    if (feedData?.HotFeedPage) {
-      const newImageData: any = feedData?.HotFeedPage.filter((item: any) => item.ImageURLs)
-      setImageData(newImageData)
+      if (feedData?.HotFeedPage) {
+        const newVideoData: any = feedData?.PostsFound.filter((item: any) => item.VideoURLs)
+        setVideoData(newVideoData)
+      }
+    } catch (error) {
+      setDataLoaded(false)
+      console.log('feed post error', error);
     }
   }
 
   const onClickTag = (value: string) => {
     if (value === 'all') {
-      router.replace('/', undefined, { shallow: true });
+      router.replace('/moments', undefined, { shallow: true });
       fetchStatelessPostData()
 
     } else {
@@ -78,18 +90,14 @@ const Moments: NextPage = () => {
           <Tags tagParam={tagParam} onClick={onClickTag} />
         </div>
 
-        <div className="grid grid-flow-row lg:grid-cols-6 md:grid-cols-6 gap-4">
-          {
-            imageData.map((item: any, index: any) => {
-              return (
-                <Moment
-                  key={`moment-${index}`}
-                  item={item}
-                  onClick={() => router.push(`moment/${item?.PostHashHex}`)}
-                />
-              )
-            })
-          }
+        <div className="">
+
+          <Videos
+            iframeParams='?controls=0'
+            videoData={videoData}
+            // onClick={() => router.push(`moment/${item?.PostHashHex}`)}
+          />
+
         </div>
       </Fragment>
 
