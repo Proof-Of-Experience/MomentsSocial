@@ -1,7 +1,6 @@
 import React from 'react'
 
 const About = ({ userDetails }: any) => {
-	console.log('userDetails', userDetails);
 
 	return (
 		<div>

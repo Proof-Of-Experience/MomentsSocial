@@ -10,6 +10,7 @@ import { useRouter } from 'next/router'
 import { Placeholder } from '@/components/core/placeholder';
 import CreatorCoin from '@/features/profile/creator-coin';
 import Diamonds from '@/features/profile/diamonds';
+import ProfileBlog from '@/features/profile/blog';
 
 
 const PublicProfile = () => {
@@ -23,6 +24,16 @@ const PublicProfile = () => {
     const [reactionClick, onReactionClick] = useState<any>(null);
 
     const fetchSingleProfile = async () => {
+        const { getSinglePost } = await import('deso-protocol')
+        const params2 = {
+            PostHashHex: 'd6b5b835d64028039c07e9ca1f139190d439a7de2be3c80c19feb6b3e5650f32',
+        }
+
+        const singlePost: any = await getSinglePost(params2)
+
+        console.log('singlePost', singlePost);
+
+
         const { getSingleProfile, buildProfilePictureUrl, getFollowersForUser } = await import('deso-protocol')
         const params = {
             Username: username,
@@ -142,6 +153,13 @@ const PublicProfile = () => {
                                     <Tab as={Fragment}>
                                         {({ selected }) =>
                                             <button className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
+                                                Blog
+                                            </button>
+                                        }
+                                    </Tab>
+                                    <Tab as={Fragment}>
+                                        {({ selected }) =>
+                                            <button className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
                                                 About
                                             </button>
                                         }
@@ -180,6 +198,11 @@ const PublicProfile = () => {
                                     </Tab.Panel>
                                     <Tab.Panel>
                                         <Diamonds username={username} />
+                                    </Tab.Panel>
+                                    <Tab.Panel>
+                                        {/* Filter blog by using this props from post */}
+                                        {/* PostExtraData?.Title */}
+                                        <ProfileBlog username={username} publiKey={publiKey} userDetails={userDetails}/>
                                     </Tab.Panel>
                                     <Tab.Panel>
                                         <About username={username} userDetails={userDetails} />

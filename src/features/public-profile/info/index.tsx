@@ -1,7 +1,7 @@
 import { selectAuthUser } from '@/slices/authSlice'
 import React, { ChangeEvent, Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { ArrowUpTrayIcon, PencilIcon } from '@heroicons/react/20/solid'
+import { ArrowUpTrayIcon, CheckBadgeIcon, PencilIcon } from '@heroicons/react/20/solid'
 import { EditProfileProps } from '@/model/profile'
 import { toast } from 'react-toastify'
 import { Dialog, Tab, Transition } from '@headlessui/react'
@@ -19,6 +19,9 @@ const Info = ({ userDetails, username }: any) => {
     updatedPhoto: '',
     reward: (userDetails?.Profile?.CoinEntry?.CreatorBasisPoints) / 100,
   })
+
+  console.log('authUser', authUser);
+  
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file: any = event.target.files?.[0]
@@ -77,6 +80,27 @@ const Info = ({ userDetails, username }: any) => {
     }
   }
 
+  const onclickFollow = async () => {
+
+    const { updateFollowingStatus, } = await import('deso-protocol')
+
+    try {
+      const params = {
+        FollowedPublicKeyBase58Check: userDetails?.Profile?.PublicKeyBase58Check,
+        FollowerPublicKeyBase58Check: authUser?.Profile?.PublicKeyBase58Check,
+        IsUnfollow: false,
+        MinFeeRateNanosPerKB: 0,
+      }
+
+      const response = await updateFollowingStatus(params)
+      console.log('response', response);
+      
+      
+    } catch (error: any) {
+      toast.error(error?.message || 'Something went wrong!')
+    }
+  }
+
   return (
     <div className="flex flex-wrap justify-center">
       <div className="w-full lg:w-4/12 px-4 lg:order-1">
@@ -98,8 +122,9 @@ const Info = ({ userDetails, username }: any) => {
             src={userDetails?.Avatar}
             className=" shadow-xl rounded-full h-[120px] w-[120px] align-middle border-none mx-auto" />
 
-          <h3 className="text-2xl font-semibold text-center mt-3">
-            {userDetails?.Profile?.Username}
+          <h3 className="flex justify-center items-center text-2xl font-semibold text-center mt-3">
+            <span>{userDetails?.Profile?.Username}</span>
+            {userDetails.Profile?.IsVerified && <CheckBadgeIcon className="ml-1 w-5 h-5 text-blue-500" />}
           </h3>
 
           <div className="flex justify-center">
@@ -136,7 +161,7 @@ const Info = ({ userDetails, username }: any) => {
             :
             <button
               className="bg-blue-500 active:bg-blue-600 text-white font-bold hover:shadow-md shadow text-sm px-4 py-3 rounded outline-none ease-linear transition-all duration-150"
-              onClick={() => { }}>
+              onClick={onclickFollow}>
               Follow
             </button>
         }
@@ -288,7 +313,7 @@ const Info = ({ userDetails, username }: any) => {
                         className=" shadow-xl rounded-full h-[60px] w-[60px] align-middle border-none" />
                       <div className="ml-2">
                         <p>{username}</p>
-                        <p>≈{nanosToUSD(userDetails.Profile.CoinPriceDeSoNanos, 2)} Coin Price</p>
+                        <p>≈{nanosToUSD(userDetails.Profile?.CoinPriceDeSoNanos, 2)} Coin Price</p>
                       </div>
                     </div>
 

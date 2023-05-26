@@ -113,7 +113,7 @@ const VideoItem = ({ item, onReactionClick, ...rest }: VideoItemProps) => {
 			<p className="text-sm line-clamp-2 text-left min-h-[40px]">{item?.Body}</p>
 
 			<div className="flex justify-between mt-2">
-				<button
+				<div
 					className="flex items-center text-lg font-bold text-gray-700"
 					onMouseEnter={handleButtonHover}
 					onMouseLeave={handleButtonMouseLeave}>
@@ -137,7 +137,7 @@ const VideoItem = ({ item, onReactionClick, ...rest }: VideoItemProps) => {
 							</div>
 						</div>
 					)}
-				</button>
+				</div>
 
 				<button className="flex items-center text-lg font-bold text-gray-700">
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">

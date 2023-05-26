@@ -1,15 +1,12 @@
 import { LoadingSpinner } from '@/components/core/loader';
 import { Placeholder } from '@/components/core/placeholder';
-import { ArrowsUpDownIcon, CheckBadgeIcon, CheckCircleIcon, TagIcon, } from '@heroicons/react/20/solid';
-// import { CheckCircleIcon } from '@heroicons/react/24/outline';
+import { CheckBadgeIcon } from '@heroicons/react/20/solid';
 import React, { useEffect, useState } from 'react'
-// import { CheckCircleIcon } from '@heroicons/react/solid';
 
 
 const CreatorCoin = ({ username }: any) => {
     const [isLoaded, setisLoaded] = useState<boolean>(true);
     const [holders, setHolders] = useState<any>([]);
-    console.log('holders', holders);
 
     const fetchCreatorCoin = async () => {
         const { getHodlersForUser, HodlersSortType } = await import('deso-protocol')
