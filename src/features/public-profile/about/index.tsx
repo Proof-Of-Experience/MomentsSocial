@@ -1,3 +1,4 @@
+import { parseStringInnerHtml } from '@/utils'
 import React from 'react'
 
 const About = ({ userDetails }: any) => {
@@ -6,7 +7,7 @@ const About = ({ userDetails }: any) => {
 		<div>
 			{
 				userDetails?.Profile?.Description ?
-					<p>{userDetails?.Profile?.Description}</p> :
+					<div dangerouslySetInnerHTML={{ __html: parseStringInnerHtml(userDetails?.Profile?.Description) }}></div> :
 					<p>No description available</p>
 			}
 		</div>

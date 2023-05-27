@@ -68,3 +68,8 @@ export const nanosToUSD = (nanos: number, decimal?: number): string => {
     }
     return formatUSD(nanosToUSDNumber(nanos), decimal);
 }
+
+
+export const parseStringInnerHtml = (str: string) => {
+    return str.replace(/\n/g, '<br />')
+}

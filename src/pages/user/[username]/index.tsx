@@ -11,6 +11,7 @@ import { Placeholder } from '@/components/core/placeholder';
 import CreatorCoin from '@/features/profile/creator-coin';
 import Diamonds from '@/features/profile/diamonds';
 import ProfileBlog from '@/features/profile/blog';
+import ProfileNFT from '@/features/profile/nft';
 
 
 const PublicProfile = () => {
@@ -160,6 +161,13 @@ const PublicProfile = () => {
                                     <Tab as={Fragment}>
                                         {({ selected }) =>
                                             <button className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
+                                                NFTs
+                                            </button>
+                                        }
+                                    </Tab>
+                                    <Tab as={Fragment}>
+                                        {({ selected }) =>
+                                            <button className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
                                                 About
                                             </button>
                                         }
@@ -200,9 +208,10 @@ const PublicProfile = () => {
                                         <Diamonds username={username} />
                                     </Tab.Panel>
                                     <Tab.Panel>
-                                        {/* Filter blog by using this props from post */}
-                                        {/* PostExtraData?.Title */}
                                         <ProfileBlog username={username} publiKey={publiKey} userDetails={userDetails}/>
+                                    </Tab.Panel>
+                                    <Tab.Panel>
+                                        <ProfileNFT username={username} publiKey={publiKey} userDetails={userDetails}/>
                                     </Tab.Panel>
                                     <Tab.Panel>
                                         <About username={username} userDetails={userDetails} />

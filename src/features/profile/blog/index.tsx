@@ -70,12 +70,12 @@ const ProfileBlog = ({ username, publiKey, userDetails }: any) => {
             Username: username,
         }
         const publicData = await getPostsForUser(data);
+        setisLoaded(false)
 
         if (publicData?.Posts) {
             const modifiedPosts: any = publicData?.Posts.filter((item: any) => item.PostExtraData?.Title)
             setBlogs(modifiedPosts)
         }
-        setisLoaded(false)
     }
 
     useEffect(() => {
@@ -95,10 +95,14 @@ const ProfileBlog = ({ username, publiKey, userDetails }: any) => {
                     return (
                         <div key={blog.PostHashHex} className="mb-12 border border-b rounded-lg p-5">
                             <div className="mb-5 flex items-center">
+                                <a 
+                                // href={`/user/${value?.PostEntryResponse?.ProfileEntryResponse?.Username}`}
+                                 className="flex items-center font-bold">
                                 <img alt="..."
                                     src={userDetails?.Avatar}
                                     className=" shadow-xl rounded-full h-[40px] w-[40px] border-none" />
-                                <p className="ml-2">{username}</p>
+                                    <span className="ml-2 text-blue-500">{username}</span>
+                                </a>
                             </div>
 
                             <img src={blog.PostExtraData?.CoverImage} alt='' className="max-w-[600px]" />
