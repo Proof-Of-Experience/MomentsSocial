@@ -24,6 +24,7 @@
     "deso-protocol": "^1.1.15",
     "eslint": "8.35.0",
     "eslint-config-next": "13.2.3",
+    "html2canvas": "^1.4.1",
     "next": "13.2.3",
     "next-auth": "^4.20.1",
     "next-redux-wrapper": "^8.1.0",
