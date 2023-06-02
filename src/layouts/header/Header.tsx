@@ -3,8 +3,12 @@ import Link from 'next/link'
 import { getSearchProfileData } from '@/pages/api/profile';
 import AuthButtons from '@/features/header/auth-buttons';
 import Search from '@/features/header/search';
+import { BellIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { useSelector } from 'react-redux';
+import { selectAuthUser } from '@/slices/authSlice';
 
 const Header = () => {
+  const authUser = useSelector(selectAuthUser);
   const [selected, setSelected] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
   const [query, setQuery] = useState("");
@@ -69,7 +73,18 @@ const Header = () => {
           setQuery={setQuery}
         />
 
-        <AuthButtons />
+        <div className="flex items-center">
+          {
+            authUser?.currentUser &&
+            <BellIcon
+              className="h-7 w-7 mr-4"
+              aria-hidden="true"
+              role="button"
+            />
+          }
+
+          <AuthButtons />
+        </div>
 
       </div>
     </header>
