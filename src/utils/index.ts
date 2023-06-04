@@ -73,3 +73,7 @@ export const nanosToUSD = (nanos: number, decimal?: number): string => {
 export const parseStringInnerHtml = (str: string) => {
     return str.replace(/\n/g, '<br />')
 }
+
+export const desoPrice = (str: number) => {
+    return (str / 100)
+}
