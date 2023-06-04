@@ -9,13 +9,16 @@ import { selectAuthUser } from '@/slices/authSlice';
 
 const Header = () => {
 	const authUser = useSelector(selectAuthUser);
-	const [selected, setSelected] = useState([]);
-	const [searchResult, setSearchResult] = useState([]);
-	const [query, setQuery] = useState("");
-	const [loadedQuery, setLoadedQuery] = useState(false);
-	const [isSticky, setSticky] = useState(false);
+	const [selected, setSelected] = useState<any>([]);
+	const [searchResult, setSearchResult] = useState<any>([]);
+	const [query, setQuery] = useState<string>("");
+	const [loadedQuery, setLoadedQuery] = useState<boolean>(false);
+	const [isSticky, setSticky] = useState<boolean>(false);
+	const [notificationCount, setNotificationCount] = useState<number>(0);
 
 	useEffect(() => {
+		fetchNotificationCount()
+
 		window.addEventListener('scroll', () => {
 			if (window.scrollY >= 30) {
 				setSticky(true);
@@ -48,6 +51,15 @@ const Header = () => {
 
 	}
 
+	const fetchNotificationCount = async () => {
+		const { getUnreadNotificationsCount } = await import('deso-protocol')
+		const params = {
+			PublicKeyBase58Check: authUser?.PublicKeyBase58Check
+		}
+		const response: any = await getUnreadNotificationsCount(params)
+		setNotificationCount(response?.NotificationsCount)
+	}
+
 	return (
 		<header className={`${isSticky ? 'fixed' : 'relative'} bg-white top-0 left-0 right-0 z-10 p-2 lg:px-5 shadow h-[72px] leading-[30px]`}>
 			<div className="flex items-center flex-wrap m-1 justify-left md:justify-between">
@@ -76,11 +88,20 @@ const Header = () => {
 				<div className="flex items-center">
 					{
 						authUser &&
-						<BellIcon
-							className="h-7 w-7 mr-4"
-							aria-hidden="true"
-							role="button"
-						/>
+						<div className="relative mr-4">
+							{
+								notificationCount > 0 &&
+								<span className="absolute -top-2 bg-red-600 inline-block rounded-full w-4 mx-auto text-center leading-5 h-5 text-white z-10 text-sm">
+									{notificationCount}
+								</span>
+							}
+
+							<BellIcon
+								className="h-7 w-7"
+								aria-hidden="true"
+								role="button"
+							/>
+						</div>
 					}
 
 					<AuthButtons />

@@ -107,9 +107,6 @@ const Info = ({ userDetails, username }: any) => {
 		}
 	}
 
-	console.log('authUser', authUser);
-
-
 	return (
 		<div className="flex flex-wrap justify-center">
 			<div className="w-full lg:w-4/12 px-4 lg:order-1">
