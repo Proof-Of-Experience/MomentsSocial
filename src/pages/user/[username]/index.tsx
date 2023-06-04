@@ -32,9 +32,6 @@ const PublicProfile = () => {
 
         const singlePost: any = await getSinglePost(params2)
 
-        console.log('singlePost', singlePost);
-
-
         const { getSingleProfile, buildProfilePictureUrl, getFollowersForUser } = await import('deso-protocol')
         const params = {
             Username: username,

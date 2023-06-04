@@ -90,9 +90,8 @@ const VideoItem = ({ item, onReactionClick, ...rest }: VideoItemProps) => {
 			}
 			getReactions()
 		} catch (error) {
-			console.log('reaction error', error);
+			console.error('reaction error', error);
 		}
-
 	}
 
 	return (

@@ -46,7 +46,7 @@ const Moments: NextPage = () => {
       }
     } catch (error) {
       setDataLoaded(false)
-      console.log('statelesspost error', error);
+      console.error('statelesspost error', error);
     }
   }
 
@@ -66,7 +66,7 @@ const Moments: NextPage = () => {
       }
     } catch (error) {
       setDataLoaded(false)
-      console.log('feed post error', error);
+      console.error('feed post error', error);
     }
   }
 

@@ -29,7 +29,6 @@ const VideoDetailsPage = () => {
   // const { PostHashHex }: any = router.query
   // const [dataLoaded, setDataLoaded] = useState<boolean>(true)
   // // const [videos, setVideos] = useState<object[]>([])
-  // console.log('videos', videos);
   
   // const { id } = router.query;
 
@@ -40,7 +39,6 @@ const VideoDetailsPage = () => {
   //   }
 
   //   const singlePost: any = await getSinglePost(params)
-  //   console.log('singlePost', singlePost);
   //   // setVideos([singlePost?.PostFound?.VideoURLs ?? 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'])
 
   //   setDataLoaded(false)

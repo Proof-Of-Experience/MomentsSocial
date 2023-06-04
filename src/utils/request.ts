@@ -33,17 +33,16 @@ export const apiService = async (apiData: ApiDataType, callback: any) => {
 		});
 
 		const data = await res.json()
-		// console.log('SUCCESS FROM API_SERVICE-----', data)
 
 		callback(data, null);
 	} catch (error: any) {
-		// Uncomment console.log for debugging
-		// console.log(`___________ERROR 👀 👀 FROM API_SERVICE__________`)
-		// console.log('err', error.response)
+		// Uncomment console.error for debugging
+		// console.error(`___________ERROR 👀 👀 FROM API_SERVICE__________`)
+		// console.error('err', error.response)
 		// console.groupCollapsed('Where Error Happened')
 		// console.table(apiData)
 		// console.groupEnd()
-		// console.log(`_____________________🐒________________________`)
+		// console.error(`_____________________🐒________________________`)
 
 		callback(null, error);
 	}

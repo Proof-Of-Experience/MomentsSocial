@@ -82,10 +82,7 @@ const UploadFile = () => {
             }
         }
 
-    };
-
-    console.log('asset', asset);
-    
+    };    
 
     const handleVideoToLivepeer = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -136,10 +133,7 @@ const UploadFile = () => {
             }
 
             const response: any = await submitPost(postParams)
-            // const result = await identity.submitTx(response?.TransactionHex)
-
-            // console.log('result', result);
-            
+            // const result = await identity.submitTx(response?.TransactionHex)            
 
             toast.success('Post created successfully')
             setPostProcessing(false)
@@ -148,7 +142,7 @@ const UploadFile = () => {
             setDescription('')
             setLivepeerSuccess(false)
         } catch (error) {
-            console.log('error', error);
+            console.error('error', error);
         }
 
     }

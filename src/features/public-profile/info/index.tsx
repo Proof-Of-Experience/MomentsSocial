@@ -17,10 +17,7 @@ const Info = ({ userDetails, username }: any) => {
     description: userDetails?.Profile?.Description,
     updatedPhoto: '',
     reward: (userDetails?.Profile?.CoinEntry?.CreatorBasisPoints) / 100,
-  })
-
-  console.log('authUser', authUser);
-  
+  })  
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file: any = event.target.files?.[0]
@@ -91,9 +88,7 @@ const Info = ({ userDetails, username }: any) => {
         MinFeeRateNanosPerKB: 0,
       }
 
-      const response = await updateFollowingStatus(params)
-      console.log('response', response);
-      
+      const response = await updateFollowingStatus(params)      
       
     } catch (error: any) {
       toast.error(error?.message || 'Something went wrong!')

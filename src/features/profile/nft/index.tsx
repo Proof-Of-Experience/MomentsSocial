@@ -7,7 +7,6 @@ import React, { useEffect, useState } from 'react'
 const ProfileNFT = ({ username, publiKey, userDetails }: any) => {
     const [isLoaded, setisLoaded] = useState<boolean>(true);
     const [nfts, setNfts] = useState<any>({});
-    console.log('nfts', nfts);
 
     const fetchPublicPost = async () => {
 
@@ -54,8 +53,6 @@ const ProfileNFT = ({ username, publiKey, userDetails }: any) => {
 
                 {
                     Object.entries(nfts).map(([key, value]: any) => {
-                        console.log('key', key);
-                        console.log('value', value);
                         return (
                             <div key={key.PostHashHex} className="mb-12 border border-b rounded-lg p-5">
                                 <div className="mb-5 flex items-center">

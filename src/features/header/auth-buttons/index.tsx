@@ -25,13 +25,36 @@ const AuthButtons = () => {
 		}
 	}
 
-	console.log('authUser', authUser);
-
 	useEffect(() => {
 		if (authUser) {
 			getUserInfo()
 		}
 	}, [])
+
+	const onClickLogin = async () => {
+		const { identity, getUsersStateless } = await import('deso-protocol')
+		const loggedInInfo = await identity.login()
+		const userParams = {
+			PublicKeysBase58Check: [loggedInInfo?.publicKeyBase58Check],
+			SkipForLeaderboard: true,
+		}
+		const userInfo: any = await getUsersStateless(userParams)
+		dispatch(setAuthUser({ ...loggedInInfo, ...userInfo?.UserList[0] }))
+	}
+
+	const onClickMyProfile = () => {
+		if (authUser) {
+			router.push(`/user/${authUser?.ProfileEntryResponse?.Username}`)
+		} else {
+			location.reload()
+		}
+	}
+
+	const onClickLogout = async () => {
+		const { identity } = (await import('deso-protocol'))
+		await identity.logout()
+		dispatch(setAuthUser(null));
+	}
 
 	return (
 		<div className="flex justify-end items-center">
@@ -72,13 +95,7 @@ const AuthButtons = () => {
 								<Menu.Item>
 									{({ active }) => (
 										<button
-											onClick={() => {
-												if (authUser) {
-													router.push(`/user/${authUser?.ProfileEntryResponse?.Username}`)
-												} else {
-													location.reload()
-												}
-											}}
+											onClick={onClickMyProfile}
 											className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'
 												} group flex w-full items-center px-3 py-2 text-sm`}
 										>
@@ -89,11 +106,7 @@ const AuthButtons = () => {
 								<Menu.Item>
 									{({ active }) => (
 										<button
-											onClick={async () => {
-												const { identity } = (await import('deso-protocol'))
-												await identity.logout()
-												dispatch(setAuthUser({}));
-											}}
+											onClick={onClickLogout}
 											className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'
 												} group flex w-full items-center px-3 py-2 text-sm`}
 										>
@@ -107,11 +120,7 @@ const AuthButtons = () => {
 					<div className="flex items-center">
 						<PrimaryButton
 							text='Login'
-							onClick={async () => {
-								const { identity } = await import('deso-protocol')
-								const loggedInInfo = await identity.login()
-								dispatch(setAuthUser(loggedInInfo))
-							}}
+							onClick={onClickLogin}
 						/>
 						<PrimaryButton
 							text='Signup'
