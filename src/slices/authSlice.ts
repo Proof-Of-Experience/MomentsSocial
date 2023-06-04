@@ -1,8 +1,9 @@
+
 import { createSlice } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 
 const initialState = {
-  authUser: {},
+  authUser: null,
 };
 
 export const authSlice = createSlice({
@@ -12,14 +13,13 @@ export const authSlice = createSlice({
     setAuthUser(state, action) {
       state.authUser = action.payload;
     },
-
-    extraReducers: {
-      [HYDRATE]: (state: any, action: { payload: { auth: any; }; }) => {
-        return {
-          ...state,
-          ...action.payload.auth,
-        };
-      },
+  },
+  extraReducers: {
+    [HYDRATE]: (state, action) => {
+      return {
+        ...state,
+        ...action.payload.auth,
+      };
     },
   },
 });

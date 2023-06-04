@@ -12,35 +12,39 @@ const AuthButtons = () => {
 	const authUser = useSelector(selectAuthUser);
 
 	const getUserInfo = async () => {
-		const { getSingleProfile } = await import('deso-protocol')
-		const params = {
-			PublicKeyBase58Check: authUser?.currentUser?.PublicKeyBase58Check,
-		}
-		const userData = await getSingleProfile(params)
+		try {
+			const { getSingleProfile } = await import('deso-protocol')
+			const params = {
+				PublicKeyBase58Check: authUser?.publicKeyBase58Check,
+			}
+			const userData = await getSingleProfile(params)
 
-		dispatch(setAuthUser({ ...authUser, ...userData }));
+			dispatch(setAuthUser({ ...authUser, ...userData }));
+		} catch (error) {
+			console.error('profile error', error);
+		}
 	}
 
+	console.log('authUser', authUser);
 
 	useEffect(() => {
-		if (authUser?.currentUser) {
+		if (authUser) {
 			getUserInfo()
 		}
 	}, [])
 
-
 	return (
 		<div className="flex justify-end items-center">
 			{
-				authUser?.currentUser ?
+				authUser ?
 					<Menu as="div" className="relative inline-block text-left">
 
 						<Menu.Button className="flex w-full justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
 
 							{
-								authUser?.currentUser?.PublicKeyBase58Check ?
+								authUser?.PublicKeyBase58Check ?
 									<img
-										src={`https://node.deso.org/api/v0/get-single-profile-picture/${authUser?.currentUser?.PublicKeyBase58Check}`}
+										src={`https://node.deso.org/api/v0/get-single-profile-picture/${authUser?.PublicKeyBase58Check}`}
 										className="w-10 h-10 rounded-full"
 										alt="Avatar" /> :
 									<UserCircleIcon
@@ -69,8 +73,8 @@ const AuthButtons = () => {
 									{({ active }) => (
 										<button
 											onClick={() => {
-												if (authUser?.currentUser) {
-													router.push(`/user/${authUser?.currentUser?.ProfileEntryResponse?.Username}`)
+												if (authUser) {
+													router.push(`/user/${authUser?.ProfileEntryResponse?.Username}`)
 												} else {
 													location.reload()
 												}
@@ -105,7 +109,8 @@ const AuthButtons = () => {
 							text='Login'
 							onClick={async () => {
 								const { identity } = await import('deso-protocol')
-								identity.login()
+								const loggedInInfo = await identity.login()
+								dispatch(setAuthUser(loggedInInfo))
 							}}
 						/>
 						<PrimaryButton

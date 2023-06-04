@@ -82,7 +82,7 @@ const VideoItem = ({ item, onReactionClick, ...rest }: VideoItemProps) => {
 				MinFeeRateNanosPerKB: 1000,
 				AssociationValue: reactionName,
 				PostHashHex: item?.PostHashHex,
-				TransactorPublicKeyBase58Check: authUser?.currentUser?.PublicKeyBase58Check
+				TransactorPublicKeyBase58Check: authUser?.publicKeyBase58Check
 			}
 			const result = await createPostAssociation(reactionParams)
 			if (onReactionClick) {

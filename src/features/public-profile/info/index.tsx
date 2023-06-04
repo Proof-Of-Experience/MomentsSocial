@@ -142,7 +142,7 @@ const Info = ({ userDetails, username }: any) => {
 
       <div className="flex justify-end items-center lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center">
         {
-          authUser?.currentUser?.ProfileEntryResponse?.Username === username ?
+          authUser?.ProfileEntryResponse?.Username === username ?
             <div className="flex">
               <button
                 className="flex items-center border-2 px-4 py-1 text-sm rounded-md mr-3"

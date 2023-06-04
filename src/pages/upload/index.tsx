@@ -16,7 +16,7 @@ const Upload: NextPage = () => {
     <MainLayout title='Upload'>
 
       {
-        authUser?.currentUser ?
+        authUser ?
           <div className="grid grid-cols-5 mt-10">
             <div className="col-start-2 col-span-3">
               <h2 className="text-3xl">Upload a Video</h2>

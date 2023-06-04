@@ -55,7 +55,7 @@ const LeftSidebar = () => {
       </button>
 
       {
-        authUser?.currentUser &&
+        authUser &&
         <button
           className="mb-3 hover:bg-gray-300 transition-all rounded-md px-2 py-1 text-gray-600 focus:bg-gray-300"
           title="Upload"
