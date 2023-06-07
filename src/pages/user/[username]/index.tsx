@@ -13,10 +13,13 @@ import Diamonds from '@/features/profile/diamonds';
 import ProfileBlog from '@/features/profile/blog';
 import ProfileNFT from '@/features/profile/nft';
 import ProfileWallet from '@/features/profile/wallet';
+import { useSelector } from 'react-redux';
+import { selectAuthUser } from '@/slices/authSlice';
 
 
 const PublicProfile = () => {
     const router = useRouter()
+    const authUser = useSelector(selectAuthUser)
     const { username }: any = router.query
     const [publiKey, setPubliKey] = useState<string>("");
     const [userDetails, setUserDetails] = useState<any>({});
@@ -105,7 +108,17 @@ const PublicProfile = () => {
         }
     }, [username, publiKey, reactionClick])
 
-    
+
+    const tabHeaders = [
+        'Videos',
+        'Moments',
+        'Creator Coin',
+        'Diamonds',
+        'Blog',
+        'NFTs',
+        'My Wallets',
+        'About',
+    ]
 
 
     return (
@@ -122,62 +135,26 @@ const PublicProfile = () => {
                         <div className="mt-5 min-h-[200px]">
                             <Tab.Group>
                                 <Tab.List className="border-b px-10">
-                                    <Tab as={Fragment}>
-                                        {({ selected }) =>
-                                            <button className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`}>
-                                                Videos
-                                            </button>
-                                        }
-                                    </Tab>
-                                    <Tab as={Fragment}>
-                                        {({ selected }) =>
-                                            <button className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
-                                                Moments
-                                            </button>
-                                        }
-                                    </Tab>
-                                    <Tab as={Fragment}>
-                                        {({ selected }) =>
-                                            <button className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
-                                                Creator Coin
-                                            </button>
-                                        }
-                                    </Tab>
-                                    <Tab as={Fragment}>
-                                        {({ selected }) =>
-                                            <button className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
-                                                Diamonds
-                                            </button>
-                                        }
-                                    </Tab>
-                                    <Tab as={Fragment}>
-                                        {({ selected }) =>
-                                            <button className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
-                                                Blog
-                                            </button>
-                                        }
-                                    </Tab>
-                                    <Tab as={Fragment}>
-                                        {({ selected }) =>
-                                            <button className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
-                                                NFTs
-                                            </button>
-                                        }
-                                    </Tab>
-                                    <Tab as={Fragment}>
-                                        {({ selected }) =>
-                                            <button className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
-                                                Wallet
-                                            </button>
-                                        }
-                                    </Tab>
-                                    <Tab as={Fragment}>
-                                        {({ selected }) =>
-                                            <button className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`} >
-                                                About
-                                            </button>
-                                        }
-                                    </Tab>
+                                    {
+                                        tabHeaders.map((item: string, index: number) => {
+                                            if (authUser?.ProfileEntryResponse?.Username !== username && item === 'My Wallets') {
+                                                return null;
+                                            }
+
+                                            return (
+                                                <Tab as={Fragment}>
+                                                    {({ selected }) =>
+                                                        <button
+                                                            key={index}
+                                                            className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`}>
+                                                            {item}
+                                                        </button>
+                                                    }
+                                                </Tab>
+                                            )
+                                        })
+                                    }
+
                                 </Tab.List>
 
                                 <Tab.Panels className="px-10 mt-2 mb-16">
@@ -219,9 +196,12 @@ const PublicProfile = () => {
                                     <Tab.Panel>
                                         <ProfileNFT username={username} publiKey={publiKey} userDetails={userDetails} />
                                     </Tab.Panel>
-                                    <Tab.Panel>
-                                        <ProfileWallet username={username} publiKey={publiKey} userDetails={userDetails} />
-                                    </Tab.Panel>
+                                    {
+                                        authUser?.ProfileEntryResponse?.Username === username &&
+                                        <Tab.Panel>
+                                            <ProfileWallet username={username} publiKey={publiKey} userDetails={userDetails} />
+                                        </Tab.Panel>
+                                    }
                                     <Tab.Panel>
                                         <About username={username} userDetails={userDetails} />
                                     </Tab.Panel>

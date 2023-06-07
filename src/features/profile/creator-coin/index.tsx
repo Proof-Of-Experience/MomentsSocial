@@ -1,10 +1,12 @@
 import { LoadingSpinner } from '@/components/core/loader';
 import { Placeholder } from '@/components/core/placeholder';
 import { CheckBadgeIcon } from '@heroicons/react/20/solid';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
 
 
 const CreatorCoin = ({ username }: any) => {
+    const router = useRouter()
     const [isLoaded, setisLoaded] = useState<boolean>(true);
     const [holders, setHolders] = useState<any>([]);
 
@@ -49,7 +51,9 @@ const CreatorCoin = ({ username }: any) => {
                     {holders.map((holder: any, index: number) => (
                         <tr key={index}>
                             <td className="border-b py-3">
-                                <div className="flex items-center">
+                                <div
+                                    className="flex items-center cursor-pointer"
+                                    onClick={() => router.push(`/user/${holder.ProfileEntryResponse?.Username}`)}>
                                     <img
                                         src={`${process.env.NEXT_PUBLIC_BASE_URL}/api/v0/get-single-profile-picture/${holder.HODLerPublicKeyBase58Check}?fallback=https://diamondapp.com/assets/img/default-profile-pic.png`}
                                         alt="avatar"
