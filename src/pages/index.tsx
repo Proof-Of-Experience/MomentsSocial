@@ -13,152 +13,179 @@ import Slider from "react-slick";
 import Moment from '@/components/snippets/moment';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
-
-
 const Home: NextPage = () => {
-  const router = useRouter();
-  const tagParam: any = router.query.tag
+	const router = useRouter();
+	const tagParam: any = router.query.tag
 
-  const [videoLoaded, setVideoLoaded] = useState<boolean>(true);
-  const [videoData, setVideoData] = useState<string[]>([]);
-  const [imageData, setImageData] = useState<string[]>([]);
-  const slider: any = useRef(null);
+	const [videoLoaded, setVideoLoaded] = useState<boolean>(true);
+	const [videoData, setVideoData] = useState<string[]>([]);
+	const [imageData, setImageData] = useState<string[]>([]);
+	const slider: any = useRef(null);
 
-  const momentSliderSettings = {
-    dots: false,
-    infinite: true,
-    arrows: false,
-    // centerPadding: true,
-    speed: 500,
-    slidesToShow: imageData.length > 6 ? 7 : imageData.length,
-    slidesToScroll: 3
-  };
+	const momentSliderSettings = {
+		dots: false,
+		infinite: true,
+		arrows: false,
+		// centerPadding: true,
+		speed: 500,
+		slidesToShow: imageData.length > 6 ? 7 : imageData.length,
+		slidesToScroll: 3,
+		responsive: [
+			{
+				breakpoint: 1200,
+				settings: {
+					slidesToShow: 5,
+					slidesToScroll: 3,
+				}
+			},
+			{
+				breakpoint: 991,
+				settings: {
+					slidesToShow: 3,
+					slidesToScroll: 2,
+				}
+			},
+			{
+				breakpoint: 700,
+				settings: {
+					slidesToShow: 2,
+					slidesToScroll: 1
+				}
+			},
+			{
+				breakpoint: 575,
+				settings: {
+					slidesToShow: 1,
+				}
+			}
+		]
+	};
 
-  const fetchStatelessPostData = async () => {
-    const { getPostsStateless } = await import('deso-protocol')
-    setVideoLoaded(true)
-    const formData = {
-      NumToFetch: 50,
-      OrderBy: 'VideoURLs',
-    }
-    const postData = await getPostsStateless(formData)
-    setVideoLoaded(false)
+	const fetchStatelessPostData = async () => {
+		const { getPostsStateless } = await import('deso-protocol')
+		setVideoLoaded(true)
+		const formData = {
+			NumToFetch: 50,
+			OrderBy: 'VideoURLs',
+		}
+		const postData = await getPostsStateless(formData)
+		setVideoLoaded(false)
 
-    if (postData?.PostsFound) {
-      const newVideoData: any = postData?.PostsFound.filter((item: any) => item.VideoURLs)
-      const newImageData: any = postData?.PostsFound.filter((item: any) => item.ImageURLs)
-      setVideoData(newVideoData)
-      setImageData(newImageData)
-    }
-  }
+		if (postData?.PostsFound) {
+			const newVideoData: any = postData?.PostsFound.filter((item: any) => item.VideoURLs)
+			const newImageData: any = postData?.PostsFound.filter((item: any) => item.ImageURLs)
+			setVideoData(newVideoData)
+			setImageData(newImageData)
+		}
+	}
 
-  const fetchFeedData = async (tag: string) => {
-    setVideoLoaded(true)
+	const fetchFeedData = async (tag: string) => {
+		setVideoLoaded(true)
 
-    const data = {
-      Tag: `#${tag}`,
-    }
-    const feedData = await getFeedData(data);
-    setVideoLoaded(false)
+		const data = {
+			Tag: `#${tag}`,
+		}
+		const feedData = await getFeedData(data);
+		setVideoLoaded(false)
 
-    if (feedData?.HotFeedPage) {
-      const newVideoData: any = feedData?.HotFeedPage.filter((item: any) => item.VideoURLs)
-      const newImageData: any = feedData?.HotFeedPage.filter((item: any) => item.ImageURLs)
-      setVideoData(newVideoData)
-      setImageData(newImageData)
-    }
-  }
+		if (feedData?.HotFeedPage) {
+			const newVideoData: any = feedData?.HotFeedPage.filter((item: any) => item.VideoURLs)
+			const newImageData: any = feedData?.HotFeedPage.filter((item: any) => item.ImageURLs)
+			setVideoData(newVideoData)
+			setImageData(newImageData)
+		}
+	}
 
-  useEffect(() => {
-    if (!router.isReady) return
+	useEffect(() => {
+		if (!router.isReady) return
 
 
-    if (tagParam) {
-      fetchFeedData(tagParam)
-    } else {
-      fetchStatelessPostData()
-    }
-  }, [router.isReady])
+		if (tagParam) {
+			fetchFeedData(tagParam)
+		} else {
+			fetchStatelessPostData()
+		}
+	}, [router.isReady])
 
-  const onClickTag = (value: string) => {
-    if (value === 'all') {
-      router.replace('/', undefined, { shallow: true });
-      fetchStatelessPostData()
+	const onClickTag = (value: string) => {
+		if (value === 'all') {
+			router.replace('/', undefined, { shallow: true });
+			fetchStatelessPostData()
 
-    } else {
-      router.replace({
-        query: { ...router.query, tag: value },
-      })
-      fetchFeedData(value)
-    }
-  }
+		} else {
+			router.replace({
+				query: { ...router.query, tag: value },
+			})
+			fetchFeedData(value)
+		}
+	}
 
-  return (
-    <MainLayout title='Moments' isLoading={videoLoaded}>
+	return (
+		<MainLayout title='Moments' isLoading={videoLoaded}>
 
-      <VideoLayoutProvider>
+			<VideoLayoutProvider>
 
-        <div className={`flex justify-between items-center ${videoData.length > 0 ? 'mb-4' : 'mb-4'}`}>
-          <Tags tagParam={tagParam} onClick={onClickTag} />
-          <Layout />
-        </div >
+				<div className={`flex justify-between items-center ${videoData.length > 0 ? 'mb-4' : 'mb-4'}`}>
+					<Tags tagParam={tagParam} onClick={onClickTag} />
+					<Layout />
+				</div >
 
-        {
-          videoData.length > 0 &&
-          <>
-            <Videos videoData={videoData} />
-            <hr className="border-t-2 my-10" />
-          </>
-        }
+				{
+					videoData.length > 0 &&
+					<>
+						<Videos videoData={videoData} />
+						<hr className="border-t-2 my-10" />
+					</>
+				}
 
-        {
-          imageData.length > 0 &&
-          <>
-            <div className="flex justify-between items-center mr-10 mb-3">
-              <h3 className="font-semibold text-3xl">Moments</h3>
-              <div>
-                <button
-                  className="mr-4"
-                  onClick={() => slider?.current?.slickPrev()}>
-                  <ChevronLeftIcon className="h-5 w-5" />
-                </button>
-                <button
-                  onClick={() => slider?.current?.slickNext()}>
-                  <ChevronRightIcon className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
+				{
+					imageData.length > 0 &&
+					<>
+						<div className="flex justify-between items-center mr-10 mb-3">
+							<h3 className="font-semibold text-3xl">Moments</h3>
+							<div>
+								<button
+									className="mr-4"
+									onClick={() => slider?.current?.slickPrev()}>
+									<ChevronLeftIcon className="h-5 w-5" />
+								</button>
+								<button
+									onClick={() => slider?.current?.slickNext()}>
+									<ChevronRightIcon className="h-5 w-5" />
+								</button>
+							</div>
+						</div>
 
-            <Slider ref={slider}  {...momentSliderSettings}>
-              {
-                imageData.map((item: any, index: any) => {
-                  return (
-                    <Moment
-                      key={`moment-${index} overflow-hidden`}
-                      className="mr-6"
-                      item={item}
-                      onClick={() => router.push(`moment/${item?.PostHashHex}`)}
-                    />
-                  )
-                })
-              }
-            </Slider>
+						<Slider ref={slider}  {...momentSliderSettings}>
+							{
+								imageData.map((item: any, index: any) => {
+									return (
+										<Moment
+											key={`moment-${index} overflow-hidden`}
+											className="mr-6"
+											item={item}
+											onClick={() => router.push(`moment/${item?.PostHashHex}`)}
+										/>
+									)
+								})
+							}
+						</Slider>
 
-            {
-              videoData.length > 0 &&
-              <hr className="border-t-2 my-10" />
-            }
-          </>
-        }
+						{
+							videoData.length > 0 &&
+							<hr className="border-t-2 my-10" />
+						}
+					</>
+				}
 
-        {
-          videoData.length > 0 &&
-          <Videos videoData={videoData} />
-        }
+				{
+					videoData.length > 0 &&
+					<Videos videoData={videoData} />
+				}
 
-      </VideoLayoutProvider >
-    </MainLayout >
-  )
+			</VideoLayoutProvider >
+		</MainLayout >
+	)
 }
 
 export default Home

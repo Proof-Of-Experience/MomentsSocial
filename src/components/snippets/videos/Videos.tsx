@@ -1,6 +1,6 @@
 import VideoItem from '@/components/snippets/video';
 import VideoLayoutContext from '@/contexts/VideosContext';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 
 const Videos = ({ videoData, onReactionClick, ...rest }: any) => {
 

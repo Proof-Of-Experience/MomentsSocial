@@ -22,12 +22,9 @@ const Header = () => {
 	useEffect(() => {
 		if (authUser) {
 			fetchNotificationCount()
+			fetchNotifications()
 		}
 	}, [authUser])
-
-	useEffect(() => {
-		fetchNotifications()
-	}, [])
 
 	useEffect(() => {
 		window.addEventListener('scroll', () => {
