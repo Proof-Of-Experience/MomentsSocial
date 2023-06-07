@@ -17,8 +17,8 @@ const Notifications = ({ imageData }: any) => {
             <h3 className="font-bold">Notifications</h3>
 
             {
-                notificationList.map((notification: any) => 
-                    <div>{notification.title}</div>
+                notificationList.map((notification: any, index: number) => 
+                    <div key={index}>{notification.title}</div>
                 )
             }
         </div>

@@ -12,6 +12,7 @@ import CreatorCoin from '@/features/profile/creator-coin';
 import Diamonds from '@/features/profile/diamonds';
 import ProfileBlog from '@/features/profile/blog';
 import ProfileNFT from '@/features/profile/nft';
+import ProfileWallet from '@/features/profile/wallet';
 
 
 const PublicProfile = () => {
@@ -104,6 +105,7 @@ const PublicProfile = () => {
         }
     }, [username, publiKey, reactionClick])
 
+    
 
 
     return (
@@ -212,13 +214,13 @@ const PublicProfile = () => {
                                         <Diamonds username={username} />
                                     </Tab.Panel>
                                     <Tab.Panel>
-                                        <ProfileBlog username={username} publiKey={publiKey} userDetails={userDetails}/>
+                                        <ProfileBlog username={username} publiKey={publiKey} userDetails={userDetails} />
                                     </Tab.Panel>
                                     <Tab.Panel>
-                                        <ProfileNFT username={username} publiKey={publiKey} userDetails={userDetails}/>
+                                        <ProfileNFT username={username} publiKey={publiKey} userDetails={userDetails} />
                                     </Tab.Panel>
                                     <Tab.Panel>
-                                        Wallet
+                                        <ProfileWallet username={username} publiKey={publiKey} userDetails={userDetails} />
                                     </Tab.Panel>
                                     <Tab.Panel>
                                         <About username={username} userDetails={userDetails} />
