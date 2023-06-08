@@ -2,7 +2,7 @@ import { LoadingSpinner } from '@/components/core/loader';
 import { Placeholder } from '@/components/core/placeholder';
 import { selectAuthUser } from '@/slices/authSlice';
 import { desoPrice, nanosToUSD, usdYouWouldGetIfYouSoldDisplay } from '@/utils';
-import { Tab } from '@headlessui/react';
+import { Dialog, Tab, Transition } from '@headlessui/react';
 import { CheckBadgeIcon } from '@heroicons/react/20/solid';
 import { ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
@@ -15,9 +15,9 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
     const authUser = useSelector(selectAuthUser)
     const [exchangeData, setExchangeData] = useState<any>({})
     const [isLoaded, setisLoaded] = useState<boolean>(true)
-    const [holders, setHolders] = useState<any>([])
     const [coinsPurchased, setCoinsPurchased] = useState<any>([])
     const [coinsReceived, setCoinsReceived] = useState<any>([])
+    const [showBuyModal, setShowBuyModal] = useState<boolean>(false)
 
     useEffect(() => {
         fetchExchangeRate()
@@ -43,16 +43,13 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
         }
 
         const creatorCoinData: any = await getHodlersForUser(params)
-        console.log('creatorCoinData', creatorCoinData);
         const modifiedCoinsPurchased = creatorCoinData?.Hodlers.length > 0 && creatorCoinData?.Hodlers.filter((item: any) => item.HasPurchased)
-        console.log('modifiedCoinsPurchased', modifiedCoinsPurchased);
-
         setCoinsPurchased(modifiedCoinsPurchased)
+
         const modifiedCoinsReceived = creatorCoinData?.Hodlers.length > 0 && creatorCoinData?.Hodlers.filter((item: any) => !item.HasPurchased)
         setCoinsReceived(modifiedCoinsReceived)
 
         setisLoaded(false)
-        setHolders(creatorCoinData?.Hodlers)
     }
 
     const fetchExchangeRate = async () => {
@@ -116,10 +113,87 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
                                 </div>
 
                                 <div className="flex justify-between">
-                                    <button className="px-4 py-2 rounded-full bg-blue-500 text-white mr-4 w-full">
+                                    <button
+                                        className="px-4 py-2 rounded-full bg-blue-500 text-white mr-4 w-full"
+                                        onClick={() => setShowBuyModal(true)}>
                                         Buy $DESO
                                     </button>
                                 </div>
+
+                                <Transition appear show={showBuyModal} as={Fragment}>
+                                    <Dialog as="div" className="relative z-10" onClose={() => setShowBuyModal(true)} onClick={() => setShowBuyModal(false)}>
+                                        <Transition.Child
+                                            as={Fragment}
+                                            enter="ease-out duration-300"
+                                            enterFrom="opacity-0"
+                                            enterTo="opacity-100"
+                                            leave="ease-in duration-200"
+                                            leaveFrom="opacity-100"
+                                            leaveTo="opacity-0"
+                                        >
+                                            <div className="fixed inset-0 bg-black bg-opacity-25" />
+                                        </Transition.Child>
+
+                                        <div className="fixed inset-0 overflow-y-auto">
+                                            <div className="flex min-h-full items-center justify-center p-4 text-center">
+                                                <Transition.Child
+                                                    as={Fragment}
+                                                    enter="ease-out duration-300"
+                                                    enterFrom="opacity-0 scale-95"
+                                                    enterTo="opacity-100 scale-100"
+                                                    leave="ease-in duration-200"
+                                                    leaveFrom="opacity-100 scale-100"
+                                                    leaveTo="opacity-0 scale-95"
+                                                >
+                                                    <Dialog.Panel className="w-full max-w-lg transform overflow-hidden rounded-2xl bg-white px-6 py-8 my-5 text-left align-middle shadow-xl transition-all relative z-50">
+
+                                                        <Dialog.Title
+                                                            as="h3"
+                                                            className="text-lg font-medium leading-6 text-gray-900"
+                                                        >
+                                                            Buy $DESO
+                                                        </Dialog.Title>
+
+                                                        <div className="mt-10">
+                                                            <Tab.Group>
+                                                                <Tab.List className="border-b px-10">
+                                                                    <Tab as={Fragment}>
+                                                                        {({ selected }) => (
+                                                                            <button
+                                                                                className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`}
+                                                                            >
+                                                                                Buy with Crypto
+                                                                            </button>
+                                                                        )}
+                                                                    </Tab>
+
+                                                                    <button
+                                                                        className="text-black border-b-4 border-[transparent] mr-5 py-2 px-5 font-medium focus-visible:outline-none"
+                                                                        onClick={() => window.open('https://www.coinbase.com/price/decentralized-social', '_blank')}
+                                                                    >
+                                                                        Buy On Coinbase
+                                                                    </button>
+                                                                </Tab.List>
+
+                                                                <Tab.Panels className="mt-2">
+                                                                    <Tab.Panel>
+                                                                        <iframe
+                                                                            src="https://megaswap.xyz/#/iframe/v1?network=mainnet&theme=default&depositTicker=BTC&destinationTickers=DESO&destinationTicker=DESO&destinationAddress=BC1YLfsXHb15rC9FCtmy4QbjZ5YSibqQnqjAJALkbVeWu221wGUgnP9&affiliateAddress=BC1YLgTKfwSeHuNWtuqQmwduJM2QZ7ZQ9C7HFuLpyXuunUN7zTEr5WL"
+                                                                            width="100%"
+                                                                            height="400"
+                                                                            title="MegaSwap"
+                                                                            allow="fullscreen"
+                                                                        />
+                                                                    </Tab.Panel>
+                                                                </Tab.Panels>
+                                                            </Tab.Group>
+                                                        </div>
+                                                    </Dialog.Panel>
+                                                </Transition.Child>
+                                            </div>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
                             </div>
 
 
