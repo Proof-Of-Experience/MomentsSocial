@@ -38,6 +38,9 @@ const abbreviateNumber = (value: number, decimals: number, formatUSD: boolean = 
 }
 
 const nanosToUSDNumber = (nanos: number): number => {
+    if (!nanos || !nanosPerUSDExchangeRate) {
+        return 0;
+    }
     return nanos / nanosPerUSDExchangeRate;
 }
 
@@ -63,6 +66,10 @@ const formatUSD = (num: number, decimal: number): string => {
 }
 
 export const nanosToUSD = (nanos: number, decimal?: number): string => {
+    if (!nanos || isNaN(nanos)) {
+        return "$0.00";
+    }
+
     if (decimal == null) {
         decimal = 4;
     }
@@ -76,4 +83,37 @@ export const parseStringInnerHtml = (str: string) => {
 
 export const desoPrice = (str: number) => {
     return (str / 100)
+}
+
+const CREATOR_COIN_RESERVE_RATIO = 0.3333333
+const CREATOR_COIN_TRADE_FEED_BASIS_POINTS = 1
+
+export const desoNanosYouWouldGetIfYouSold = (creatorCoinAmountNano: number, coinEntry: any): number => {
+    if (!creatorCoinAmountNano || !coinEntry?.DeSoLockedNanos || !coinEntry?.CoinsInCirculationNanos) {
+        return 0;
+    }
+    // This is the formula:
+    // - B0 * (1 - (1 - dS / S0)^(1/RR))
+    // - where:
+    //     dS = bigDeltaCreatorCoin,
+    //     B0 = bigCurrentDeSoLocked
+    //     S0 = bigCurrentCreatorCoinSupply
+    //     RR = params.CreatorCoinReserveRatio
+    const desoLockedNanos = coinEntry?.DeSoLockedNanos;
+    const currentCreatorCoinSupply = coinEntry?.CoinsInCirculationNanos;
+    const desoBeforeFeesNanos =
+        desoLockedNanos *
+        (1 -
+            Math.pow(
+                1 - creatorCoinAmountNano / currentCreatorCoinSupply,
+                1 / CREATOR_COIN_RESERVE_RATIO
+            ));
+
+    return (desoBeforeFeesNanos * (100 * 100 - CREATOR_COIN_TRADE_FEED_BASIS_POINTS)) / (100 * 100);
+}
+
+export const usdYouWouldGetIfYouSoldDisplay = (creatorCoinAmountNano: number, coinEntry: any, abbreviate: boolean = true): string => {
+    if (creatorCoinAmountNano == 0) return "$0";
+    const usdValue = nanosToUSDNumber(desoNanosYouWouldGetIfYouSold(creatorCoinAmountNano, coinEntry));
+    return abbreviate ? abbreviateNumber(usdValue, 2, true) : formatUSD(usdValue, 2);
 }

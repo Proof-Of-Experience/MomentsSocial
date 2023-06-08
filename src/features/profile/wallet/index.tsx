@@ -1,7 +1,7 @@
 import { LoadingSpinner } from '@/components/core/loader';
 import { Placeholder } from '@/components/core/placeholder';
 import { selectAuthUser } from '@/slices/authSlice';
-import { desoPrice, nanosToUSD } from '@/utils';
+import { desoPrice, nanosToUSD, usdYouWouldGetIfYouSoldDisplay } from '@/utils';
 import { Tab } from '@headlessui/react';
 import { CheckBadgeIcon } from '@heroicons/react/20/solid';
 import { ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline';
@@ -166,7 +166,6 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
                                                     <th className="border-b border-black py-2 text-left">Username</th>
                                                     <th className="border-b border-black py-2 text-left">Price</th>
                                                     <th className="border-b border-black py-2 text-center">Value</th>
-                                                    <th className="border-b border-black py-2 text-right">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -187,13 +186,14 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
                                                             </div>
                                                         </td>
                                                         <td className="border-b py-3 text-left">
-                                                            {
-                                                                holder.HasPurchased ? <span className="text-blue-500">Purchased</span> :
-                                                                    <span className="text-lime-600">Received</span>
-                                                            }
+                                                            {nanosToUSD(holder.ProfileEntryResponse?.CoinPriceDeSoNanos, 2)}
                                                         </td>
-                                                        <td className="border-b py-3 text-center">{holder.BalanceNanos}</td>
-                                                        <td className="border-b py-3 text-right">{holder.ProfileEntryResponse?.CoinPriceBitCloutNanos}</td>
+                                                        <td className="border-b py-3 text-center">
+                                                            {usdYouWouldGetIfYouSoldDisplay(
+                                                                holder.BalanceNanos,
+                                                                holder.ProfileEntryResponse?.CoinEntry
+                                                            )}
+                                                        </td>
                                                     </tr>
                                                 )) :
                                                     <tr>
@@ -213,7 +213,6 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
                                                     <th className="border-b border-black py-2 text-left">Username</th>
                                                     <th className="border-b border-black py-2 text-left">Price</th>
                                                     <th className="border-b border-black py-2 text-center">Value</th>
-                                                    <th className="border-b border-black py-2 text-right">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -234,13 +233,14 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
                                                             </div>
                                                         </td>
                                                         <td className="border-b py-3 text-left">
-                                                            {
-                                                                holder.HasPurchased ? <span className="text-blue-500">Purchased</span> :
-                                                                    <span className="text-lime-600">Received</span>
-                                                            }
+                                                            {nanosToUSD(holder.ProfileEntryResponse?.CoinPriceDeSoNanos, 2)}
                                                         </td>
-                                                        <td className="border-b py-3 text-center">{holder.BalanceNanos}</td>
-                                                        <td className="border-b py-3 text-right">{holder.ProfileEntryResponse?.CoinPriceBitCloutNanos}</td>
+                                                        <td className="border-b py-3 text-center">
+                                                            {usdYouWouldGetIfYouSoldDisplay(
+                                                                holder.BalanceNanos,
+                                                                holder.ProfileEntryResponse?.CoinEntry
+                                                            )}
+                                                        </td>
                                                     </tr>
                                                 )) :
                                                     <tr>

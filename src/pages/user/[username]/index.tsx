@@ -108,7 +108,6 @@ const PublicProfile = () => {
         }
     }, [username, publiKey, reactionClick])
 
-
     const tabHeaders = [
         'Videos',
         'Moments',
@@ -119,7 +118,7 @@ const PublicProfile = () => {
         'My Wallets',
         'About',
     ]
-
+    
 
     return (
 
@@ -142,10 +141,9 @@ const PublicProfile = () => {
                                             }
 
                                             return (
-                                                <Tab as={Fragment}>
+                                                <Tab as={Fragment} key={index}>
                                                     {({ selected }) =>
                                                         <button
-                                                            key={index}
                                                             className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`}>
                                                             {item}
                                                         </button>
