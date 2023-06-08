@@ -1,5 +1,6 @@
 import { LoadingSpinner } from '@/components/core/loader';
 import { Placeholder } from '@/components/core/placeholder';
+import { creatorCoinNanosToUSDNaive } from '@/utils';
 import { CheckBadgeIcon } from '@heroicons/react/20/solid';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
@@ -70,8 +71,12 @@ const CreatorCoin = ({ username }: any) => {
                                         <span className="text-lime-600">Received</span>
                                 }
                             </td>
-                            <td className="border-b py-3 text-center">{holder.BalanceNanos}</td>
-                            <td className="border-b py-3 text-right">{holder.ProfileEntryResponse?.CoinPriceBitCloutNanos}</td>
+                            <td className="border-b py-3 text-center">
+                                {(holder.BalanceNanos / 1e9).toFixed(4)}
+                            </td>
+                            <td className="border-b py-3 text-right">
+                                ≈ {creatorCoinNanosToUSDNaive(holder.BalanceNanos, holder.ProfileEntryResponse?.CoinPriceDeSoNanos, true)}
+                            </td>
                         </tr>
                     ))}
                 </tbody>

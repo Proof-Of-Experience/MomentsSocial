@@ -44,10 +44,15 @@ const nanosToUSDNumber = (nanos: number): number => {
     return nanos / nanosPerUSDExchangeRate;
 }
 
-const creatorCoinNanosToUSDNaive = (creatorCoinNanos: any, coinPriceDeSoNanos: any, abbreviate: boolean = false): string => {
+// export const creatorCoinNanosToUSDNaive = (creatorCoinNanos: number, coinPriceDeSoNanos: number, abbreviate: boolean = false): string => {
+//     const usdValue = nanosToUSDNumber((creatorCoinNanos / 1e9) * coinPriceDeSoNanos);
+//     return abbreviate ? abbreviateNumber(usdValue, 2, true) : formatUSDFunc(usdValue, 2);
+// }
+
+export const creatorCoinNanosToUSDNaive = (creatorCoinNanos: any, coinPriceDeSoNanos: any, abbreviate: boolean = false): string => {
     const usdValue = nanosToUSDNumber((creatorCoinNanos / 1e9) * coinPriceDeSoNanos);
-    return abbreviate ? abbreviateNumber(usdValue, 2, true) : formatUSDFunc(usdValue, 2);
-}
+    return abbreviate ? abbreviateNumber(usdValue, 2, true) : formatUSD(usdValue, 2);
+  }
 
 const formatUSD = (num: number, decimal: number): string => {
     if (formatUSDMemo[num] && formatUSDMemo[num][decimal]) {
@@ -75,7 +80,6 @@ export const nanosToUSD = (nanos: number, decimal?: number): string => {
     }
     return formatUSD(nanosToUSDNumber(nanos), decimal);
 }
-
 
 export const parseStringInnerHtml = (str: string) => {
     return str.replace(/\n/g, '<br />')
