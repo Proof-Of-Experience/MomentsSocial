@@ -15,6 +15,7 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
     const authUser = useSelector(selectAuthUser)
     const [exchangeData, setExchangeData] = useState<any>({})
     const [isLoaded, setisLoaded] = useState<boolean>(true)
+    const [iframeLoading, setIframeLoading] = useState(true)
     const [coinsPurchased, setCoinsPurchased] = useState<any>([])
     const [coinsReceived, setCoinsReceived] = useState<any>([])
     const [showBuyModal, setShowBuyModal] = useState<boolean>(false)
@@ -147,7 +148,10 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
                                 <div className="flex justify-between">
                                     <button
                                         className="px-4 py-2 rounded-full bg-blue-500 text-white mr-4 w-full"
-                                        onClick={() => setShowBuyModal(true)}>
+                                        onClick={() => {
+                                            setShowBuyModal(true)
+                                            setIframeLoading(true)
+                                        }}>
                                         Buy DESO
                                     </button>
                                 </div>
@@ -209,12 +213,18 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
 
                                                                 <Tab.Panels className="mt-2">
                                                                     <Tab.Panel>
+                                                                        {
+                                                                            iframeLoading && <LoadingSpinner isLoading={iframeLoading} />
+                                                                        }
+
                                                                         <iframe
                                                                             src="https://megaswap.xyz/#/iframe/v1?network=mainnet&theme=default&depositTicker=BTC&destinationTickers=DESO&destinationTicker=DESO&destinationAddress=BC1YLfsXHb15rC9FCtmy4QbjZ5YSibqQnqjAJALkbVeWu221wGUgnP9&affiliateAddress=BC1YLgTKfwSeHuNWtuqQmwduJM2QZ7ZQ9C7HFuLpyXuunUN7zTEr5WL"
                                                                             width="100%"
                                                                             height="400"
                                                                             title="MegaSwap"
                                                                             allow="fullscreen"
+                                                                            onLoad={() => setIframeLoading(false)}
+                                                                            style={{ display: iframeLoading ? 'none' : 'block' }}
                                                                         />
                                                                     </Tab.Panel>
                                                                 </Tab.Panels>
