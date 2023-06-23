@@ -203,12 +203,16 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
                                                                         )}
                                                                     </Tab>
 
-                                                                    <button
-                                                                        className="text-black border-b-4 border-[transparent] mr-5 py-2 px-5 font-medium focus-visible:outline-none"
-                                                                        onClick={() => window.open('https://www.coinbase.com/price/decentralized-social', '_blank')}
-                                                                    >
-                                                                        Buy On Coinbase
-                                                                    </button>
+                                                                    <Tab as={Fragment}>
+                                                                        {({ selected }) => (
+                                                                            <button
+                                                                                className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`}
+                                                                            >
+                                                                                Buy On
+                                                                            </button>
+                                                                        )}
+                                                                    </Tab>
+
                                                                 </Tab.List>
 
                                                                 <Tab.Panels className="mt-2">
@@ -226,6 +230,50 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
                                                                             onLoad={() => setIframeLoading(false)}
                                                                             style={{ display: iframeLoading ? 'none' : 'block' }}
                                                                         />
+                                                                    </Tab.Panel>
+
+                                                                    <Tab.Panel className="text-center">
+
+                                                                        <button
+                                                                            className="text-white bg-blue-400 mr-5 mb-5 py-1 px-5 rounded-lg text-base focus-visible:outline-none"
+                                                                            onClick={() => window.open('https://exchange.coinbase.com/trade/DESO-USD', '_blank')}
+                                                                        >
+                                                                            Coinbase
+                                                                        </button>
+
+                                                                        <button
+                                                                            className="text-white bg-blue-400 mr-5 mb-5 py-1 px-5 rounded-lg text-base focus-visible:outline-none"
+                                                                            onClick={() => window.open('https://gate.io/trade/deso_usdt?ref=12312805', '_blank')}
+                                                                        >
+                                                                            Gate.io
+                                                                        </button>
+                                                                        <button
+                                                                            className="text-white bg-blue-400 mr-5 mb-5 py-1 px-5 rounded-lg text-base focus-visible:outline-none"
+                                                                            onClick={() => window.open('https://www.lbank.com/en-US/trade/deso_usdt', '_blank')}
+                                                                        >
+                                                                            LBank
+                                                                        </button>
+
+                                                                        <button
+                                                                            className="text-white bg-blue-400 mr-5 mb-5 py-1 px-5 rounded-lg text-base focus-visible:outline-none"
+                                                                            onClick={() => window.open('https://www.coinex.com/exchange/deso-usdt', '_blank')}
+                                                                        >
+                                                                            CoinEx
+                                                                        </button>
+
+                                                                        <button
+                                                                            className="text-white bg-blue-400 mr-5 mb-5 py-1 px-5 rounded-lg text-base focus-visible:outline-none"
+                                                                            onClick={() => window.open('https://www.ascendex.com/en/basic/cashtrade-spottrading/usdt/deso', '_blank')}
+                                                                        >
+                                                                            AscendEX
+                                                                        </button>
+
+                                                                        <button
+                                                                            className="text-white bg-blue-400 mr-5 mb-5 py-1 px-5 rounded-lg text-base focus-visible:outline-none"
+                                                                            onClick={() => window.open('https://www.jbex.com/exchange/DESO/USDT', '_blank')}
+                                                                        >
+                                                                            Jubi
+                                                                        </button>
                                                                     </Tab.Panel>
                                                                 </Tab.Panels>
                                                             </Tab.Group>
