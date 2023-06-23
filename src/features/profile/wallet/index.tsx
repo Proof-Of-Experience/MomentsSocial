@@ -140,7 +140,7 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
                                     <p>
                                         <span>Your DESO </span>
                                         <span className="font-bold">
-                                            {nanosToUSD(authUser?.Profile?.DESOBalanceNanos, 2)} ≈ {desoPrice(exchangeData?.USDCentsPerDeSoCoinbase)}
+                                            {nanosToUSD(authUser?.Profile?.DESOBalanceNanos, 2)}
                                         </span>
                                     </p>
                                 </div>
