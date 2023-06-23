@@ -170,13 +170,13 @@ const Info = ({ userDetails, username }: any) => {
 
 							<div className="text-right mt-3">
 								<p>
-									<span>$DESO Price</span>
-									<span className="font-bold"> ≈{desoPrice(exchangeData?.USDCentsPerDeSoCoinbase)}</span>
+									<span>DESO Price</span>
+									<span className="font-bold"> ≈ {desoPrice(exchangeData?.USDCentsPerDeSoCoinbase)}</span>
 								</p>
 								<p>
-									<span>Your $DESO</span>
+									<span>Your DESO</span>
 									<span className="font-bold">
-										{nanosToUSD(authUser?.Profile?.DESOBalanceNanos, 2)} ≈{desoPrice(exchangeData?.USDCentsPerDeSoCoinbase)}
+										{nanosToUSD(authUser?.Profile?.DESOBalanceNanos, 2)} ≈ {desoPrice(exchangeData?.USDCentsPerDeSoCoinbase)}
 									</span>
 								</p>
 							</div>

@@ -18,6 +18,9 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
     const [coinsPurchased, setCoinsPurchased] = useState<any>([])
     const [coinsReceived, setCoinsReceived] = useState<any>([])
     const [showBuyModal, setShowBuyModal] = useState<boolean>(false)
+    const [showByCoinsModal, setShowByCoinsModal] = useState<boolean>(false)
+    const [isLoadedProfiles, setIsLoadedProfiles] = useState<boolean>(true)
+    const [allProfiles, setAllProfiles] = useState<any>([])
 
     useEffect(() => {
         fetchExchangeRate()
@@ -28,6 +31,13 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
             fetchCreatorCoin()
         }
     }, [username])
+
+    useEffect(() => {
+        if (showByCoinsModal) {
+            fetchProfiles()
+        }
+    }, [showByCoinsModal])
+
 
     const fetchCreatorCoin = async () => {
         const { getHodlersForUser, HodlersSortType } = await import('deso-protocol')
@@ -57,6 +67,28 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
 
         const response = await getExchangeRates()
         setExchangeData(response)
+    }
+
+    const fetchProfiles = async () => {
+        const { getProfiles } = await import('deso-protocol')
+        const profileParams = {
+            AddGlobalFeedBool: false,
+            Description: '',
+            FetchUsersThatHODL: false,
+            ModerationType: 'leaderboard',
+            NumToFetch: 50,
+            OrderBy: 'influencer_coin_price',
+            PublicKeyBase58Check: '',
+            ReaderPublicKeyBase58Check: authUser?.PublicKeyBase58Check,
+            Username: '',
+            UsernamePrefix: ''
+        }
+
+        const response = await getProfiles(profileParams)
+        setIsLoadedProfiles(false)
+        setAllProfiles(response?.ProfilesFound)
+        console.log('response', response);
+
     }
 
     console.log('authUser', authUser);
@@ -101,13 +133,13 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
                             <div className="bg-gray-100 shadow rounded-lg px-5 py-6 col-span-1">
                                 <div className="mb-5">
                                     <p>
-                                        <span>$DESO Price</span>
-                                        <span className="font-bold"> ≈{desoPrice(exchangeData?.USDCentsPerDeSoCoinbase)}</span>
+                                        <span>DESO Price</span>
+                                        <span className="font-bold"> ≈ {desoPrice(exchangeData?.USDCentsPerDeSoCoinbase)}</span>
                                     </p>
                                     <p>
-                                        <span>Your $DESO </span>
+                                        <span>Your DESO </span>
                                         <span className="font-bold">
-                                            {nanosToUSD(authUser?.Profile?.DESOBalanceNanos, 2)} ≈{desoPrice(exchangeData?.USDCentsPerDeSoCoinbase)}
+                                            {nanosToUSD(authUser?.Profile?.DESOBalanceNanos, 2)} ≈ {desoPrice(exchangeData?.USDCentsPerDeSoCoinbase)}
                                         </span>
                                     </p>
                                 </div>
@@ -116,12 +148,12 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
                                     <button
                                         className="px-4 py-2 rounded-full bg-blue-500 text-white mr-4 w-full"
                                         onClick={() => setShowBuyModal(true)}>
-                                        Buy $DESO
+                                        Buy DESO
                                     </button>
                                 </div>
 
                                 <Transition appear show={showBuyModal} as={Fragment}>
-                                    <Dialog as="div" className="relative z-10" onClose={() => setShowBuyModal(true)} onClick={() => setShowBuyModal(false)}>
+                                    <Dialog as="div" className="relative z-10" onClose={() => setShowBuyModal(false)}>
                                         <Transition.Child
                                             as={Fragment}
                                             enter="ease-out duration-300"
@@ -151,7 +183,7 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
                                                             as="h3"
                                                             className="text-lg font-medium leading-6 text-gray-900"
                                                         >
-                                                            Buy $DESO
+                                                            Buy DESO
                                                         </Dialog.Title>
 
                                                         <div className="mt-10">
@@ -199,15 +231,112 @@ const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
 
                             <div className="bg-gray-100 shadow rounded-lg px-5 py-6 col-span-1">
                                 <div className="mb-5">
-                                    <p>0.00 $DESO ~ $0</p>
+                                    <p>0.00 DESO ~ $0</p>
                                     <p>0 Creator Coin</p>
                                 </div>
 
                                 <div className="flex justify-between">
-                                    <button className="px-4 py-2 rounded-full border border-[#0066ff] text-black mr-4 w-full">
+                                    <button
+                                        className="px-4 py-2 rounded-full border border-[#0066ff] text-black mr-4 w-full"
+                                        onClick={() => setShowByCoinsModal(true)}>
                                         Buy Creator Coin
                                     </button>
                                 </div>
+
+                                <Transition appear show={showByCoinsModal} as={Fragment}>
+                                    <Dialog as="div" className="relative z-10" onClose={() => setShowByCoinsModal(false)}>
+                                        <Transition.Child
+                                            as={Fragment}
+                                            enter="ease-out duration-300"
+                                            enterFrom="opacity-0"
+                                            enterTo="opacity-100"
+                                            leave="ease-in duration-200"
+                                            leaveFrom="opacity-100"
+                                            leaveTo="opacity-0"
+                                        >
+                                            <div className="fixed inset-0 bg-black bg-opacity-25" />
+                                        </Transition.Child>
+
+                                        <div className="fixed inset-0 overflow-y-auto">
+                                            <div className="flex min-h-full items-center justify-center p-4 text-center">
+                                                <Transition.Child
+                                                    as={Fragment}
+                                                    enter="ease-out duration-300"
+                                                    enterFrom="opacity-0 scale-95"
+                                                    enterTo="opacity-100 scale-100"
+                                                    leave="ease-in duration-200"
+                                                    leaveFrom="opacity-100 scale-100"
+                                                    leaveTo="opacity-0 scale-95"
+                                                >
+                                                    <Dialog.Panel className="w-full max-w-lg transform overflow-hidden rounded-2xl bg-white px-6 py-8 my-5 text-left align-middle shadow-xl transition-all relative z-50">
+
+                                                        <Dialog.Title
+                                                            as="h3"
+                                                            className="text-lg font-medium leading-6 text-gray-900"
+                                                        >
+                                                            Discover Creators
+                                                        </Dialog.Title>
+
+                                                        <div className="mt-5">
+                                                            {
+                                                                isLoadedProfiles ? <LoadingSpinner isLoading={isLoadedProfiles} /> :
+                                                                    <table className="table-auto w-full">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th className="border-b border-black py-2 text-left">Name</th>
+                                                                                <th className="border-b border-black py-2 text-left">Price</th>
+                                                                                <th className="border-b border-black py-2 text-center"></th>
+                                                                                <th className="border-b border-black py-2 text-center"></th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            {allProfiles?.length > 0 ? allProfiles.map((profileItem: any, index: number) => (
+                                                                                <tr key={index}>
+                                                                                    <td className="border-b py-3">
+                                                                                        <div
+                                                                                            className="flex items-center cursor-pointer"
+                                                                                            onClick={() => router.push(`/user/${profileItem.Username}`)}>
+                                                                                            <img
+                                                                                                src={`${process.env.NEXT_PUBLIC_BASE_URL}/api/v0/get-single-profile-picture/${profileItem.PublicKeyBase58Check}?fallback=https://diamondapp.com/assets/img/default-profile-pic.png`}
+                                                                                                alt="avatar"
+                                                                                                className="rounded-full h-10 w-10 mr-2" />
+                                                                                            <span className="flex w-[150px] truncate">
+                                                                                                {profileItem?.Username ? profileItem?.Username : profileItem.PublicKeyBase58Check}
+                                                                                                {profileItem?.IsVerified && <CheckBadgeIcon className="ml-1 w-5 h-5 text-blue-500" />}
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td className="border-b py-3 text-left">
+                                                                                        {nanosToUSD(profileItem?.DESOBalanceNanos, 2)}
+                                                                                    </td>
+                                                                                    <td className="border-b py-3 text-center">
+                                                                                        <button>
+                                                                                            Follow
+                                                                                        </button>
+                                                                                    </td>
+                                                                                    <td className="border-b py-3 text-center">
+                                                                                        <button>
+                                                                                            Buy
+                                                                                        </button>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            )) :
+                                                                                <tr>
+                                                                                    <td colSpan={4}>
+                                                                                        <Placeholder />
+                                                                                    </td>
+                                                                                </tr>
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+                                                            }
+                                                        </div>
+                                                    </Dialog.Panel>
+                                                </Transition.Child>
+                                            </div>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
                             </div>
                         </div>
 
