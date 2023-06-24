@@ -21,13 +21,15 @@ const PublicProfile = () => {
     const router = useRouter()
     const authUser = useSelector(selectAuthUser)
     const { username }: any = router.query
-    const [publiKey, setPubliKey] = useState<string>("");
-    const [userDetails, setUserDetails] = useState<any>({});
-    const [videoData, setVideoData] = useState<string[]>([]);
-    const [imageData, setImageData] = useState<string[]>([]);
-    const [isLoaded, setisLoaded] = useState<boolean>(true);
-    const [reactionClick, onReactionClick] = useState<any>(null);
+    const [publiKey, setPubliKey] = useState<string>("")
+    const [userDetails, setUserDetails] = useState<any>({})
+    const [videoData, setVideoData] = useState<string[]>([])
+    const [imageData, setImageData] = useState<string[]>([])
+    const [isLoaded, setisLoaded] = useState<boolean>(true)
+    const [reactionClick, onReactionClick] = useState<any>(null)
+    const [activeTab, setActiveTab] = useState<number>(0)
 
+    
     const fetchSingleProfile = async () => {
         const { getSinglePost } = await import('deso-protocol')
         const params2 = {
@@ -118,7 +120,7 @@ const PublicProfile = () => {
         'My Wallets',
         'About',
     ]
-    
+
 
     return (
 
@@ -129,10 +131,10 @@ const PublicProfile = () => {
                 <div className="container mx-auto px-4">
                     <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg">
 
-                        <Info username={username} userDetails={userDetails} />
+                        <Info username={username} userDetails={userDetails} setActiveTab={setActiveTab} />
 
                         <div className="mt-5 min-h-[200px]">
-                            <Tab.Group>
+                            <Tab.Group key={activeTab} defaultIndex={activeTab} onChange={setActiveTab}>
                                 <Tab.List className="border-b px-10">
                                     {
                                         tabHeaders.map((item: string, index: number) => {
@@ -152,7 +154,6 @@ const PublicProfile = () => {
                                             )
                                         })
                                     }
-
                                 </Tab.List>
 
                                 <Tab.Panels className="px-10 mt-2 mb-16">

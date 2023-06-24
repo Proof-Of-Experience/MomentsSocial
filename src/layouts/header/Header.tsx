@@ -17,6 +17,7 @@ const Header = () => {
 	const [loadedQuery, setLoadedQuery] = useState<boolean>(false)
 	const [isSticky, setSticky] = useState<boolean>(false)
 	const [notificationCount, setNotificationCount] = useState<number>(0)
+	const [notificationData, setNotificationData] = useState<any>([])
 	const [showNotification, setShowNotification] = useState<boolean>(false)
 
 	useEffect(() => {
@@ -77,9 +78,22 @@ const Header = () => {
 			PublicKeyBase58Check: authUser?.PublicKeyBase58Check
 		}
 		const response: any = await getNotifications(params)
-		
-		console.log('response', response);
-		
+		setNotificationData(response)
+	}
+
+	const onClickNotification = async () => {
+		setShowNotification(!showNotification)
+		setNotificationCount(0)
+		const { setNotificationMetadata, identity } = await import('deso-protocol')
+		const JWT = await identity.jwt()
+		const params = {
+			PublicKeyBase58Check: authUser?.PublicKeyBase58Check,
+			UnreadNotifications: 0,
+			LastSeenIndex: notificationData?.LastSeenIndex,
+			LastUnreadNotificationIndex: notificationData?.LastSeenIndex,
+			JWT,
+		}
+		await setNotificationMetadata(params)
 	}
 
 	const CustomBellIcon = ({ onClick }: any) => (
@@ -126,7 +140,7 @@ const Header = () => {
 							}
 
 							<CustomBellIcon
-								onClick={() => setShowNotification(!showNotification)}
+								onClick={onClickNotification}
 							/>
 
 
@@ -137,7 +151,7 @@ const Header = () => {
 									}}
 								>
 									<div className="absolute right-2 top-[56px]">
-										<Notifications />
+										<Notifications notifications={notificationData?.Notifications} />
 									</div>
 								</OutsideClickHandler>
 							)}

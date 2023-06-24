@@ -10,7 +10,7 @@ const notificationList = [
 ]
 
 
-const Notifications = ({ imageData }: any) => {
+const Notifications = ({ notifications }: any) => {
 
     return (
         <div className="bg-white shadow px-5 py-4 w-[300px]">
