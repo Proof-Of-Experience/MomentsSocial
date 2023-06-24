@@ -8,25 +8,60 @@ import { Dialog, Tab, Transition } from '@headlessui/react'
 import { PrimaryInput } from '@/components/core/input/Input'
 import { PrimaryTextArea } from '@/components/core/textarea/Textarea'
 import { desoPrice, nanosToUSD } from '@/utils'
+import SingleFollow from '@/features/profile/single-follow'
 
 const Info = ({ userDetails, username, setActiveTab }: any) => {
 	const authUser = useSelector(selectAuthUser)
 	const [exchangeData, setExchangeData] = useState<any>({})
 	const [showEditModal, setShowEditModal] = useState<boolean>(false)
+	const [followerData, setFollowerData] = useState<any>([])
+	const [followingData, setFollowingData] = useState<any>([])
+	const [followModal, setFollowModal] = useState<boolean>(false)
+	const [followActiveTab, setfollowActiveTab] = useState<number>(0)
 	const [editProfileData, setEditProfileData] = useState<EditProfileProps>({
 		userName: userDetails?.Profile?.Username,
 		description: userDetails?.Profile?.Description,
 		updatedPhoto: '',
 		reward: (userDetails?.Profile?.CoinEntry?.CreatorBasisPoints) / 100,
 	})
+	
 
 	useEffect(() => {
-		if (setActiveTab) {
-			setActiveTab(0);
-		}
-
 		fetchExchangeRate()
 	}, [])
+
+	useEffect(() => {
+		if (username) {
+			fetchFollowInfo()
+		}
+	}, [username])
+
+	const fetchFollowInfo = async () => {
+
+		const { getFollowersForUser } = await import('deso-protocol')
+
+		const followParams = {
+			PublicKeyBase58Check: userDetails?.Profile?.PublicKeyBase58Check,
+			Username: username,
+			LastPublicKeyBase58Check: '',
+			NumToFetch: 50,
+		}
+
+		const followerParams = {
+			...followParams,
+			GetEntriesFollowingUsername: true,
+		}
+
+		const followingParams = {
+			...followParams,
+			GetEntriesFollowingUsername: false,
+		}
+
+		const followers = await getFollowersForUser(followerParams)
+		setFollowerData(followers)
+		const following = await getFollowersForUser(followingParams)
+		setFollowingData(following)
+	}
 
 	const fetchExchangeRate = async () => {
 		const { getExchangeRates } = await import('deso-protocol')
@@ -92,7 +127,7 @@ const Info = ({ userDetails, username, setActiveTab }: any) => {
 		}
 	}
 
-	const onclickFollow = async () => {
+	const onClickFollow = async () => {
 
 		const { updateFollowingStatus, } = await import('deso-protocol')
 
@@ -138,12 +173,22 @@ const Info = ({ userDetails, username, setActiveTab }: any) => {
 					</h3>
 
 					<div className="flex justify-center">
-						<p className="mr-3 font-medium text-sm">
-							<span className="font-semibold">{userDetails?.Followers} </span>Followers
-						</p>
-						<p className="mr-3 font-medium text-sm">
-							<span className="font-semibold">{userDetails?.Following} </span>Following
-						</p>
+						<button
+							className="mr-3 font-medium text-sm cursor-pointer"
+							onClick={() => {
+								setfollowActiveTab(0)
+								setFollowModal(true)
+							}}>
+							<span className="font-semibold">{followerData?.NumFollowers} </span>Followers
+						</button>
+						<button
+							className="mr-3 font-medium text-sm cursor-pointer"
+							onClick={() => {
+								setfollowActiveTab(1)
+								setFollowModal(true)
+							}}>
+							<span className="font-semibold">{followingData?.NumFollowers} </span>Following
+						</button>
 						<p className="mr-3 font-medium text-sm">
 							<span className="font-semibold">{((userDetails?.Profile?.CoinEntry?.CreatorBasisPoints) / 100) || 0}% </span>FR
 						</p>
@@ -188,7 +233,7 @@ const Info = ({ userDetails, username, setActiveTab }: any) => {
 						:
 						<button
 							className="bg-blue-500 active:bg-blue-600 text-white font-bold hover:shadow-md shadow text-sm px-4 py-3 rounded outline-none ease-linear transition-all duration-150"
-							onClick={onclickFollow}>
+							onClick={onClickFollow}>
 							Follow
 						</button>
 				}
@@ -298,6 +343,73 @@ const Info = ({ userDetails, username, setActiveTab }: any) => {
 											</button>
 										</div>
 									</form>
+								</Dialog.Panel>
+							</Transition.Child>
+						</div>
+					</div>
+				</Dialog>
+			</Transition>
+
+			<Transition appear show={followModal} as={Fragment}>
+				<Dialog as="div" className="relative z-10" onClose={() => setFollowModal(true)} onClick={() => setFollowModal(false)}>
+					<Transition.Child
+						as={Fragment}
+						enter="ease-out duration-300"
+						enterFrom="opacity-0"
+						enterTo="opacity-100"
+						leave="ease-in duration-200"
+						leaveFrom="opacity-100"
+						leaveTo="opacity-0"
+					>
+						<div className="fixed inset-0 bg-black bg-opacity-25" />
+					</Transition.Child>
+
+					<div className="fixed inset-0 overflow-y-auto">
+						<div className="flex min-h-full items-center justify-center p-4 text-center">
+							<Transition.Child
+								as={Fragment}
+								enter="ease-out duration-300"
+								enterFrom="opacity-0 scale-95"
+								enterTo="opacity-100 scale-100"
+								leave="ease-in duration-200"
+								leaveFrom="opacity-100 scale-100"
+								leaveTo="opacity-0 scale-95"
+							>
+								<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white px-6 py-8 my-5 text-left align-middle shadow-xl transition-all relative z-50">
+
+									<Tab.Group key={followActiveTab} defaultIndex={followActiveTab} onChange={setfollowActiveTab}>
+										<Tab.List className="border-b px-10">
+											<Tab as={Fragment}>
+												{({ selected }) =>
+													<button
+														className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`}>
+														Followers
+													</button>
+												}
+											</Tab>
+											<Tab as={Fragment}>
+												{({ selected }) =>
+													<button
+														className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`}>
+														Following
+													</button>
+												}
+											</Tab>
+										</Tab.List>
+
+										<Tab.Panels className="mt-2">
+											<Tab.Panel>
+												{Object.keys(followerData?.PublicKeyToProfileEntry).map((key, index) => (
+													<SingleFollow key={index} username={username} followData={followerData?.PublicKeyToProfileEntry[key]} />
+												))}
+											</Tab.Panel>
+											<Tab.Panel>
+												{Object.keys(followingData?.PublicKeyToProfileEntry).map((key, index) => (
+													<SingleFollow key={index} username={username} followData={followingData?.PublicKeyToProfileEntry[key]} />
+												))}
+											</Tab.Panel>
+										</Tab.Panels>
+									</Tab.Group>
 								</Dialog.Panel>
 							</Transition.Child>
 						</div>

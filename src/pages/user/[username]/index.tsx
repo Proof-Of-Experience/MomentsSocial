@@ -31,14 +31,7 @@ const PublicProfile = () => {
 
     
     const fetchSingleProfile = async () => {
-        const { getSinglePost } = await import('deso-protocol')
-        const params2 = {
-            PostHashHex: 'd6b5b835d64028039c07e9ca1f139190d439a7de2be3c80c19feb6b3e5650f32',
-        }
-
-        const singlePost: any = await getSinglePost(params2)
-
-        const { getSingleProfile, buildProfilePictureUrl, getFollowersForUser } = await import('deso-protocol')
+        const { getSingleProfile, buildProfilePictureUrl } = await import('deso-protocol')
         const params = {
             Username: username,
             PublicKeyBase58Check: ''
@@ -49,27 +42,8 @@ const PublicProfile = () => {
             fallbackImageUrl: ''
         })
 
-        const followParams = {
-            PublicKeyBase58Check: profileData?.Profile?.PublicKeyBase58Check,
-            Username: username,
-            LastPublicKeyBase58Check: '',
-            NumToFetch: 0,
-        }
-
-        const followerParams = {
-            ...followParams,
-            GetEntriesFollowingUsername: true,
-        }
-
-        const followingParams = {
-            ...followParams,
-            GetEntriesFollowingUsername: false,
-        }
-
-        const followers = await getFollowersForUser(followerParams)
-        const following = await getFollowersForUser(followingParams)
         const updatedData = {
-            ...profileData, Avatar, Followers: followers.NumFollowers, Following: following.NumFollowers
+            ...profileData, Avatar,
         }
         setUserDetails(updatedData)
         setPubliKey(profileData?.Profile?.PublicKeyBase58Check)
