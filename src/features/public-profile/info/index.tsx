@@ -14,8 +14,8 @@ const Info = ({ userDetails, username, setActiveTab }: any) => {
 	const authUser = useSelector(selectAuthUser)
 	const [exchangeData, setExchangeData] = useState<any>({})
 	const [showEditModal, setShowEditModal] = useState<boolean>(false)
-	const [followerData, setFollowerData] = useState<any>([])
-	const [followingData, setFollowingData] = useState<any>([])
+	const [followerData, setFollowerData] = useState<any>({})
+	const [followingData, setFollowingData] = useState<any>({})
 	const [followModal, setFollowModal] = useState<boolean>(false)
 	const [followActiveTab, setfollowActiveTab] = useState<number>(0)
 	const [editProfileData, setEditProfileData] = useState<EditProfileProps>({
@@ -399,12 +399,12 @@ const Info = ({ userDetails, username, setActiveTab }: any) => {
 
 										<Tab.Panels className="mt-2">
 											<Tab.Panel>
-												{Object.keys(followerData?.PublicKeyToProfileEntry).map((key, index) => (
+												{followerData?.PublicKeyToProfileEntry && Object.keys(followerData?.PublicKeyToProfileEntry).map((key, index) => (
 													<SingleFollow key={index} username={username} followData={followerData?.PublicKeyToProfileEntry[key]} />
 												))}
 											</Tab.Panel>
 											<Tab.Panel>
-												{Object.keys(followingData?.PublicKeyToProfileEntry).map((key, index) => (
+												{followingData?.PublicKeyToProfileEntry && Object.keys(followingData?.PublicKeyToProfileEntry).map((key, index) => (
 													<SingleFollow key={index} username={username} followData={followingData?.PublicKeyToProfileEntry[key]} />
 												))}
 											</Tab.Panel>
