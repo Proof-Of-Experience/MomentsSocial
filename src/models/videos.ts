@@ -12,6 +12,7 @@ const VideoSchema: Schema = new Schema({
   screenshot: String,
 }, {
   timestamps: true,
+  collection: 'videos'
 });
 
 export default mongoose.model<IVideo>('Video', VideoSchema);
