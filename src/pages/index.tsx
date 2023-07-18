@@ -158,7 +158,7 @@ const Home: NextPage = () => {
 
 						<Slider ref={slider}  {...momentSliderSettings}>
 							{
-								imageData.map((item: any, index: any) => {
+								videoData.map((item: any, index: any) => {
 									return (
 										<Moment
 											key={`moment-${index} overflow-hidden`}

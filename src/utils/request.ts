@@ -6,6 +6,7 @@ export interface ApiDataType {
 	data?: any;
 	token?: boolean;
 	headers?: any;
+	customUrl?: any;
 }
 
 /*
@@ -23,7 +24,7 @@ export interface ApiDataType {
 export const apiService = async (apiData: ApiDataType, callback: any) => {
 
 	try {
-		const res = await fetch(`${baseURL}${apiData.url}`, {
+		const res = await fetch(`${apiData.customUrl ?? baseURL}${apiData.url}`, {
 			method: apiData.method,
 			headers: {
 				...apiData.headers,

@@ -1,13 +1,39 @@
-import React from 'react'
+import React, { useEffect, memo, useState } from 'react'
 import { MomentProps } from '@/model/moment'
+import { ApiDataType, apiService } from '@/utils/request';
 
+const Moment = memo(({ className, onClick, item }: MomentProps) => {
 
-const Moment = ({className, onClick, item }: MomentProps) => {
+  const [thumbnail, setThumbnail] = useState<string>('');
+
+  const makeThumbnail = async () => {
+    const body = {
+      url: item.VideoURLs[0],
+    }
+    const apiData: ApiDataType = {
+      customUrl: 'http://localhost:3001',
+      method: 'post',
+      url: `/api/video-info`,
+      data: body,
+    };
+
+    await apiService(apiData, (res: any, err: any) => {
+      if (err) console.log('err', err.response);
+      if (res) {
+        const base64Image = res.data.screenshot;
+        setThumbnail(base64Image);
+      }
+    });
+  };
+
+  useEffect(() => {
+    makeThumbnail()
+  }, [])
 
   return (
     <div className={`block border rounded-xl cursor-pointer h-[368px] ${className ? className : ''}`} onClick={onClick}>
       <div className="flex flex-wrap">
-        <img src={item?.ImageURLs[0]} className="border rounded-xl w-full h-[280px] object-cover" />
+        <img src={`http://localhost:3001/images/${thumbnail}`} alt="Video thumbnail" className="border rounded-xl w-full h-[280px] object-cover" />
       </div>
 
       <div className="px-2 pb-3 mt-2">
@@ -23,6 +49,6 @@ const Moment = ({className, onClick, item }: MomentProps) => {
       </div>
     </div>
   )
-}
+})
 
 export default Moment
