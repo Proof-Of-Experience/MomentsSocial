@@ -26,9 +26,8 @@ const Home: NextPage = () => {
 		dots: false,
 		infinite: true,
 		arrows: false,
-		// centerPadding: true,
 		speed: 500,
-		slidesToShow: imageData.length > 6 ? 7 : imageData.length,
+		slidesToShow: videoData.length > 6 ? 7 : videoData.length,
 		slidesToScroll: 3,
 		responsive: [
 			{
@@ -158,16 +157,16 @@ const Home: NextPage = () => {
 
 						<Slider ref={slider}  {...momentSliderSettings}>
 							{
-								videoData.map((item: any, index: any) => {
+								videoData.map((item: any) => {
 									return (
-										<Moment
-											key={`moment-${index} overflow-hidden`}
-											className="mr-6"
-											item={item}
-											onClick={() => router.push(`moment/${item?.PostHashHex}`)}
-										/>
+									  <Moment
+										key={item.PostHashHex} // use unique identifier as key
+										className="mr-6"
+										item={item}
+										onClick={() => router.push(`moment/${item?.PostHashHex}`)}
+									  />
 									)
-								})
+								  })
 							}
 						</Slider>
 

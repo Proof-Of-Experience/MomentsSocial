@@ -1,4 +1,4 @@
-import React, { useEffect, memo, useState } from 'react'
+import React, { useEffect, memo, useState, useCallback } from 'react'
 import { MomentProps } from '@/model/moment'
 import { ApiDataType, apiService } from '@/utils/request';
 
@@ -7,10 +7,8 @@ const Moment = memo(({ className, onClick, item }: MomentProps) => {
   const [thumbnails, setThumbnails] = useState<any>({});
 
   console.log('thumbnails', thumbnails);
-  
 
-
-  const makeThumbnail = async (itemId: string) => {
+  const makeThumbnail = useCallback(async (itemId: string) => {
     // const videoId = new URL(item.VideoURLs[0]).searchParams.get('v'); // Extract videoId from URL
     let videoId: any;
 
@@ -36,9 +34,8 @@ const Moment = memo(({ className, onClick, item }: MomentProps) => {
     };
 
     await apiService(apiData, (res: any, err: any) => {
-      if (err) console.log('err', err.response);
+      if (err) console.error('err', err.response);
       if (res) {
-        console.log('res', res);
         if (res.status === 409) {
           // if error 409, make a GET request to retrieve the thumbnail
           const getApiData: ApiDataType = {
@@ -49,30 +46,29 @@ const Moment = memo(({ className, onClick, item }: MomentProps) => {
 
           apiService(getApiData, (res: any, err: any) => {
             if (res) {
-              const base64Image = res.screenshot;
-              console.log('res', res);
-              console.log('base64Image', base64Image);
+              const base64Image = res.videoInfo.screenshot;
               
               setThumbnails((prevThumbnails: any) => ({
                 ...prevThumbnails,
-                base64Image,
+                [itemId]: base64Image,  // change this line
               }));
             }
-            if (err) console.log('GET error', err);
+            if (err) console.error('GET error', err);
           });
           return; // Make sure to return here to prevent further execution in this callback
         }
 
-        const base64Image = res.screenshot;
+        const base64Image = res.videoInfo.screenshot;
 
         // set thumbnail for specific item
         setThumbnails((prevThumbnails: any) => ({
           ...prevThumbnails,
-          base64Image,
+          [itemId]: base64Image,
         }));
       }
     });
-  };
+  }, [item, setThumbnails, apiService]); // dependencies
+
 
   useEffect(() => {
     makeThumbnail(item.PostHashHex)  // make sure to pass unique id for each item
@@ -81,7 +77,8 @@ const Moment = memo(({ className, onClick, item }: MomentProps) => {
   return (
     <div className={`block border rounded-xl cursor-pointer h-[368px] mb-4 ${className ? className : ''}`} onClick={onClick}>
       <div className="flex flex-wrap">
-        <img src={`http://localhost:3001${thumbnails?.base64Image}`} alt="Video thumbnail" className="border rounded-xl w-full h-[280px] object-cover" />
+        <img src={`http://localhost:3001${thumbnails[item.PostHashHex]}`} alt="Video thumbnail" className="border rounded-xl w-full h-[280px] object-cover" />
+
       </div>
 
       <div className="px-2 pb-3 mt-2">
