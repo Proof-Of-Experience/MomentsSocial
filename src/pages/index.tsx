@@ -64,7 +64,7 @@ const Home: NextPage = () => {
 		const { getPostsStateless } = await import('deso-protocol')
 		setVideoLoaded(true)
 		const formData = {
-			NumToFetch: 50,
+			NumToFetch: 100,
 			OrderBy: 'VideoURLs',
 		}
 		const postData = await getPostsStateless(formData)
@@ -97,7 +97,6 @@ const Home: NextPage = () => {
 
 	useEffect(() => {
 		if (!router.isReady) return
-
 
 		if (tagParam) {
 			fetchFeedData(tagParam)
@@ -159,14 +158,14 @@ const Home: NextPage = () => {
 							{
 								videoData.map((item: any) => {
 									return (
-									  <Moment
-										key={item.PostHashHex} // use unique identifier as key
-										className="mr-6"
-										item={item}
-										onClick={() => router.push(`moment/${item?.PostHashHex}`)}
-									  />
+										<Moment
+											key={item.PostHashHex} // use unique identifier as key
+											className="mr-6"
+											item={item}
+											onClick={() => router.push(`moment/${item?.PostHashHex}`)}
+										/>
 									)
-								  })
+								})
 							}
 						</Slider>
 

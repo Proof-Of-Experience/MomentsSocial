@@ -6,8 +6,6 @@ const Moment = memo(({ className, onClick, item }: MomentProps) => {
 
   const [thumbnails, setThumbnails] = useState<any>({});
 
-  console.log('thumbnails', thumbnails);
-
   const makeThumbnail = useCallback(async (itemId: string) => {
     // const videoId = new URL(item.VideoURLs[0]).searchParams.get('v'); // Extract videoId from URL
     let videoId: any;
@@ -47,7 +45,7 @@ const Moment = memo(({ className, onClick, item }: MomentProps) => {
           apiService(getApiData, (res: any, err: any) => {
             if (res) {
               const base64Image = res.videoInfo.screenshot;
-              
+
               setThumbnails((prevThumbnails: any) => ({
                 ...prevThumbnails,
                 [itemId]: base64Image,  // change this line
@@ -55,7 +53,7 @@ const Moment = memo(({ className, onClick, item }: MomentProps) => {
             }
             if (err) console.error('GET error', err);
           });
-          return; // Make sure to return here to prevent further execution in this callback
+          return;
         }
 
         const base64Image = res.videoInfo.screenshot;
@@ -67,11 +65,11 @@ const Moment = memo(({ className, onClick, item }: MomentProps) => {
         }));
       }
     });
-  }, [item, setThumbnails, apiService]); // dependencies
+  }, [item, setThumbnails, apiService]);
 
 
   useEffect(() => {
-    makeThumbnail(item.PostHashHex)  // make sure to pass unique id for each item
+    makeThumbnail(item.PostHashHex)
   }, [item])
 
   return (

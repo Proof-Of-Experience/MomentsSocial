@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react'
 
 const CreatorCoin = ({ username }: any) => {
     const router = useRouter()
-    const [isLoaded, setisLoaded] = useState<boolean>(true);
+    const [hasLoaded, setHasLoaded] = useState<boolean>(true);
     const [holders, setHolders] = useState<any>([]);
 
     const fetchCreatorCoin = async () => {
@@ -25,7 +25,7 @@ const CreatorCoin = ({ username }: any) => {
         }
 
         const creatorCoinData = await getHodlersForUser(params)
-        setisLoaded(false)
+        setHasLoaded(false)
         setHolders(creatorCoinData?.Hodlers)
 
 
@@ -88,7 +88,7 @@ const CreatorCoin = ({ username }: any) => {
     return (
         <div>
             {
-                isLoaded ? <LoadingSpinner isLoading={isLoaded} /> :
+                hasLoaded ? <LoadingSpinner isLoading={hasLoaded} /> :
                     holders.length > 0 ?
                         _renderHolders() :
                         <Placeholder text={`No one owns ${username} coin yet.`} />

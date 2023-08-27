@@ -1,70 +1,27 @@
 import { useState, useEffect, WheelEvent } from 'react';
 import { useRouter } from 'next/router';
 import MainLayout from '@/layouts/main-layout';
+import { LoadingSpinner } from '@/components/core/loader';
 
-const videos = [
-  {
-    id: 1,
-    title: "Video 1",
-    description: "This is the first video.",
-    videoUrl: "https://www.youtube.com/embed/abcdefghijk",
-  },
-  {
-    id: 2,
-    title: "Video 2",
-    description: "This is the second video.",
-    videoUrl: "https://www.youtube.com/embed/qrstuvwxyz",
-  },
-  {
-    id: 3,
-    title: "Video 3",
-    description: "This is the third video.",
-    videoUrl: "https://www.youtube.com/embed/1234567890",
-  },
-];
-
-const VideoDetailsPage = () => {
+const MomentDetailsPage = () => {
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
   const router = useRouter()
-  // const { PostHashHex }: any = router.query
-  // const [dataLoaded, setDataLoaded] = useState<boolean>(true)
-  // // const [videos, setVideos] = useState<object[]>([])
-  
-  // const { id } = router.query;
+  const { PostHashHex }: any = router.query
 
-  // const fetchSingleProfile = async () => {
-  //   const { getSinglePost } = await import('deso-protocol')
-  //   const params = {
-  //     PostHashHex,
-  //   }
+  const [hasLoaded, setHasLoaded] = useState<boolean>(true)
+  const [videoData, setVideoData] = useState<any>([])
+  console.log('videoData', videoData);
 
-  //   const singlePost: any = await getSinglePost(params)
-  //   // setVideos([singlePost?.PostFound?.VideoURLs ?? 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'])
-
-  //   setDataLoaded(false)
-  // }
-
-
-  // useEffect(() => {
-  //   if (!router.isReady) return
-
-  //   fetchSingleProfile()
-  // }, [router.isReady])
-
-  const handleMouseWheel = (event: WheelEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    const delta = event.deltaY > 0 ? 1 : -1;
-    const newIndex = (activeVideoIndex + delta + videos.length) % videos.length;
-    setActiveVideoIndex(newIndex);
-    const videoId = videos[newIndex].id;
-    router.push(`/moment/${videoId}`, undefined, { shallow: true });
-  };
+  useEffect(() => {
+    if (!router.isReady) return
+    fetchSingleProfile()
+    fetchStatelessPostData()
+  }, [router.isReady])
 
 
   useEffect(() => {
     const handleRouteChange = (url: string) => {
-      const videoId = parseInt(url.split('/').pop() as string);
-      const videoIndex = videos.findIndex(video => video.id === videoId);
+      const videoIndex = videoData.findIndex((video: any) => video.PostHashHex === PostHashHex);
       if (videoIndex !== -1) {
         setActiveVideoIndex(videoIndex);
       }
@@ -75,17 +32,64 @@ const VideoDetailsPage = () => {
     };
   }, []);
 
-  const activeVideo = videos[activeVideoIndex];
+  const fetchSingleProfile = async () => {
+    const { getSinglePost } = await import('deso-protocol')
+    const params = {
+      PostHashHex,
+    }
+
+    const singlePost: any = await getSinglePost(params)
+    setVideoData([singlePost?.PostFound])
+    setHasLoaded(false)
+  }
+
+  const fetchStatelessPostData = async () => {
+    const { getPostsStateless } = await import('deso-protocol')
+    const formData = {
+      NumToFetch: 100,
+      OrderBy: 'VideoURLs',
+    }
+    const postData = await getPostsStateless(formData)
+
+    if (postData?.PostsFound) {
+      const newVideoData: any = postData?.PostsFound.filter((item: any) => item.VideoURLs)
+      setVideoData((prevVideoData: any) => [...prevVideoData, ...newVideoData]);
+    }
+  }
+
+  const handleMouseWheel = (event: WheelEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const delta = event.deltaY > 0 ? 1 : -1;
+    const newIndex = (activeVideoIndex + delta + videoData.length) % videoData.length;
+    setActiveVideoIndex(newIndex);
+    const videoId = videoData?.length > 0 && videoData[newIndex].PostHashHex;
+
+    router.push(`/moment/${videoId}`, undefined, { shallow: true });
+  };
+
 
   return (
     <MainLayout>
       <div className="h-[calc(100vh_-_80px)] flex flex-col items-center justify-center" onWheel={handleMouseWheel}>
-        <h1 className="text-4xl font-bold">{activeVideo.title}</h1>
-        <iframe className="mt-4" width="560" height="315" src={activeVideo.videoUrl} allowFullScreen></iframe>
-        <p className="mt-4">{activeVideo.description}</p>
+        {
+          hasLoaded ? <LoadingSpinner isLoading={hasLoaded} /> :
+            videoData.length > 0 && videoData.map((video: any, index: number) => (
+              <div key={video.PostHashHex} className={`${activeVideoIndex !== index ? 'hidden' : ''}`}>
+                <h1 className="text-4xl font-bold">{video?.ProfileEntryResponse?.Username}</h1>
+                <iframe
+                  className="mt-4"
+                  width="560"
+                  height="315"
+                  src={video.VideoURLs[0] ?? 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'}
+                  allowFullScreen>
+                </iframe>
+                <p className="mt-4">{video.Body}</p>
+              </div>
+            ))
+        }
       </div>
     </MainLayout>
   );
 };
 
-export default VideoDetailsPage;
+export default MomentDetailsPage;
