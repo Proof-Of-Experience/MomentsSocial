@@ -162,7 +162,10 @@ const Home: NextPage = () => {
 											key={item.PostHashHex} // use unique identifier as key
 											className="mr-6"
 											item={item}
-											onClick={() => router.push(`moment/${item?.PostHashHex}`)}
+											onClick={() => router.push({
+												pathname: `moment/${item?.PostHashHex}`,
+												query: { Tag: tagParam }
+											})}
 										/>
 									)
 								})
