@@ -25,7 +25,7 @@ const Moment = memo(({ className, onClick, item }: MomentProps) => {
       url: item.VideoURLs[0],
     };
     const apiData: ApiDataType = {
-      customUrl: 'http://localhost:3001',
+      customUrl: 'http://localhost:3011',
       method: 'post',
       url: `/api/video-info`,
       data: body,
@@ -37,7 +37,7 @@ const Moment = memo(({ className, onClick, item }: MomentProps) => {
         if (res.status === 409) {
           // if error 409, make a GET request to retrieve the thumbnail
           const getApiData: ApiDataType = {
-            customUrl: 'http://localhost:3001',
+            customUrl: 'http://localhost:3011',
             method: 'get',
             url: `/api/video-info/${videoId}`, // Use extracted videoId here
           };
@@ -75,7 +75,7 @@ const Moment = memo(({ className, onClick, item }: MomentProps) => {
   return (
     <div className={`block border rounded-xl cursor-pointer h-[368px] mb-4 ${className ? className : ''}`} onClick={onClick}>
       <div className="flex flex-wrap">
-        <img src={`http://localhost:3001${thumbnails[item.PostHashHex]}`} alt="Video thumbnail" className="border rounded-xl w-full h-[280px] object-cover" />
+        <img src={`http://localhost:3011${thumbnails[item.PostHashHex]}`} alt="Video thumbnail" className="border rounded-xl w-full h-[280px] object-cover" />
 
       </div>
 
