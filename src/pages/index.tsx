@@ -5,7 +5,7 @@ import Layout from '@/features/home/layout';
 import { getFeedData } from '@/pages/api/feed';
 import Tags from '@/features/home/tags';
 import { NextPage } from 'next';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -20,7 +20,6 @@ const Home: NextPage = () => {
 	const [videoLoaded, setVideoLoaded] = useState<boolean>(true);
 	const [videoData, setVideoData] = useState<string[]>([]);
 	const [momentsData, setMomentsData] = useState<string[]>([]);
-	const [loadedVideoData, setLoadedVideoData] = useState<string[]>([]);
 	const [cachedData, setCachedData] = useState<string[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [currentTag, setCurrentTag] = useState<string | null>(null);
@@ -29,13 +28,23 @@ const Home: NextPage = () => {
 
 	const slider: any = useRef(null);
 
+	const dynamicSlidesToShow = useMemo(() => {
+		if (momentsData.length > 5) {
+			return 5;
+		} else if (momentsData.length < 1) {
+			return 1;
+		} else {
+			return momentsData.length;
+		}
+	}, [momentsData]);
+
 	const momentSliderSettings = {
 		dots: false,
 		infinite: true,
-		loop: true,
+		loop: false,
 		arrows: false,
 		speed: 500,
-		slidesToShow: videoData.length > 5 ? 6 : videoData.length,
+		slidesToShow: dynamicSlidesToShow,
 		slidesToScroll: 3,
 		responsive: [
 			{
@@ -200,20 +209,24 @@ const Home: NextPage = () => {
 					<>
 						<div className="flex justify-between items-center mr-10 mb-3">
 							<h3 className="font-semibold text-3xl">Moments</h3>
-							<div>
-								<button
-									className="mr-4"
-									onClick={() => slider?.current?.slickPrev()}>
-									<ChevronLeftIcon className="h-5 w-5" />
-								</button>
-								<button
-									onClick={() => {
-										slider?.current?.slickNext();
-										loadMoreMoments();
-									}}>
-									<ChevronRightIcon className="h-5 w-5" />
-								</button>
-							</div>
+							{
+								momentsData.length > 4 && (
+									<div>
+										<button
+											className="mr-4"
+											onClick={() => slider?.current?.slickPrev()}>
+											<ChevronLeftIcon className="h-5 w-5" />
+										</button>
+										<button
+											onClick={() => {
+												slider?.current?.slickNext();
+												loadMoreMoments();
+											}}>
+											<ChevronRightIcon className="h-5 w-5" />
+										</button>
+									</div>
+								)
+							}
 						</div>
 
 						<Slider ref={slider}  {...momentSliderSettings}>
@@ -246,7 +259,7 @@ const Home: NextPage = () => {
 
 				{
 					videoData.length > 0 &&
-					<Videos videoData={videoData} />
+					<Videos videoData={videoData} videoLoaded={videoLoaded} />
 				}
 
 			</VideoLayoutProvider >
