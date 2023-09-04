@@ -178,7 +178,7 @@ const Home: NextPage = () => {
 
 
 	return (
-		<MainLayout title='Moments' isLoading={videoLoaded}>
+		<MainLayout title='Moments'>
 
 			<VideoLayoutProvider>
 
@@ -190,7 +190,7 @@ const Home: NextPage = () => {
 				{
 					videoData.length > 0 &&
 					<>
-						<Videos videoData={videoData} />
+						<Videos videoData={videoData} videoLoaded={videoLoaded} />
 						<hr className="border-t-2 my-10" />
 					</>
 				}

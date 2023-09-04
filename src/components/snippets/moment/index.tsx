@@ -1,6 +1,7 @@
 import React, { useEffect, memo, useState, useCallback, Fragment } from 'react'
 import { MomentProps } from '@/model/moment'
 import { ApiDataType, apiService } from '@/utils/request';
+import MomentSkeleton from '@/components/skeletons/moment';
 
 
 const Moment = memo(({ className, onClick, item }: MomentProps) => {
@@ -117,7 +118,7 @@ const Moment = memo(({ className, onClick, item }: MomentProps) => {
     <div className={`block border rounded-xl cursor-pointer h-[368px] mb-4 ${className ? className : ''}`} onClick={onClick}>
       {
         isCurrentItemLoading ? (
-          <div>Loading...</div>
+          <MomentSkeleton />
         ) :
           (
             <Fragment>
