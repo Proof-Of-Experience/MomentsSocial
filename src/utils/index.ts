@@ -52,7 +52,7 @@ const nanosToUSDNumber = (nanos: number): number => {
 export const creatorCoinNanosToUSDNaive = (creatorCoinNanos: any, coinPriceDeSoNanos: any, abbreviate: boolean = false): string => {
     const usdValue = nanosToUSDNumber((creatorCoinNanos / 1e9) * coinPriceDeSoNanos);
     return abbreviate ? abbreviateNumber(usdValue, 2, true) : formatUSD(usdValue, 2);
-  }
+}
 
 const formatUSD = (num: number, decimal: number): string => {
     if (formatUSDMemo[num] && formatUSDMemo[num][decimal]) {
@@ -120,4 +120,12 @@ export const usdYouWouldGetIfYouSoldDisplay = (creatorCoinAmountNano: number, co
     if (creatorCoinAmountNano == 0) return "$0";
     const usdValue = nanosToUSDNumber(desoNanosYouWouldGetIfYouSold(creatorCoinAmountNano, coinEntry));
     return abbreviate ? abbreviateNumber(usdValue, 2, true) : formatUSD(usdValue, 2);
+}
+
+
+export const mergeVideoData = (prevVideoData: any[], newVideoData: any[]) => {
+    const existingPostHashes = new Set(prevVideoData.map((video: any) => video.PostHashHex));
+    const uniqueNewData = newVideoData.filter((item: any) => !existingPostHashes.has(item.PostHashHex));
+
+    return [...prevVideoData, ...uniqueNewData];
 }

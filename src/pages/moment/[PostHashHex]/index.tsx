@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import MainLayout from '@/layouts/main-layout';
 import { LoadingSpinner } from '@/components/core/loader';
+import { mergeVideoData } from '@/utils';
 
 const MomentDetailsPage = () => {
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
@@ -77,7 +78,8 @@ const MomentDetailsPage = () => {
     }
 
     const singlePost: any = await getSinglePost(params)
-    setVideoData((prevVideoData: any) => [...prevVideoData, singlePost?.PostFound]);
+    setVideoData((prevVideoData: any) => mergeVideoData(prevVideoData, [singlePost?.PostFound]));
+
     setHasLoaded(false)
   }
 
@@ -89,13 +91,11 @@ const MomentDetailsPage = () => {
     }
     const postData = await getPostsStateless(formData)
 
-    if (postData?.PostsFound) {
-      const existingPostHashes = new Set(videoData.map((video: any) => video.PostHashHex));
-      const newVideoData: any = postData?.PostsFound.filter((item: any) => {
-        return item.VideoURLs && !existingPostHashes.has(item.PostHashHex);
-      });
-
-      setVideoData((prevVideoData: any) => [...prevVideoData, ...newVideoData]);
+    if (postData?.PostsFound && postData?.PostsFound.length > 0) {
+      const filteredData: any = postData?.PostsFound.filter((item: any) =>
+        item.VideoURLs && item.VideoURLs.some((videoURL: any) => videoURL)
+      );
+      setVideoData((prevVideoData: any) => mergeVideoData(prevVideoData, filteredData));
     }
   }
 
@@ -107,13 +107,11 @@ const MomentDetailsPage = () => {
     }
     const feedData = await getHotFeed(data);
 
-    if (feedData?.HotFeedPage) {
-      const existingPostHashes = new Set(videoData.map((video: any) => video.PostHashHex));
-      const newVideoData: any = feedData?.HotFeedPage.filter((item: any) => {
-        return item.VideoURLs && !existingPostHashes.has(item.PostHashHex);
-      });
-
-      setVideoData((prevVideoData: any) => [...prevVideoData, ...newVideoData]);
+    if (feedData?.HotFeedPage && feedData?.HotFeedPage.length > 0) {
+      const filteredData: any = feedData?.HotFeedPage.filter((item: any) =>
+        item.VideoURLs && item.VideoURLs.some((videoURL: any) => videoURL)
+      );
+      setVideoData((prevVideoData: any) => mergeVideoData(prevVideoData, filteredData));
     }
   }
 
