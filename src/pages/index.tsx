@@ -22,7 +22,7 @@ const Home: NextPage = () => {
 	const [momentsData, setMomentsData] = useState<string[]>([]);
 	const [cachedData, setCachedData] = useState<string[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [currentTag, setCurrentTag] = useState<string | null>(null);
+	const [currentTag, setCurrentTag] = useState<string>('');
 
 	const itemsPerPage = 5;
 
@@ -136,6 +136,10 @@ const Home: NextPage = () => {
 			setCachedData(newVideoData);
 			const displayData = newVideoData.slice(0, itemsPerPage);
 			setMomentsData(displayData)
+		} else {
+			setVideoData([]);
+			setCachedData([]);
+			setMomentsData([]);
 		}
 	}
 
@@ -185,7 +189,21 @@ const Home: NextPage = () => {
 		}
 	}
 
-	console.log('momentsData', momentsData);
+	const onPressTagSearch = () => {
+
+		setCurrentPage(1);
+		setCachedData([]);
+		if (currentTag === 'all') {
+			router.replace('/', undefined, { shallow: true });
+			fetchStatelessPostData()
+		} else {
+			router.replace({
+				pathname: router.pathname,
+				query: { ...router.query, tag: currentTag },
+			})
+			fetchFeedData(currentTag)
+		}
+	}
 
 
 	return (
@@ -194,7 +212,13 @@ const Home: NextPage = () => {
 			<VideoLayoutProvider>
 
 				<div className={`flex justify-between items-center ${videoData.length > 0 ? 'mb-4' : 'mb-4'}`}>
-					<Tags tagParam={tagParam} onClick={onClickTag} />
+					<Tags
+						tagParam={tagParam}
+						onClick={onClickTag}
+						tagSearch={currentTag}
+						onChangeTagSearch={e => setCurrentTag(e.target.value)}
+						onPressTagSearch={onPressTagSearch}
+					/>
 					<Layout />
 				</div >
 

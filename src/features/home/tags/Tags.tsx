@@ -1,9 +1,19 @@
+import React from 'react';
+import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { tags } from './mockData';
 
-const Tags = ({ onClick, tagParam }: any) => {  
+interface TagsProps {
+  onClick: (value: string) => void;
+  tagParam: string;
+  tagSearch?: string;
+  onChangeTagSearch?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onPressTagSearch?: () => void;
+}
+
+const Tags: React.FC<TagsProps> = ({ onClick, tagParam, tagSearch, onChangeTagSearch, onPressTagSearch }) => {
 
   return (
-    <div>
+    <div className="flex items-center">
       {
         tags.map((item: any, index: number) => {
           return (
@@ -17,6 +27,25 @@ const Tags = ({ onClick, tagParam }: any) => {
           )
         })
       }
+
+      <div className='flex justify-between items-center border rounded-md px-3 max-w-[280px]'>
+        <span className='mr-1'>#</span>
+        <input
+          type='text'
+          placeholder='Search Hashtags'
+          className='w-[150px] h-[32px] text-md focus:outline-none'
+          value={tagSearch}
+          onChange={onChangeTagSearch}
+        />
+        {
+          tagSearch &&
+          <ArrowRightIcon
+            className="ml-2 w-4 h-4 text-blue-500 cursor-pointer"
+            role='button'
+            onClick={onPressTagSearch}
+          />
+        }
+      </div>
     </div>
   )
 }
