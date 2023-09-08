@@ -11,9 +11,9 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 
-const MainLayout = ({ title, isLoading, children }: MainLayoutProps) => {
+const MainLayout = ({ title, isLoading, mainWrapClass, children }: MainLayoutProps) => {
   const dispatch = useDispatch();
-	const authUser = useSelector(selectAuthUser);
+  const authUser = useSelector(selectAuthUser);
   const [userState, setUserState] = useState({
     currentUser: null,
     alternateUsers: null,
@@ -159,9 +159,9 @@ const MainLayout = ({ title, isLoading, children }: MainLayoutProps) => {
           <div className='w-[80px] bg-gray-50 h-screen shadow-md'>
             <LeftSidebar />
           </div>
-          <div className='w-[calc(100%_-_80px)]'>
+          <div className='w-[calc(100%_-_72px)]'>
             <LoadingSpinner fullHeight isLoading={isLoading} />
-            <div className="p-5">
+            <div className={`${mainWrapClass ? mainWrapClass : ''}`}>
               {children}
             </div>
           </div>

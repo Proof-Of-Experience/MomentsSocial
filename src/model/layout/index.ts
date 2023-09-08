@@ -4,6 +4,7 @@ export interface LayoutProps {
 }
 
 export interface MainLayoutProps {
+  mainWrapClass?: string
   children: JSX.Element | JSX.Element[] | string;
   title?: string;
   isLoading?: boolean;

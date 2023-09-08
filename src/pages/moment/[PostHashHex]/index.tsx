@@ -4,6 +4,7 @@ import MainLayout from '@/layouts/main-layout';
 import { LoadingSpinner } from '@/components/core/loader';
 import { mergeVideoData } from '@/utils';
 
+
 const MomentDetailsPage = () => {
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
   const router = useRouter()
@@ -25,7 +26,6 @@ const MomentDetailsPage = () => {
       fetchStatelessPostData()
     }
   }, [router.isReady])
-
 
   useEffect(() => {
     const handleRouteChange = (url: string) => {
@@ -69,7 +69,6 @@ const MomentDetailsPage = () => {
       }
     };
   }, [videoData, activeVideoIndex]);
-
 
   const fetchSingleProfile = async () => {
     const { getSinglePost } = await import('deso-protocol')
@@ -118,16 +117,18 @@ const MomentDetailsPage = () => {
 
   return (
     <MainLayout>
-      <div className="h-[calc(100vh_-_80px)] flex flex-col items-center justify-center" ref={wheelDivRef}>
+      <div className="h-[calc(100vh_-_72px)] flex flex-col items-center justify-center bg-[#ddd]" ref={wheelDivRef}>
         {
           hasLoaded ? <LoadingSpinner isLoading={hasLoaded} /> :
             videoData.length > 0 && videoData.map((video: any, index: number) => (
-              <div key={index} className={`${activeVideoIndex !== index ? 'hidden' : ''}`}>
-                <h1 className="text-4xl font-bold">{video?.ProfileEntryResponse?.Username}</h1>
+              <div
+                key={index}
+                className={`${activeVideoIndex !== index ? 'hidden' : ''}`}
+                style={{ marginLeft: '30%', marginRight: '30%', width: '40%' }}>
+                <h1 className="text-4xl font-bold mb-4">{video?.ProfileEntryResponse?.Username}</h1>
                 <iframe
-                  className="mt-4"
-                  width="560"
-                  height="315"
+                  width="100%"
+                  height="500"
                   src={video.VideoURLs[0] ?? 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'}
                   allowFullScreen>
                 </iframe>

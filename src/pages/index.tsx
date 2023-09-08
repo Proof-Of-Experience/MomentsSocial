@@ -29,8 +29,10 @@ const Home: NextPage = () => {
 	const slider: any = useRef(null);
 
 	const dynamicSlidesToShow = useMemo(() => {
-		if (momentsData.length > 5) {
+		if (momentsData.length > 4) {
 			return 5;
+		} else if (momentsData.length < 3) {
+			return 4;
 		} else if (momentsData.length < 1) {
 			return 1;
 		} else {
@@ -187,7 +189,7 @@ const Home: NextPage = () => {
 
 
 	return (
-		<MainLayout title='Moments'>
+		<MainLayout title='Moments' mainWrapClass='p-5'>
 
 			<VideoLayoutProvider>
 
@@ -196,13 +198,13 @@ const Home: NextPage = () => {
 					<Layout />
 				</div >
 
-				{
+				{/* {
 					videoData.length > 0 &&
 					<>
 						<Videos videoData={videoData} videoLoaded={videoLoaded} />
 						<hr className="border-t-2 my-10" />
 					</>
-				}
+				} */}
 
 				{
 					momentsData.length > 0 &&
@@ -239,9 +241,11 @@ const Home: NextPage = () => {
 											item={item}
 											onClick={() => {
 												setVideoLoaded(true)
+												const queryParams = tagParam ? { Tag: tagParam } : {};
+
 												router.push({
 													pathname: `moment/${item?.PostHashHex}`,
-													query: { Tag: tagParam }
+													query: queryParams
 												})
 											}}
 										/>
@@ -259,7 +263,9 @@ const Home: NextPage = () => {
 
 				{
 					videoData.length > 0 &&
-					<Videos videoData={videoData} videoLoaded={videoLoaded} />
+					<div className="mb-20">
+						<Videos videoData={videoData} videoLoaded={videoLoaded} />
+					</div>
 				}
 
 			</VideoLayoutProvider >
