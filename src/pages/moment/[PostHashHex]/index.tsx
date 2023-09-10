@@ -132,7 +132,7 @@ const MomentDetailsPage = () => {
                   src={video.VideoURLs[0] ?? 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'}
                   allowFullScreen>
                 </iframe>
-                <p className="mt-4">{video.Body}</p>
+                <p className="mt-4 max-h-[74px] overflow-y-auto">{video.Body}</p>
               </div>
             ))
         }

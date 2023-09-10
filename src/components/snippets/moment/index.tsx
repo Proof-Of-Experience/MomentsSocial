@@ -2,6 +2,7 @@ import React, { useEffect, memo, useState, useCallback, Fragment } from 'react'
 import { MomentProps } from '@/model/moment'
 import { ApiDataType, apiService } from '@/utils/request';
 import MomentSkeleton from '@/components/skeletons/moment';
+import EmojiReaction from '../emoji-reaction';
 
 
 const Moment = memo(({ className, onClick, item }: MomentProps) => {
@@ -119,10 +120,15 @@ const Moment = memo(({ className, onClick, item }: MomentProps) => {
       <MomentSkeleton />
     ) :
       (
-        <div className={`block border rounded-xl cursor-pointer h-[368px] mb-4 ${className ? className : ''}`} onClick={onClick}>
+        <div className={`block border rounded-xl cursor-pointer h-[368px] mb-4 ${className ? className : ''}`}>
           <Fragment>
             <div className="flex flex-wrap">
-              <img src={`http://localhost:3011${thumbnails[item.PostHashHex]}`} alt="Video thumbnail" className="border rounded-xl w-full h-[280px] object-cover" />
+              <img
+                src={`http://localhost:3011${thumbnails[item.PostHashHex]}`}
+                alt="Video thumbnail"
+                className="border rounded-xl w-full h-[280px] object-cover"
+                onClick={onClick}
+              />
             </div>
 
             <div className="px-2 pb-3 mt-2">
@@ -135,6 +141,11 @@ const Moment = memo(({ className, onClick, item }: MomentProps) => {
                   <span className="ml-1">{item?.LikeCount}</span>
                 </button>
               </p>
+
+              {/* <EmojiReaction
+                onReactionClick={onReactionClick}
+                postHashHex={item?.PostHashHex}
+              /> */}
             </div>
           </Fragment>
         </div>

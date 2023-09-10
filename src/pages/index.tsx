@@ -31,7 +31,7 @@ const Home: NextPage = () => {
 	const dynamicSlidesToShow = useMemo(() => {
 		if (momentsData.length > 4) {
 			return 5;
-		} else if (momentsData.length < 3) {
+		} else if (momentsData.length > 3) {
 			return 4;
 		} else if (momentsData.length < 1) {
 			return 1;

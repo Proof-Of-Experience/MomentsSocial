@@ -1,98 +1,9 @@
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo } from 'react'
 import { VideoItemProps } from '@/model/video'
-import { useSelector } from 'react-redux';
-import { selectAuthUser } from '@/slices/authSlice';
-
-const emojiList = [
-	{
-		name: 'LIKE',
-		emoji: '👍',
-	},
-	{
-		name: 'DISLIKE',
-		emoji: '👎',
-	},
-	{
-		name: 'LOVE',
-		emoji: '❤️',
-	},
-	{
-		name: 'LAUGH',
-		emoji: '😀',
-	},
-	{
-		name: 'ASTONISHED',
-		emoji: '😲',
-	},
-	{
-		name: 'SAD',
-		emoji: '😢',
-	},
-	{
-		name: 'ANGRY',
-		emoji: '😡',
-	},
-];
-
-const VideoItem = ({ item, onReactionClick, ...rest }: VideoItemProps) => {
-	const authUser = useSelector(selectAuthUser);
-	const [selectedReaction, setSelectedReaction] = useState<string>('')
-	const [currentReaction, setCurrentReaction] = useState<string>('')
-	const [isReactionHovered, setIsReactionHovered] = useState<boolean>(false)
-	const [totalReaction, setTotalReaction] = useState<any>({})
+import EmojiReaction from '../emoji-reaction';
 
 
-	const getReactions = async () => {
-		const { countPostAssociations } = await import('deso-protocol')
-		const reactionParams = {
-			AssociationType: 'REACTION',
-			AssociationValues: ["LIKE", "DISLIKE", "LOVE", "LAUGH", "ASTONISHED", "SAD", "ANGRY"],
-			PostHashHex: item?.PostHashHex,
-		}
-
-		const result = await countPostAssociations(reactionParams)
-		const modifiedEmojiList = emojiList.filter(({ name }) => result?.Counts[name] > 0);
-		modifiedEmojiList.sort((a, b) => result?.Counts[b.name] - result?.Counts[a.name]);
-		const appendedString = modifiedEmojiList.reduce((accumulator, emojiItem) => accumulator + emojiItem.emoji, '');
-		const uniqueEmojis = Array.from(new Set(appendedString)).join('');
-		setCurrentReaction(uniqueEmojis)
-		setSelectedReaction(uniqueEmojis)
-		setTotalReaction(result)
-	}
-
-	useEffect(() => {
-		getReactions()
-	}, [])
-
-	const handleButtonHover = () => {
-		setIsReactionHovered(true)
-	}
-
-	const handleButtonMouseLeave = () => {
-		setIsReactionHovered(false)
-	}
-
-	const handleReactionSelect = async (reactionName: string, selectedReaction: string) => {
-		setSelectedReaction([...new Set(selectedReaction + currentReaction)].join(''))
-		const { createPostAssociation } = await import('deso-protocol')
-		try {
-			const reactionParams = {
-				// AppPublicKeyBase58Check: 'BC1YLgTKfwSeHuNWtuqQmwduJM2QZ7ZQ9C7HFuLpyXuunUN7zTEr5WL',
-				AssociationType: 'REACTION',
-				MinFeeRateNanosPerKB: 1000,
-				AssociationValue: reactionName,
-				PostHashHex: item?.PostHashHex,
-				TransactorPublicKeyBase58Check: authUser?.publicKeyBase58Check
-			}
-			const result = await createPostAssociation(reactionParams)
-			if (onReactionClick) {
-				onReactionClick();
-			}
-			getReactions()
-		} catch (error) {
-			console.error('reaction error', error);
-		}
-	}
+const VideoItem = memo(({ item, onReactionClick, ...rest }: VideoItemProps) => {
 
 	return (
 		<div className="relative">
@@ -112,31 +23,11 @@ const VideoItem = ({ item, onReactionClick, ...rest }: VideoItemProps) => {
 			<p className="text-sm line-clamp-2 text-left min-h-[40px]">{item?.Body}</p>
 
 			<div className="flex justify-between mt-2">
-				<div
-					className="flex items-center text-lg font-bold text-gray-700"
-					onMouseEnter={handleButtonHover}
-					onMouseLeave={handleButtonMouseLeave}>
-					{selectedReaction ? selectedReaction : '👍'}
-					<span className="ml-1">{totalReaction?.Total}</span>
 
-					{isReactionHovered && (
-						<div className={`absolute bottom-7 left-0 bg-white rounded-3xl border-2 shadow px-3`}>
-							<div
-								className="relative inline-flex items-center"
-							>
-								{emojiList.map((emojiItem) => (
-									<button
-										key={emojiItem.name}
-										className="p-1 rounded-full transition duration-200 ease-in-out hover:bg-gray-200"
-										onClick={() => handleReactionSelect(emojiItem.name, emojiItem.emoji)}
-										title={emojiItem.name}>
-										{emojiItem.emoji}
-									</button>
-								))}
-							</div>
-						</div>
-					)}
-				</div>
+				<EmojiReaction
+					onReactionClick={onReactionClick}
+					postHashHex={item?.PostHashHex}
+				/>
 
 				<button className="flex items-center text-lg font-bold text-gray-700">
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -147,6 +38,6 @@ const VideoItem = ({ item, onReactionClick, ...rest }: VideoItemProps) => {
 			</div>
 		</div>
 	)
-}
+})
 
-export default memo(VideoItem)
+export default VideoItem
