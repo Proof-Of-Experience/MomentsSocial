@@ -146,7 +146,7 @@ const PublicProfile = () => {
                                     <Tab.Panel>
                                         {
                                             imageData.length > 0 ?
-                                                <Moments imageData={imageData} /> :
+                                                <Moments imageData={imageData} isLoading={isLoaded} /> :
 
                                                 !isLoaded &&
                                                 <div className="mt-10">

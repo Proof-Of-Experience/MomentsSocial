@@ -5,118 +5,11 @@ import MomentSkeleton from '@/components/skeletons/moment';
 import EmojiReaction from '../emoji-reaction';
 
 
-const Moment = memo(({ className, onClick, item }: MomentProps) => {
-
-  const [thumbnails, setThumbnails] = useState<any>({});
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true);
-  const [thumbnailQueue, setThumbnailQueue] = useState<any[]>([]);
-  const [currentProcessingId, setCurrentProcessingId] = useState<string | null>(null);
-
-
-  const makeThumbnail = useCallback(async (itemId: string) => {
-    setIsLoading(true);
-    // const videoId = new URL(item.VideoURLs[0]).searchParams.get('v'); // Extract videoId from URL
-    let videoId: any;
-
-    try {
-      videoId = new URL(item.VideoURLs[0])?.searchParams.get('v'); // Extract videoId from URL
-    } catch (err) {
-      console.error('Invalid URL:', item.VideoURLs[0]);
-      return; // Exit the function if the URL is invalid
-    }
-
-    if (!videoId) {
-      console.error('URL does not have a "v" parameter:', item.VideoURLs[0]);
-      return; // Exit the function if the URL does not have a "v" parameter
-    }
-    const body = {
-      url: item.VideoURLs[0],
-    };
-    const apiData: ApiDataType = {
-      customUrl: 'http://localhost:3011',
-      method: 'post',
-      url: `/api/video-info`,
-      data: body,
-    };
-
-    await apiService(apiData, (res: any, err: any) => {
-      if (err) console.error('err', err.response);
-      if (res) {
-        const modThumbnailQueue = thumbnailQueue.filter((id: any) => id !== itemId);
-        setThumbnailQueue(modThumbnailQueue)
-        setIsLoading(false);
-
-        if (res.status === 409) {
-          // if error 409, make a GET request to retrieve the thumbnail
-          const getApiData: ApiDataType = {
-            customUrl: 'http://localhost:3011',
-            method: 'get',
-            url: `/api/video-info/${videoId}`, // Use extracted videoId here
-          };
-
-          apiService(getApiData, (res: any, err: any) => {
-            if (res) {
-              console.log('response data', res);
-
-              const base64Image = res.screenshot;
-
-              setThumbnails((prevThumbnails: any) => ({
-                ...prevThumbnails,
-                [itemId]: base64Image,  // change this line
-              }));
-            }
-            if (err) console.error('GET error', err);
-          });
-          return;
-        }
-
-        const base64Image = res.videoInfo.screenshot;
-
-        // set thumbnail for specific item
-        setThumbnails((prevThumbnails: any) => ({
-          ...prevThumbnails,
-          [itemId]: base64Image,
-        }));
-
-        if (thumbnailQueue.length > 0) {
-          setCurrentProcessingId(thumbnailQueue[0]);
-          makeThumbnail(thumbnailQueue[0]);
-        } else {
-          setCurrentProcessingId(null);
-        }
-
-        if (thumbnailQueue.length === 0 && isFirstLoad) {
-          setIsFirstLoad(false);  // set isFirstLoad to false after first load is completed
-        }
-      }
-    });
-  }, [item, setThumbnails, apiService, thumbnailQueue, isFirstLoad]);
-
-  useEffect(() => {
-    setThumbnailQueue(prevQueue => {
-      if (!prevQueue.includes(item.PostHashHex) && currentProcessingId !== item.PostHashHex) {
-        return [...prevQueue, item.PostHashHex];
-      }
-      return prevQueue;
-    });
-  }, [item]);
-
-  useEffect(() => {
-    if (thumbnailQueue.length > 0) {
-      setCurrentProcessingId(thumbnailQueue[0]);
-      makeThumbnail(thumbnailQueue[0]);
-    } else {
-      setCurrentProcessingId(null);
-    }
-  }, [thumbnailQueue, currentProcessingId, makeThumbnail]);
-
-  const isCurrentItemLoading = isLoading && currentProcessingId === item.PostHashHex;
-
+const Moment = memo(({ className, onClick, item, isLoading }: MomentProps) => {
 
 
   return (
-    isCurrentItemLoading ? (
+    isLoading ? (
       <MomentSkeleton />
     ) :
       (
@@ -124,8 +17,8 @@ const Moment = memo(({ className, onClick, item }: MomentProps) => {
           <Fragment>
             <div className="flex flex-wrap">
               <img
-                src={`http://localhost:3011${thumbnails[item.PostHashHex]}`}
-                alt="Video thumbnail"
+                src={`${process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL}${item?.screenshot}`}
+                alt={item?.Username}
                 className="border rounded-xl w-full h-[280px] object-cover"
                 onClick={onClick}
               />

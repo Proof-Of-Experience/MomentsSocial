@@ -12,17 +12,21 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import Moment from '@/components/snippets/moment';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import axios from 'axios';
 
 const Home: NextPage = () => {
 	const router = useRouter();
 	const tagParam: any = router.query.tag
 
-	const [videoLoaded, setVideoLoaded] = useState<boolean>(true);
+	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [videoData, setVideoData] = useState<string[]>([]);
 	const [momentsData, setMomentsData] = useState<string[]>([]);
 	const [cachedData, setCachedData] = useState<string[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [currentTag, setCurrentTag] = useState<string>('');
+
+	console.log('momentsData', momentsData);
+
 
 	const itemsPerPage = 5;
 
@@ -79,69 +83,70 @@ const Home: NextPage = () => {
 		]
 	};
 
-	const fetchStatelessPostData = async (page: number = 1) => {
+	const fetchPosts = async (page: number = 1) => {
 		if (cachedData.length >= page * itemsPerPage) {
 			// If we already have the data, don't call the API again.
-			const newData = cachedData.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+			const newData = cachedData.slice((page - 1) * itemsPerPage, page * itemsPerPage)
+				.filter((filterItem: any) => filterItem.moment);
+			console.log('newData', newData);
+
 			setMomentsData(newData);
 			return;
 		}
 
-		const { getPostsStateless } = await import('deso-protocol')
-		setVideoLoaded(true)
-		const formData = {
-			NumToFetch: 100,
-			OrderBy: 'VideoURLs',
-		}
-		const postData = await getPostsStateless(formData)
-		setVideoLoaded(false)
+		try {
+			const { data } = await axios.get('http://localhost:3011/api/posts')
 
-		if (postData && postData.PostsFound && postData.PostsFound.length > 0) {
-			const newVideoData: any = postData?.PostsFound.filter((item: any) =>
-				item.VideoURLs && item.VideoURLs.some((videoURL: any) => videoURL)
-			);
-			setVideoData(newVideoData);
-			setCachedData(newVideoData);
-			const displayData = newVideoData.slice(0, itemsPerPage);
-			setMomentsData(displayData);
+			if (data?.posts.length > 0) {
+				const filteredVideos = data?.posts.filter((filterItem: any) => !filterItem.moment)
+				setVideoData(filteredVideos);
+				setCachedData(data?.posts);
+				const displayData = data?.posts.slice(0, itemsPerPage).filter((filterItem: any) => filterItem.moment);
+				setMomentsData(displayData);
+			}
+
+		} catch (error: any) {
+			console.log('error', error.response);
+		} finally {
+			setIsLoading(false)
 		}
 	}
 
-	const fetchFeedData = async (tag: string, page: number = 1) => {
-		if (currentTag !== tag) {
-			setCachedData([]); // Reset cached data
-			setCurrentTag(tag); // Update the current tag
-		}
+	// const fetchFeedData = async (tag: string, page: number = 1) => {
+	// 	if (currentTag !== tag) {
+	// 		setCachedData([]); // Reset cached data
+	// 		setCurrentTag(tag); // Update the current tag
+	// 	}
 
-		if (cachedData.length >= page * itemsPerPage) {
-			// If we already have the data, don't call the API again.
-			const newData = cachedData.slice((page - 1) * itemsPerPage, page * itemsPerPage);
-			setMomentsData(newData);
-			return;
-		}
+	// 	if (cachedData.length >= page * itemsPerPage) {
+	// 		// If we already have the data, don't call the API again.
+	// 		const newData = cachedData.slice((page - 1) * itemsPerPage, page * itemsPerPage).filter((filterItem: any) => filterItem.moment);;
+	// 		setMomentsData(newData);
+	// 		return;
+	// 	}
 
-		setVideoLoaded(true)
+	// 	setIsLoading(true)
 
-		const data = {
-			Tag: `#${tag}`,
-		}
-		const feedData = await getFeedData(data);
-		setVideoLoaded(false)
+	// 	const data = {
+	// 		Tag: `#${tag}`,
+	// 	}
+	// 	const feedData = await getFeedData(data);
+	// 	setIsLoading(false)
 
-		if (feedData && feedData.HotFeedPage && feedData.HotFeedPage.length > 0) {
-			const newVideoData: any = feedData?.HotFeedPage.filter((item: any) =>
-				item.VideoURLs && item.VideoURLs.some((videoURL: any) => videoURL)
-			);
-			setVideoData(newVideoData);
-			setCachedData(newVideoData);
-			const displayData = newVideoData.slice(0, itemsPerPage);
-			setMomentsData(displayData)
-		} else {
-			setVideoData([]);
-			setCachedData([]);
-			setMomentsData([]);
-		}
-	}
+	// 	if (feedData && feedData.HotFeedPage && feedData.HotFeedPage.length > 0) {
+	// 		const newVideoData: any = feedData?.HotFeedPage.filter((item: any) =>
+	// 			item.VideoURLs && item.VideoURLs.some((videoURL: any) => videoURL)
+	// 		).filter((filterItem: any) => filterItem.moment);;
+	// 		setVideoData(newVideoData);
+	// 		setCachedData(newVideoData);
+	// 		const displayData = newVideoData.slice(0, itemsPerPage).filter((filterItem: any) => filterItem.moment);;
+	// 		setMomentsData(displayData)
+	// 	} else {
+	// 		setVideoData([]);
+	// 		setCachedData([]);
+	// 		setMomentsData([]);
+	// 	}
+	// }
 
 	const loadMoreMoments = () => {
 		const nextPage = currentPage + 1;
@@ -157,7 +162,7 @@ const Home: NextPage = () => {
 		} else {
 			// We don't have all the data for the next page, fetch it.
 			setCurrentPage(nextPage);
-			fetchStatelessPostData(nextPage);
+			fetchPosts();
 		}
 	}
 
@@ -167,9 +172,21 @@ const Home: NextPage = () => {
 		if (!router.isReady) return;
 
 		if (tagParam) {
-			fetchFeedData(tagParam);
+			// fetchFeedData(tagParam);
 		} else {
-			fetchStatelessPostData();
+			fetchPosts();
+		}
+	}, [router.isReady]);
+
+
+	useEffect(() => {
+
+		if (!router.isReady) return;
+
+		if (tagParam) {
+			// fetchFeedData(tagParam);
+		} else {
+			fetchPosts();
 		}
 	}, [router.isReady, tagParam]);
 
@@ -178,14 +195,14 @@ const Home: NextPage = () => {
 
 		if (value === 'all') {
 			router.replace('/', undefined, { shallow: true });
-			fetchStatelessPostData()
+			fetchPosts()
 
 		} else {
 			router.replace({
 				pathname: router.pathname,
 				query: { ...router.query, tag: value },
 			})
-			fetchFeedData(value)
+			// fetchFeedData(value)
 		}
 	}
 
@@ -195,13 +212,13 @@ const Home: NextPage = () => {
 		setCachedData([]);
 		if (currentTag === 'all') {
 			router.replace('/', undefined, { shallow: true });
-			fetchStatelessPostData()
+			fetchPosts()
 		} else {
 			router.replace({
 				pathname: router.pathname,
 				query: { ...router.query, tag: currentTag },
 			})
-			fetchFeedData(currentTag)
+			// fetchFeedData(currentTag)
 		}
 	}
 
@@ -225,7 +242,7 @@ const Home: NextPage = () => {
 				{/* {
 					videoData.length > 0 &&
 					<>
-						<Videos videoData={videoData} videoLoaded={videoLoaded} />
+						<Videos videoData={videoData} videoLoaded={isLoading} />
 						<hr className="border-t-2 my-10" />
 					</>
 				} */}
@@ -263,8 +280,9 @@ const Home: NextPage = () => {
 											key={item.PostHashHex} // use unique identifier as key
 											className="mr-6"
 											item={item}
+											isLoading={isLoading}
 											onClick={() => {
-												setVideoLoaded(true)
+												setIsLoading(true)
 												const queryParams = tagParam ? { Tag: tagParam } : {};
 
 												router.push({
@@ -288,7 +306,7 @@ const Home: NextPage = () => {
 				{
 					videoData.length > 0 &&
 					<div className="mb-20">
-						<Videos videoData={videoData} videoLoaded={videoLoaded} />
+						<Videos videoData={videoData} videoLoaded={isLoading} />
 					</div>
 				}
 

@@ -4,6 +4,8 @@ import EmojiReaction from '../emoji-reaction';
 
 
 const VideoItem = memo(({ item, onReactionClick, ...rest }: VideoItemProps) => {
+	console.log('item from video', item);
+	
 
 	return (
 		<div className="relative">
@@ -12,14 +14,14 @@ const VideoItem = memo(({ item, onReactionClick, ...rest }: VideoItemProps) => {
 				<iframe
 					{...rest}
 					className="absolute top-0 left-0 right-0 bottom-0 w-full h-full"
-					src={`${item?.VideoURLs[0]}`}
+					src={`${item?.VideoURL}`}
 					title="YouTube video player"
 					allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 					allowFullScreen>
 				</iframe>
 			</div>
 
-			<h4 className="mt-2 text-md font-bold capitalize">{item?.ProfileEntryResponse?.Username}</h4>
+			<h4 className="mt-2 text-md font-bold capitalize">{item?.Username}</h4>
 			<p className="text-sm line-clamp-2 text-left min-h-[40px]">{item?.Body}</p>
 
 			<div className="flex justify-between mt-2">
