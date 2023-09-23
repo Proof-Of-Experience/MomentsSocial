@@ -4,11 +4,10 @@ import EmojiReaction from '../emoji-reaction';
 
 
 const VideoItem = memo(({ item, onReactionClick, ...rest }: VideoItemProps) => {
-	console.log('item from video', item);
 
 	const sanitizeURL = (url: any) => {
 		const parsedUrl = new URL(url);
-		parsedUrl.searchParams.delete('autoplay');
+		parsedUrl.searchParams.set('autoplay', '0');
 		return parsedUrl.toString();
 	};
 

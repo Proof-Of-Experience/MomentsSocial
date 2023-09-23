@@ -17,13 +17,13 @@ const Home: NextPage = () => {
 	const { gridView }: any = useContext(VideoLayoutContext)
 	const loadMoreRef = useRef(null);
 
-	const [isPaginating, setIsPaginating] = useState<boolean>(false);
+	const [isVideoPaginating, setIsVideoPaginating] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 	const [videoData, setVideoData] = useState<string[]>([]);
 	const [momentsData, setMomentsData] = useState<string[]>([]);
-	const [currentPage, setCurrentPage] = useState(1);
-	const [totalPages, setTotalPages] = useState<number>(Infinity);
+	const [videoCurrentPage, setVideoCurrentPage] = useState(1);
+	const [videoTotalPages, setVideoTotalPages] = useState<number>(Infinity);
 	const [currentTag, setCurrentTag] = useState<string>('');
 
 	console.log('momentsData', momentsData);
@@ -32,18 +32,18 @@ const Home: NextPage = () => {
 
 	const fetchVideos = async (page: number) => {
 
-		if (page > totalPages || isPaginating) {
-			setIsPaginating(false);
-			return;  // Exit early if already fetching or if current page is beyond totalPages.
+		if (page > videoTotalPages || isVideoPaginating) {
+			setIsVideoPaginating(false);
+			return;  // Exit early if already fetching or if current page is beyond videoTotalPages.
 		}
 
-		setIsPaginating(true);  // Set to loading state
+		setIsVideoPaginating(true);  // Set to loading state
 
 		try {
 			const { data } = await axios.get(`http://localhost:3011/api/posts?page=${page}&limit=10&moment=false`);
 
-			if (data.totalPages && totalPages !== data.totalPages) {
-				setTotalPages(data.totalPages);
+			if (data.videoTotalPages && videoTotalPages !== data.videoTotalPages) {
+				setVideoTotalPages(data.videoTotalPages);
 			}
 
 			if (data?.posts.length > 0) {
@@ -51,15 +51,19 @@ const Home: NextPage = () => {
 				const uniquePosts = data.posts.filter((post: any) =>
 					!videoData.some((existingPost: any) => existingPost.PostHashHex === post.PostHashHex)
 				);
-				setVideoData(prevData => [...prevData, ...uniquePosts]);
-				setCurrentPage(page);
+				setVideoData(prevData => {
+					const mergedData = [...prevData, ...uniquePosts];
+					return Array.from(new Set(mergedData.map(post => post.PostHashHex)))
+						.map(hash => mergedData.find(post => post.PostHashHex === hash));
+				});
+				setVideoCurrentPage(page);
 			}
 
 			if (!initialLoadComplete) {
 				setInitialLoadComplete(true);
 			}
 
-			setIsPaginating(false);
+			setIsVideoPaginating(false);
 		} catch (error: any) {
 			console.log('error', error.response);
 		} finally {
@@ -95,9 +99,9 @@ const Home: NextPage = () => {
 
 	useEffect(() => {
 		const observer = new IntersectionObserver(entries => {
-			if (entries[0].isIntersecting && !isPaginating) {
+			if (entries[0].isIntersecting && !isVideoPaginating) {
 				console.log("Load More Triggered!");
-				const nextPage = currentPage + 1;
+				const nextPage = videoCurrentPage + 1;
 				fetchVideos(nextPage);
 			}
 		}, {
@@ -114,11 +118,11 @@ const Home: NextPage = () => {
 				observer.unobserve(loadMoreRef.current);
 			}
 		};
-	}, [loadMoreRef.current, isPaginating]);
+	}, [loadMoreRef.current, isVideoPaginating]);
 
 
 	const onClickTag = (value: string) => {
-		setCurrentPage(1);
+		setVideoCurrentPage(1);
 
 		if (value === 'all') {
 			router.replace('/', undefined, { shallow: true });
@@ -135,7 +139,7 @@ const Home: NextPage = () => {
 
 	const onPressTagSearch = () => {
 
-		setCurrentPage(1);
+		setVideoCurrentPage(1);
 		if (currentTag === 'all') {
 			router.replace('/', undefined, { shallow: true });
 			// fetchVideos()
@@ -202,7 +206,7 @@ const Home: NextPage = () => {
 					momentsData.length > 0 &&
 					<MomentsSlider
 						momentsData={momentsData}
-						onClick={(item: any) => {
+						onClickMoment={(item: any) => {
 							setIsLoading(true)
 							const queryParams = tagParam ? { Tag: tagParam } : {};
 
