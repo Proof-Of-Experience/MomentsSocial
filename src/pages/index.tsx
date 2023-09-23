@@ -1,201 +1,128 @@
 import MainLayout from '@/layouts/main-layout'
-import { VideoLayoutProvider } from '@/contexts/VideosContext';
-import Videos from '@/components/snippets/videos';
+import VideoLayoutContext, { VideoLayoutProvider } from '@/contexts/VideosContext';
 import Layout from '@/features/home/layout';
-import { getFeedData } from '@/pages/api/feed';
 import Tags from '@/features/home/tags';
 import { NextPage } from 'next';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
-import Moment from '@/components/snippets/moment';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
+import VideoItem from '@/components/snippets/video';
+import VideoSkeleton from '@/components/skeletons/video';
+import MomentsSlider from '@/features/home/slider/Slider';
 
 const Home: NextPage = () => {
 	const router = useRouter();
 	const tagParam: any = router.query.tag
+	const SKELETON_COUNT = 5;
+	const { gridView }: any = useContext(VideoLayoutContext)
+	const loadMoreRef = useRef(null);
 
+	const [isPaginating, setIsPaginating] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 	const [videoData, setVideoData] = useState<string[]>([]);
 	const [momentsData, setMomentsData] = useState<string[]>([]);
-	const [cachedData, setCachedData] = useState<string[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
+	const [totalPages, setTotalPages] = useState<number>(Infinity);
 	const [currentTag, setCurrentTag] = useState<string>('');
 
 	console.log('momentsData', momentsData);
+	console.log('videoData', videoData);
 
 
-	const itemsPerPage = 5;
+	const fetchVideos = async (page: number) => {
 
-	const slider: any = useRef(null);
-
-	const dynamicSlidesToShow = useMemo(() => {
-		if (momentsData.length > 4) {
-			return 5;
-		} else if (momentsData.length > 3) {
-			return 4;
-		} else if (momentsData.length < 1) {
-			return 1;
-		} else {
-			return momentsData.length;
+		if (page > totalPages || isPaginating) {
+			setIsPaginating(false);
+			return;  // Exit early if already fetching or if current page is beyond totalPages.
 		}
-	}, [momentsData]);
 
-	const momentSliderSettings = {
-		dots: false,
-		infinite: true,
-		loop: false,
-		arrows: false,
-		speed: 500,
-		slidesToShow: dynamicSlidesToShow,
-		slidesToScroll: 3,
-		responsive: [
-			{
-				breakpoint: 1200,
-				settings: {
-					slidesToShow: 5,
-					slidesToScroll: 3,
-				}
-			},
-			{
-				breakpoint: 991,
-				settings: {
-					slidesToShow: 3,
-					slidesToScroll: 2,
-				}
-			},
-			{
-				breakpoint: 700,
-				settings: {
-					slidesToShow: 2,
-					slidesToScroll: 1
-				}
-			},
-			{
-				breakpoint: 575,
-				settings: {
-					slidesToShow: 1,
-				}
-			}
-		]
-	};
-
-	const fetchPosts = async (page: number = 1) => {
-		if (cachedData.length >= page * itemsPerPage) {
-			// If we already have the data, don't call the API again.
-			const newData = cachedData.slice((page - 1) * itemsPerPage, page * itemsPerPage)
-				.filter((filterItem: any) => filterItem.moment);
-			console.log('newData', newData);
-
-			setMomentsData(newData);
-			return;
-		}
+		setIsPaginating(true);  // Set to loading state
 
 		try {
-			const { data } = await axios.get('http://localhost:3011/api/posts')
+			const { data } = await axios.get(`http://localhost:3011/api/posts?page=${page}&limit=10&moment=false`);
 
-			if (data?.posts.length > 0) {
-				const filteredVideos = data?.posts.filter((filterItem: any) => !filterItem.moment)
-				setVideoData(filteredVideos);
-				setCachedData(data?.posts);
-				const displayData = data?.posts.slice(0, itemsPerPage).filter((filterItem: any) => filterItem.moment);
-				setMomentsData(displayData);
+			if (data.totalPages && totalPages !== data.totalPages) {
+				setTotalPages(data.totalPages);
 			}
 
+			if (data?.posts.length > 0) {
+				// Filter out duplicates
+				const uniquePosts = data.posts.filter((post: any) =>
+					!videoData.some((existingPost: any) => existingPost.PostHashHex === post.PostHashHex)
+				);
+				setVideoData(prevData => [...prevData, ...uniquePosts]);
+				setCurrentPage(page);
+			}
+
+			if (!initialLoadComplete) {
+				setInitialLoadComplete(true);
+			}
+
+			setIsPaginating(false);
 		} catch (error: any) {
 			console.log('error', error.response);
 		} finally {
-			setIsLoading(false)
+			setIsLoading(false);
 		}
 	}
 
-	// const fetchFeedData = async (tag: string, page: number = 1) => {
-	// 	if (currentTag !== tag) {
-	// 		setCachedData([]); // Reset cached data
-	// 		setCurrentTag(tag); // Update the current tag
-	// 	}
+	const fetchMoments = async (page: number = 1) => {
 
-	// 	if (cachedData.length >= page * itemsPerPage) {
-	// 		// If we already have the data, don't call the API again.
-	// 		const newData = cachedData.slice((page - 1) * itemsPerPage, page * itemsPerPage).filter((filterItem: any) => filterItem.moment);;
-	// 		setMomentsData(newData);
-	// 		return;
-	// 	}
-
-	// 	setIsLoading(true)
-
-	// 	const data = {
-	// 		Tag: `#${tag}`,
-	// 	}
-	// 	const feedData = await getFeedData(data);
-	// 	setIsLoading(false)
-
-	// 	if (feedData && feedData.HotFeedPage && feedData.HotFeedPage.length > 0) {
-	// 		const newVideoData: any = feedData?.HotFeedPage.filter((item: any) =>
-	// 			item.VideoURLs && item.VideoURLs.some((videoURL: any) => videoURL)
-	// 		).filter((filterItem: any) => filterItem.moment);;
-	// 		setVideoData(newVideoData);
-	// 		setCachedData(newVideoData);
-	// 		const displayData = newVideoData.slice(0, itemsPerPage).filter((filterItem: any) => filterItem.moment);;
-	// 		setMomentsData(displayData)
-	// 	} else {
-	// 		setVideoData([]);
-	// 		setCachedData([]);
-	// 		setMomentsData([]);
-	// 	}
-	// }
-
-	const loadMoreMoments = () => {
-		const nextPage = currentPage + 1;
-		const startIndex = (nextPage - 1) * itemsPerPage;
-		const endIndex = nextPage * itemsPerPage;
-
-		const nextDataSlice = cachedData.slice(startIndex, endIndex);
-
-		if (nextDataSlice.length === itemsPerPage) {
-			// We have all the data for the next page in cache.
-			setMomentsData(nextDataSlice);
-			setCurrentPage(nextPage);
-		} else {
-			// We don't have all the data for the next page, fetch it.
-			setCurrentPage(nextPage);
-			fetchPosts();
+		try {
+			const { data } = await axios.get('http://localhost:3011/api/posts?page=1&limit=10&moment=true');
+			if (data?.posts.length > 0) {
+				setMomentsData(data.posts);
+			}
+		} catch (error: any) {
+			console.log('error', error.response);
+		} finally {
+			setIsLoading(false);
 		}
 	}
 
 
 	useEffect(() => {
-
-		if (!router.isReady) return;
+		if (!router.isReady || initialLoadComplete) return;
 
 		if (tagParam) {
 			// fetchFeedData(tagParam);
 		} else {
-			fetchPosts();
+			fetchVideos(1);  // Start with the first page
+			fetchMoments();
 		}
-	}, [router.isReady]);
-
+	}, [tagParam]);
 
 	useEffect(() => {
+		const observer = new IntersectionObserver(entries => {
+			if (entries[0].isIntersecting && !isPaginating) {
+				console.log("Load More Triggered!");
+				const nextPage = currentPage + 1;
+				fetchVideos(nextPage);
+			}
+		}, {
+			threshold: 1.0  // Only trigger if the entire element is in view
+		});
 
-		if (!router.isReady) return;
-
-		if (tagParam) {
-			// fetchFeedData(tagParam);
-		} else {
-			fetchPosts();
+		if (loadMoreRef.current) {
+			observer.observe(loadMoreRef.current);
 		}
-	}, [router.isReady, tagParam]);
+
+		// Cleanup observer on unmount
+		return () => {
+			if (loadMoreRef.current) {
+				observer.unobserve(loadMoreRef.current);
+			}
+		};
+	}, [loadMoreRef.current, isPaginating]);
+
 
 	const onClickTag = (value: string) => {
 		setCurrentPage(1);
 
 		if (value === 'all') {
 			router.replace('/', undefined, { shallow: true });
-			fetchPosts()
+			// fetchVideos()
 
 		} else {
 			router.replace({
@@ -209,10 +136,9 @@ const Home: NextPage = () => {
 	const onPressTagSearch = () => {
 
 		setCurrentPage(1);
-		setCachedData([]);
 		if (currentTag === 'all') {
 			router.replace('/', undefined, { shallow: true });
-			fetchPosts()
+			// fetchVideos()
 		} else {
 			router.replace({
 				pathname: router.pathname,
@@ -221,6 +147,39 @@ const Home: NextPage = () => {
 			// fetchFeedData(currentTag)
 		}
 	}
+
+
+	const showGridCol = () => {
+		if (gridView === 'grid') {
+			return 'grid-cols-5'
+		} else {
+			return 'grid-cols-3'
+		}
+	}
+
+	const renderVideoItems = () => {
+		if (isLoading) {
+			// Display skeletons when video is not loaded
+			return Array(SKELETON_COUNT).fill(null).map((_, idx) => (
+				<div key={`skeleton-${idx}`} className="overflow-hidden">
+					<VideoSkeleton />
+				</div>
+			));
+		}
+
+		// Display video items when loaded
+		return videoData.map((item: any, index: any) => (
+			<div key={`moment-${index}`} className="overflow-hidden">
+				<VideoItem item={item} />
+			</div>
+		));
+	}
+
+	const LoaderBottom = () => (
+		<div className="loader">
+			Loading...
+		</div>
+	);
 
 
 	return (
@@ -239,76 +198,30 @@ const Home: NextPage = () => {
 					<Layout />
 				</div >
 
-				{/* {
-					videoData.length > 0 &&
-					<>
-						<Videos videoData={videoData} videoLoaded={isLoading} />
-						<hr className="border-t-2 my-10" />
-					</>
-				} */}
-
 				{
 					momentsData.length > 0 &&
-					<>
-						<div className="flex justify-between items-center mr-10 mb-3">
-							<h3 className="font-semibold text-3xl">Moments</h3>
-							{
-								momentsData.length > 4 && (
-									<div>
-										<button
-											className="mr-4"
-											onClick={() => slider?.current?.slickPrev()}>
-											<ChevronLeftIcon className="h-5 w-5" />
-										</button>
-										<button
-											onClick={() => {
-												slider?.current?.slickNext();
-												loadMoreMoments();
-											}}>
-											<ChevronRightIcon className="h-5 w-5" />
-										</button>
-									</div>
-								)
-							}
-						</div>
+					<MomentsSlider
+						momentsData={momentsData}
+						onClick={(item: any) => {
+							setIsLoading(true)
+							const queryParams = tagParam ? { Tag: tagParam } : {};
 
-						<Slider ref={slider}  {...momentSliderSettings}>
-							{
-								momentsData.map((item: any) => {
-									return (
-										<Moment
-											key={item.PostHashHex} // use unique identifier as key
-											className="mr-6"
-											item={item}
-											isLoading={isLoading}
-											onClick={() => {
-												setIsLoading(true)
-												const queryParams = tagParam ? { Tag: tagParam } : {};
-
-												router.push({
-													pathname: `moment/${item?.PostHashHex}`,
-													query: queryParams
-												})
-											}}
-										/>
-									)
-								})
-							}
-						</Slider>
-
-						{
-							momentsData.length > 0 &&
-							<hr className="border-t-2 my-10" />
-						}
-					</>
+							router.push({
+								pathname: `moment/${item?.PostHashHex}`,
+								query: queryParams
+							})
+						}}
+					/>
 				}
 
-				{
-					videoData.length > 0 &&
-					<div className="mb-20">
-						<Videos videoData={videoData} videoLoaded={isLoading} />
-					</div>
-				}
+				<div className={`grid ${showGridCol()} gap-x-5 gap-y-10`}>
+					{renderVideoItems()}
+
+					{/* Loader and Intersection Observer trigger */}
+					{isLoading && <LoaderBottom />}
+					<div ref={loadMoreRef}></div>
+
+				</div>
 
 			</VideoLayoutProvider >
 		</MainLayout >

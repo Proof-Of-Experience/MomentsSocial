@@ -1,6 +1,5 @@
-import React, { useEffect, memo, useState, useCallback, Fragment } from 'react'
+import React, { memo, Fragment } from 'react'
 import { MomentProps } from '@/model/moment'
-import { ApiDataType, apiService } from '@/utils/request';
 import MomentSkeleton from '@/components/skeletons/moment';
 import EmojiReaction from '../emoji-reaction';
 

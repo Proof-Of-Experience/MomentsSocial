@@ -5,7 +5,16 @@ import EmojiReaction from '../emoji-reaction';
 
 const VideoItem = memo(({ item, onReactionClick, ...rest }: VideoItemProps) => {
 	console.log('item from video', item);
-	
+
+	const sanitizeURL = (url: any) => {
+		const parsedUrl = new URL(url);
+		parsedUrl.searchParams.delete('autoplay');
+		return parsedUrl.toString();
+	};
+
+	const videoUrl = sanitizeURL(item?.VideoURL);
+
+
 
 	return (
 		<div className="relative">
@@ -14,7 +23,7 @@ const VideoItem = memo(({ item, onReactionClick, ...rest }: VideoItemProps) => {
 				<iframe
 					{...rest}
 					className="absolute top-0 left-0 right-0 bottom-0 w-full h-full"
-					src={`${item?.VideoURL}`}
+					src={videoUrl}
 					title="YouTube video player"
 					allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 					allowFullScreen>
