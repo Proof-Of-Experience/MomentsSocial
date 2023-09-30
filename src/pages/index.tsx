@@ -27,10 +27,6 @@ const Home: NextPage = () => {
 	const [videoTotalPages, setVideoTotalPages] = useState<number>(Infinity);
 	const [currentTag, setCurrentTag] = useState<string>('');
 
-	console.log('momentsData', momentsData);
-	console.log('videoData', videoData);
-	console.log('tagParam', tagParam);
-
 	const fetchVideos = async (page: number) => {
 
 		if (page > videoTotalPages || isVideoPaginating) {
@@ -144,7 +140,6 @@ const Home: NextPage = () => {
 			}
 		};
 	}, [loadMoreRef.current, isVideoPaginating]);
-
 
 	const onClickTag = (value: string) => {
 		setVideoCurrentPage(1);

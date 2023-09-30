@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
-import { tags } from './mockData';
+import { ApiDataType, apiService } from '@/utils/request';
+import { useRouter } from 'next/router';
+import { capitalizeFirstLetter } from '@/utils';
 
 interface TagsProps {
   onClick: (value: string) => void;
@@ -11,18 +13,52 @@ interface TagsProps {
 }
 
 const Tags: React.FC<TagsProps> = ({ onClick, tagParam, tagSearch, onChangeTagSearch, onPressTagSearch }) => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [tags, setTags] = useState<any>([]);
+
+  const fetchTags = async (page: number = 1) => {
+    const apiData: ApiDataType = {
+      method: 'get',
+      url: `/api/hashtags`,
+      customUrl: process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL,
+    };
+
+    try {
+      await apiService(apiData, (res: any, err: any) => {
+        if (err) return err.response
+
+        if (res?.length > 0) {
+          setTags(res);
+        }
+      });
+    } catch (error: any) {
+      console.error('error', error.response);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    fetchTags();
+  }, [router.isReady]);
 
   return (
     <div className="flex items-center">
       {
         tags.map((item: any, index: number) => {
+          const tagName = item.hashtag.substring(1);
+
           return (
             <button
               key={`tag-${index}`}
-              className={`${tagParam == item.value ? 'bg-gray-600 text-white' : 'bg-gray-200 text-black'} py-1 px-5 rounded-md mr-4 focus:bg-gray-600 focus:text-white mb-3 xl:mb-0`}
-              title={item.name}
-              onClick={() => onClick(item.value.toLowerCase())}>
-              {item.name}
+              className={`${tagParam == tagName ? 'bg-gray-600 text-white' : 'bg-gray-200 text-black'} py-1 px-5 rounded-md mr-4 focus:bg-gray-600 focus:text-white mb-3 xl:mb-0`}
+              title={tagName}
+              onClick={() => onClick(tagName.toLowerCase())}>
+              {capitalizeFirstLetter(tagName)}
             </button>
           )
         })
