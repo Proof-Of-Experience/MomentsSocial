@@ -3,6 +3,7 @@ import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { ApiDataType, apiService } from '@/utils/request';
 import { useRouter } from 'next/router';
 import { capitalizeFirstLetter } from '@/utils';
+import TagSkeleton from '@/components/skeletons/tag';
 
 interface TagsProps {
   onClick: (value: string) => void;
@@ -39,32 +40,17 @@ const Tags: React.FC<TagsProps> = ({ onClick, tagParam, tagSearch, onChangeTagSe
     }
   }
 
-
   useEffect(() => {
     if (!router.isReady) return;
 
     fetchTags();
   }, [router.isReady]);
 
+
   return (
-    <div className="flex items-center">
-      {
-        tags.map((item: any, index: number) => {
-          const tagName = item.hashtag.substring(1);
+    <div className="flex items-center max-w-[94%] overflow-hidden">
 
-          return (
-            <button
-              key={`tag-${index}`}
-              className={`${tagParam == tagName ? 'bg-gray-600 text-white' : 'bg-gray-200 text-black'} py-1 px-5 rounded-md mr-4 focus:bg-gray-600 focus:text-white mb-3 xl:mb-0`}
-              title={tagName}
-              onClick={() => onClick(tagName.toLowerCase())}>
-              {capitalizeFirstLetter(tagName)}
-            </button>
-          )
-        })
-      }
-
-      <div className='flex justify-between items-center border rounded-md px-3 max-w-[280px]'>
+      <div className='flex justify-between items-center border rounded-md px-3 max-w-[280px] mr-3'>
         <span className='mr-1'>#</span>
         <input
           type='text'
@@ -82,6 +68,38 @@ const Tags: React.FC<TagsProps> = ({ onClick, tagParam, tagSearch, onChangeTagSe
           />
         }
       </div>
+
+      {
+        isLoading ?
+          <TagSkeleton />
+          :
+          <>
+            <button
+              className={`${!tagParam ? 'bg-gray-600 text-white' : 'bg-gray-200 text-black'} py-1 px-5 rounded-md mr-4 focus:bg-gray-600 focus:text-white mb-3 xl:mb-0`}
+              title="All"
+              disabled={!tagParam}
+              onClick={() => onClick('all')}>
+              All
+            </button>
+
+            {
+              tags.map((item: any, index: number) => {
+                const tagName = item.hashtag.substring(1);
+
+                return (
+                  <button
+                    key={`tag-${index}`}
+                    className={`${tagParam == tagName ? 'bg-gray-600 text-white' : 'bg-gray-200 text-black'} py-1 px-5 rounded-md mr-4 focus:bg-gray-600 focus:text-white mb-3 xl:mb-0`}
+                    title={tagName}
+                    onClick={() => onClick(item.hashtag)}>
+                    {capitalizeFirstLetter(tagName)}
+                  </button>
+                )
+              })
+            }
+          </>
+      }
+
     </div>
   )
 }

@@ -82,7 +82,7 @@ const Moments: NextPage = () => {
 	return (
 		<MainLayout title='Moments' isLoading={dataLoaded} mainWrapClass='p-5'>
 			<Fragment>
-				<div className={`flex justify-between items-center mb-4`}>
+				<div className={`flex justify-between mb-4`}>
 					<Tags tagParam={tagParam} onClick={onClickTag} />
 				</div>
 

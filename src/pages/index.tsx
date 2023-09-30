@@ -26,8 +26,16 @@ const Home: NextPage = () => {
 	const [videoCurrentPage, setVideoCurrentPage] = useState(1);
 	const [videoTotalPages, setVideoTotalPages] = useState<number>(Infinity);
 	const [currentTag, setCurrentTag] = useState<string>('');
+	const [momentsCurrentPage, setMomentsCurrentPage] = useState(1);
+	const [momentsTotalPages, setMomentsTotalPages] = useState<number>(Infinity);
+
+	console.log('momentsData', momentsData);
+
 
 	const fetchVideos = async (page: number) => {
+		console.log('page', page);
+		console.log('videoTotalPages', videoTotalPages);
+
 
 		if (page > videoTotalPages || isVideoPaginating) {
 			setIsVideoPaginating(false);
@@ -37,7 +45,7 @@ const Home: NextPage = () => {
 		setIsVideoPaginating(true);  // Set to loading state
 
 		try {
-			let apiUrl = `/api/posts?page=${page}&limit=10&moment=false`;
+			let apiUrl = `/api/posts?page=${page}&limit=8&moment=false`;
 			if (tagParam) {
 				const tagWithHash = tagParam.startsWith('#') ? tagParam : `#${tagParam}`;
 				apiUrl += `&hashtag=${encodeURIComponent(tagWithHash)}`;
@@ -52,8 +60,8 @@ const Home: NextPage = () => {
 			await apiService(apiData, (res: any, err: any) => {
 				if (err) return err.response
 
-				if (res?.videoTotalPages && videoTotalPages !== res.videoTotalPages) {
-					setVideoTotalPages(res.videoTotalPages);
+				if (res?.totalPages && videoTotalPages !== res.totalPages) {
+					setVideoTotalPages(res.totalPages);
 				}
 
 				if (res?.posts.length > 0) {
@@ -83,7 +91,7 @@ const Home: NextPage = () => {
 	}
 
 	const fetchMoments = async (page: number = 1) => {
-		let apiUrl = `/api/posts?page=${page}&limit=10&moment=true`;
+		let apiUrl = `/api/posts?page=${page}&limit=6&moment=true`;
 		if (tagParam) {
 			const tagWithHash = tagParam.startsWith('#') ? tagParam : `#${tagParam}`;
 			apiUrl += `&hashtag=${encodeURIComponent(tagWithHash)}`;
@@ -99,8 +107,12 @@ const Home: NextPage = () => {
 			await apiService(apiData, (res: any, err: any) => {
 				if (err) return err.response
 
+				if (res?.totalPages && momentsTotalPages !== res.totalPages) {
+					setMomentsTotalPages(res.totalPages);
+				}
+
 				if (res?.posts.length > 0) {
-					setMomentsData(res.posts);
+					setMomentsData(prevData => [...prevData, ...res.posts]);
 				}
 			});
 		} catch (error: any) {
@@ -113,16 +125,22 @@ const Home: NextPage = () => {
 
 	useEffect(() => {
 		if (!router.isReady) return;
+		fetchVideos(videoCurrentPage);
+	}, [tagParam, initialLoadComplete, router.isReady]);
 
-		fetchVideos(1);
-		fetchMoments();
-	}, [tagParam, initialLoadComplete]);
+
+	useEffect(() => {
+		if (!router.isReady) return;
+		fetchMoments(momentsCurrentPage);
+	}, [tagParam, router.isReady, momentsCurrentPage]);
 
 	useEffect(() => {
 		const observer = new IntersectionObserver(entries => {
 			if (entries[0].isIntersecting && !isVideoPaginating) {
 				console.log("Load More Triggered!");
 				const nextPage = videoCurrentPage + 1;
+				console.log('nextPage', nextPage);
+
 				fetchVideos(nextPage);
 			}
 		}, {
@@ -141,43 +159,49 @@ const Home: NextPage = () => {
 		};
 	}, [loadMoreRef.current, isVideoPaginating]);
 
-	const onClickTag = (value: string) => {
+	const onClickTag = async (value: string) => {
 		setVideoCurrentPage(1);
+		setVideoTotalPages(1)
+		setMomentsCurrentPage(1);
+		setMomentsTotalPages(1);
+		setVideoData([])
+		setMomentsData([])
 
 		if (value === 'all') {
 			router.replace('/', undefined, { shallow: true });
-			// fetchVideos()
-
 		} else {
 			router.replace({
 				pathname: router.pathname,
 				query: { ...router.query, tag: value },
 			})
-			// fetchFeedData(value)
 		}
 	}
 
 	const onPressTagSearch = () => {
 
 		setVideoCurrentPage(1);
+		setMomentsCurrentPage(1);
 		if (currentTag === 'all') {
 			router.replace('/', undefined, { shallow: true });
-			// fetchVideos()
 		} else {
 			router.replace({
 				pathname: router.pathname,
 				query: { ...router.query, tag: currentTag },
 			})
-			// fetchFeedData(currentTag)
 		}
 	}
 
-
 	const showGridCol = () => {
 		if (gridView === 'grid') {
-			return 'grid-cols-5'
+			return 'grid-cols-4'
 		} else {
-			return 'grid-cols-3'
+			return 'grid-cols-2'
+		}
+	}
+
+	const loadMoreMoments = () => {
+		if (momentsCurrentPage < momentsTotalPages) {
+			setMomentsCurrentPage(momentsCurrentPage + 1)
 		}
 	}
 
@@ -226,6 +250,7 @@ const Home: NextPage = () => {
 					momentsData.length > 0 &&
 					<MomentsSlider
 						momentsData={momentsData}
+						loadMoreMoments={loadMoreMoments}
 						onClickMoment={(item: any) => {
 							setIsLoading(true)
 							const queryParams = tagParam ? { Tag: tagParam } : {};

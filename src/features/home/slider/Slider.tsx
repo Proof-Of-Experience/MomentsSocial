@@ -9,10 +9,10 @@ const MomentsSlider = ({ momentsData, isLoading, loadMoreMoments, onClickMoment 
     const slider: any = useRef(null);
 
     const dynamicSlidesToShow = useMemo(() => {
-        if (momentsData.length > 4) {
-            return 5;
-        } else if (momentsData.length > 3) {
-            return 4;
+        if (momentsData.length > 5) {
+            return 6;
+        } else if (momentsData.length > 4) {
+            return 3;
         } else if (momentsData.length < 1) {
             return 1;
         } else {
@@ -58,6 +58,7 @@ const MomentsSlider = ({ momentsData, isLoading, loadMoreMoments, onClickMoment 
             }
         ]
     };
+
     return (
         <>
             <div className="flex justify-between items-center mr-10 mb-3">
