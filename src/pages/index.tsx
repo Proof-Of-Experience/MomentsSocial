@@ -9,6 +9,7 @@ import axios from 'axios';
 import VideoItem from '@/components/snippets/video';
 import VideoSkeleton from '@/components/skeletons/video';
 import MomentsSlider from '@/features/home/slider/Slider';
+import { ApiDataType, apiService } from '@/utils/request';
 
 const Home: NextPage = () => {
 	const router = useRouter();
@@ -28,7 +29,7 @@ const Home: NextPage = () => {
 
 	console.log('momentsData', momentsData);
 	console.log('videoData', videoData);
-
+	console.log('tagParam', tagParam);
 
 	const fetchVideos = async (page: number) => {
 
@@ -40,46 +41,74 @@ const Home: NextPage = () => {
 		setIsVideoPaginating(true);  // Set to loading state
 
 		try {
-			const { data } = await axios.get(`http://localhost:3011/api/posts?page=${page}&limit=10&moment=false`);
-
-			if (data.videoTotalPages && videoTotalPages !== data.videoTotalPages) {
-				setVideoTotalPages(data.videoTotalPages);
+			let apiUrl = `/api/posts?page=${page}&limit=10&moment=false`;
+			if (tagParam) {
+				const tagWithHash = tagParam.startsWith('#') ? tagParam : `#${tagParam}`;
+				apiUrl += `&hashtag=${encodeURIComponent(tagWithHash)}`;
 			}
 
-			if (data?.posts.length > 0) {
-				// Filter out duplicates
-				const uniquePosts = data.posts.filter((post: any) =>
-					!videoData.some((existingPost: any) => existingPost.PostHashHex === post.PostHashHex)
-				);
-				setVideoData(prevData => {
-					const mergedData = [...prevData, ...uniquePosts];
-					return Array.from(new Set(mergedData.map(post => post.PostHashHex)))
-						.map(hash => mergedData.find(post => post.PostHashHex === hash));
-				});
-				setVideoCurrentPage(page);
-			}
+			const apiData: ApiDataType = {
+				method: 'get',
+				url: apiUrl,
+				customUrl: process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL,
+			};
 
-			if (!initialLoadComplete) {
-				setInitialLoadComplete(true);
-			}
+			await apiService(apiData, (res: any, err: any) => {
+				if (err) return err.response
 
-			setIsVideoPaginating(false);
+				if (res?.videoTotalPages && videoTotalPages !== res.videoTotalPages) {
+					setVideoTotalPages(res.videoTotalPages);
+				}
+
+				if (res?.posts.length > 0) {
+					// Filter out duplicates
+					const uniquePosts = res.posts.filter((post: any) =>
+						!videoData.some((existingPost: any) => existingPost.PostHashHex === post.PostHashHex)
+					);
+					setVideoData(prevData => {
+						const mergedData = [...prevData, ...uniquePosts];
+						return Array.from(new Set(mergedData.map(post => post.PostHashHex)))
+							.map(hash => mergedData.find(post => post.PostHashHex === hash));
+					});
+					setVideoCurrentPage(page);
+				}
+
+				if (!initialLoadComplete) {
+					setInitialLoadComplete(true);
+				}
+
+				setIsVideoPaginating(false);
+			});
 		} catch (error: any) {
-			console.log('error', error.response);
+			console.error('error', error.response);
 		} finally {
 			setIsLoading(false);
 		}
 	}
 
 	const fetchMoments = async (page: number = 1) => {
+		let apiUrl = `/api/posts?page=${page}&limit=10&moment=true`;
+		if (tagParam) {
+			const tagWithHash = tagParam.startsWith('#') ? tagParam : `#${tagParam}`;
+			apiUrl += `&hashtag=${encodeURIComponent(tagWithHash)}`;
+		}
+
+		const apiData: ApiDataType = {
+			method: 'get',
+			url: apiUrl,
+			customUrl: process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL,
+		};
 
 		try {
-			const { data } = await axios.get('http://localhost:3011/api/posts?page=1&limit=10&moment=true');
-			if (data?.posts.length > 0) {
-				setMomentsData(data.posts);
-			}
+			await apiService(apiData, (res: any, err: any) => {
+				if (err) return err.response
+
+				if (res?.posts.length > 0) {
+					setMomentsData(res.posts);
+				}
+			});
 		} catch (error: any) {
-			console.log('error', error.response);
+			console.error('error', error.response);
 		} finally {
 			setIsLoading(false);
 		}
@@ -87,15 +116,11 @@ const Home: NextPage = () => {
 
 
 	useEffect(() => {
-		if (!router.isReady || initialLoadComplete) return;
+		if (!router.isReady) return;
 
-		if (tagParam) {
-			// fetchFeedData(tagParam);
-		} else {
-			fetchVideos(1);  // Start with the first page
-			fetchMoments();
-		}
-	}, [tagParam]);
+		fetchVideos(1);
+		fetchMoments();
+	}, [tagParam, initialLoadComplete]);
 
 	useEffect(() => {
 		const observer = new IntersectionObserver(entries => {

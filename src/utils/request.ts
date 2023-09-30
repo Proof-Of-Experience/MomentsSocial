@@ -2,7 +2,7 @@ const baseURL = process.env.NEXT_PUBLIC_BASE_URL
 
 export interface ApiDataType {
 	method: 'get' | 'post' | 'put' | 'patch' | 'delete';
-	url: string;
+	url?: string;
 	data?: any;
 	token?: boolean;
 	headers?: any;
