@@ -5,7 +5,6 @@ import Tags from '@/features/home/tags';
 import { NextPage } from 'next';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
-import axios from 'axios';
 import VideoItem from '@/components/snippets/video';
 import VideoSkeleton from '@/components/skeletons/video';
 import MomentsSlider from '@/features/home/slider/Slider';
@@ -14,7 +13,7 @@ import { ApiDataType, apiService } from '@/utils/request';
 const Home: NextPage = () => {
 	const router = useRouter();
 	const tagParam: any = router.query.tag
-	const SKELETON_COUNT = 5;
+	const SKELETON_COUNT = 8;
 	const { gridView }: any = useContext(VideoLayoutContext)
 	const loadMoreRef = useRef(null);
 
@@ -33,10 +32,6 @@ const Home: NextPage = () => {
 
 
 	const fetchVideos = async (page: number) => {
-		console.log('page', page);
-		console.log('videoTotalPages', videoTotalPages);
-
-
 		if (page > videoTotalPages || isVideoPaginating) {
 			setIsVideoPaginating(false);
 			return;  // Exit early if already fetching or if current page is beyond videoTotalPages.
@@ -137,10 +132,7 @@ const Home: NextPage = () => {
 	useEffect(() => {
 		const observer = new IntersectionObserver(entries => {
 			if (entries[0].isIntersecting && !isVideoPaginating) {
-				console.log("Load More Triggered!");
 				const nextPage = videoCurrentPage + 1;
-				console.log('nextPage', nextPage);
-
 				fetchVideos(nextPage);
 			}
 		}, {
@@ -193,9 +185,11 @@ const Home: NextPage = () => {
 
 	const showGridCol = () => {
 		if (gridView === 'grid') {
-			return 'grid-cols-4'
+			// 4 columns for desktop, 2 columns for tablet, 1 column for mobile
+			return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
 		} else {
-			return 'grid-cols-2'
+			// 2 columns for desktop & tablet, 1 column for mobile
+			return 'grid-cols-1 md:grid-cols-2'
 		}
 	}
 
@@ -231,7 +225,7 @@ const Home: NextPage = () => {
 
 
 	return (
-		<MainLayout title='Moments' mainWrapClass='p-5'>
+		<MainLayout title='Home' mainWrapClass='p-5'>
 
 			<VideoLayoutProvider>
 
