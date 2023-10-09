@@ -152,6 +152,7 @@ const Home: NextPage = () => {
 	}, [loadMoreRef.current, isVideoPaginating]);
 
 	const onClickTag = async (value: string) => {
+		setIsLoading(true)
 		setVideoCurrentPage(1);
 		setVideoTotalPages(1)
 		setMomentsCurrentPage(1);
@@ -237,7 +238,9 @@ const Home: NextPage = () => {
 						onChangeTagSearch={e => setCurrentTag(e.target.value)}
 						onPressTagSearch={onPressTagSearch}
 					/>
-					<Layout />
+					<div className='ml-3'>
+						<Layout />
+					</div>
 				</div >
 
 				{

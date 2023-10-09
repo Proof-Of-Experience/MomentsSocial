@@ -21,7 +21,7 @@ const Search = ({ searchResult, loadedQuery, selected, onChangeSelect, onChangeS
         <Combobox value={selected} onChange={onChangeSelect}>
             <div className="relative">
                 <Combobox.Input
-                    className="flex rounded-md border border-gray-300 p-4 h-10 w-64 text-[14px] md:w-96 outline-none placeholder-gray-500"
+                    className="flex rounded-md border border-gray-300 p-4 h-10 w-50 md:w-64 text-[14px] lg:w-96 outline-none placeholder-gray-500"
                     placeholder="Search video or author or tag...."
                     displayValue={(person: any) => person.Username}
                     onChange={onChangeSearch}

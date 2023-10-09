@@ -75,7 +75,7 @@ const Tags: React.FC<TagsProps> = ({ onClick, tagParam, tagSearch, onChangeTagSe
           :
           <>
             <button
-              className={`${!tagParam ? 'bg-gray-600 text-white' : 'bg-gray-200 text-black'} py-1 px-5 rounded-md mr-4 focus:bg-gray-600 focus:text-white mb-3 xl:mb-0`}
+              className={`${!tagParam ? 'bg-gray-600 text-white' : 'bg-gray-200 text-black'} py-1 px-5 rounded-md mr-4 focus:bg-gray-600 focus:text-white`}
               title="All"
               disabled={!tagParam}
               onClick={() => onClick('all')}>
@@ -89,7 +89,7 @@ const Tags: React.FC<TagsProps> = ({ onClick, tagParam, tagSearch, onChangeTagSe
                 return (
                   <button
                     key={`tag-${index}`}
-                    className={`${tagParam == tagName ? 'bg-gray-600 text-white' : 'bg-gray-200 text-black'} py-1 px-5 rounded-md mr-4 focus:bg-gray-600 focus:text-white mb-3 xl:mb-0`}
+                    className={`${tagParam == tagName ? 'bg-gray-600 text-white' : 'bg-gray-200 text-black'} py-1 px-5 rounded-md mr-4 focus:bg-gray-600 focus:text-white`}
                     title={tagName}
                     onClick={() => onClick(item.hashtag)}>
                     {capitalizeFirstLetter(tagName)}

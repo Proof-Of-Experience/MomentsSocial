@@ -8,8 +8,10 @@ import { useSelector } from 'react-redux'
 import { selectAuthUser } from '@/slices/authSlice'
 import OutsideClickHandler from 'react-outside-click-handler'
 import Notifications from '@/components/snippets/notifications'
+import { useRouter } from 'next/router'
 
 const Header = () => {
+	const router = useRouter()
 	const authUser = useSelector(selectAuthUser)
 	const [selected, setSelected] = useState<any>([])
 	const [searchResult, setSearchResult] = useState<any>([])
@@ -103,18 +105,17 @@ const Header = () => {
 	)
 
 	return (
-		<header className={`${isSticky ? 'fixed' : 'relative'} bg-white top-0 left-0 right-0 z-10 p-2 lg:px-5 shadow h-[72px] leading-[30px]`}>
-			<div className="flex items-start flex-wrap m-1 justify-left md:justify-between">
+		<header className={`${isSticky ? 'fixed' : 'relative'} bg-white top-0 left-0 right-0 z-10 px-2 py-3 lg:px-5 shadow leading-[30px]`}>
+			<div className="flex items-center flex-wrap m-1 justify-left justify-between">
 
 				<div className="flex flex-wrap">
 					<Link href="/" className="flex rounded-md">
-						<h2 className="text-4xl">Moment Social</h2>
-						{/* <img
-								className="flex w-[150px] h-[50px]"
-								src="/DTube_Black.svg"
-								alt="dtube"
-								onClick={() => router.push('/')}
-							/> */}
+						<img
+							className="flex w-[150px] md:w-[250px] cursor-pointer"
+							src="/logo.svg"
+							alt="dtube"
+							onClick={() => router.push('/')}
+						/>
 					</Link>
 				</div>
 
