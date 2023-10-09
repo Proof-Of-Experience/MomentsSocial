@@ -3,15 +3,21 @@ import { VideoItemProps } from '@/model/video'
 import EmojiReaction from '../emoji-reaction';
 
 
-const VideoItem = memo(({ item, onReactionClick, ...rest }: VideoItemProps) => {
+const VideoItem = memo(({ desoResponse, item, onReactionClick, ...rest }: VideoItemProps) => {	
 
 	const sanitizeURL = (url: any) => {
-		const parsedUrl = new URL(url);
-		parsedUrl.searchParams.set('autoplay', '0');
-		return parsedUrl.toString();
+		let parsedUrl;
+		try {
+			parsedUrl = new URL(url);
+			parsedUrl.searchParams.set('autoplay', '0');
+			return parsedUrl.toString();
+		} catch (error) {
+			console.error('Invalid URL:', url);
+			return ""; // Return a default or empty string
+		}
 	};
 
-	const videoUrl = sanitizeURL(item?.VideoURL);
+	const videoUrl = sanitizeURL(desoResponse ? item?.VideoURLs[0] : item?.VideoURL);
 
 
 

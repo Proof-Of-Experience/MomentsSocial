@@ -134,7 +134,7 @@ const PublicProfile = () => {
                                     <Tab.Panel>
                                         {
                                             videoData.length > 0 ?
-                                                <Videos videoData={videoData} onReactionClick={onReactionClick} /> :
+                                                <Videos desoResponse videoData={videoData} onReactionClick={onReactionClick} /> :
                                                 !isLoaded &&
                                                 <div className="mt-10">
                                                     <Placeholder
