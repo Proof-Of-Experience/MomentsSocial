@@ -1,11 +1,11 @@
 import React from 'react'
 import { PrimaryButtonProps } from '@/model/core'
 
-const PrimaryButton: React.FC<PrimaryButtonProps> = ({ text = 'text', loader, className = '', ...rest }) => {
+const PrimaryButton: React.FC<PrimaryButtonProps> = ({ text = 'text', loader, disabled, className = '', ...rest }) => {
   return (
     <button
       {...rest}
-      disabled={loader ? true : false}
+      disabled={disabled || loader ? true : false}
       className={
         `bg-blue-500 text-white transition-all rounded-lg px-10 py-2 font-poppins font-bold hover:bg-blue-400 disabled:bg-gray-400
           ${className}

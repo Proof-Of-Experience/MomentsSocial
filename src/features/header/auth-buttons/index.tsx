@@ -5,6 +5,7 @@ import { selectAuthUser, setAuthUser } from '@/slices/authSlice';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, UserCircleIcon } from '@heroicons/react/20/solid'
 import { useRouter } from 'next/router';
+import { ApiDataType, apiService } from '@/utils/request';
 
 const AuthButtons = () => {
 	const router = useRouter()
@@ -31,9 +32,36 @@ const AuthButtons = () => {
 		}
 	}, [])
 
+
+	const getUserInfoFromUtils = async (userId: number) => {
+		let apiUrl = `/api/user`;
+		const data = {
+			userId,
+		}
+		const apiData: ApiDataType = {
+			method: 'post',
+			data,
+			url: apiUrl,
+			customUrl: process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL,
+		};
+
+		try {
+			await apiService(apiData, (res: any, err: any) => {
+				if (err) return err.response                
+			});
+		} catch (error: any) {
+			console.error('error', error.response);
+		}
+	}
+
 	const onClickLogin = async () => {
 		const { identity, getUsersStateless } = await import('deso-protocol')
-		const loggedInInfo = await identity.login()
+		const loggedInInfo: any = await identity.login()
+		console.log('identity', identity);
+		console.log('loggedInInfo', loggedInInfo);
+
+		getUserInfoFromUtils(loggedInInfo.publicKeyBase58Check)
+		
 		const userParams = {
 			PublicKeysBase58Check: [loggedInInfo?.publicKeyBase58Check],
 			SkipForLeaderboard: true,
@@ -45,6 +73,14 @@ const AuthButtons = () => {
 	const onClickMyProfile = () => {
 		if (authUser) {
 			router.push(`/user/${authUser?.ProfileEntryResponse?.Username}`)
+		} else {
+			location.reload()
+		}
+	}
+
+	const onClicSettings = () => {
+		if (authUser) {
+			router.push(`/settings`)
 		} else {
 			location.reload()
 		}
@@ -100,6 +136,17 @@ const AuthButtons = () => {
 												} group flex w-full items-center px-3 py-2 text-sm`}
 										>
 											My Profile
+										</button>
+									)}
+								</Menu.Item>
+								<Menu.Item>
+									{({ active }) => (
+										<button
+											onClick={onClicSettings}
+											className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'
+												} group flex w-full items-center px-3 py-2 text-sm`}
+										>
+											Settings
 										</button>
 									)}
 								</Menu.Item>
