@@ -47,7 +47,7 @@ const AuthButtons = () => {
 
 		try {
 			await apiService(apiData, (res: any, err: any) => {
-				if (err) return err.response                
+				if (err) return err.response
 			});
 		} catch (error: any) {
 			console.error('error', error.response);
@@ -61,13 +61,18 @@ const AuthButtons = () => {
 		console.log('loggedInInfo', loggedInInfo);
 
 		getUserInfoFromUtils(loggedInInfo.publicKeyBase58Check)
-		
+
 		const userParams = {
 			PublicKeysBase58Check: [loggedInInfo?.publicKeyBase58Check],
 			SkipForLeaderboard: true,
 		}
 		const userInfo: any = await getUsersStateless(userParams)
 		dispatch(setAuthUser({ ...loggedInInfo, ...userInfo?.UserList[0] }))
+	}
+
+	const onClickSignUp = async () => {
+		const { identity } = await import('deso-protocol')
+		await identity.login()
 	}
 
 	const onClickMyProfile = () => {
@@ -172,6 +177,7 @@ const AuthButtons = () => {
 						<PrimaryButton
 							text='Signup'
 							className="ml-3"
+							onClick={onClickSignUp}
 						/>
 					</div>
 			}
