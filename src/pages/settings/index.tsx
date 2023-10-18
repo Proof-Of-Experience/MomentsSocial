@@ -14,8 +14,11 @@ const Settings = () => {
     const authUser = useSelector(selectAuthUser)
     const [accounts, setAccounts] = useState<any>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [accessToken, setAccessToken] = useState<string | null>(null);
+    const [youtubeAccessToken, setYoutubeAccessToken] = useState<string | null>(null);
+    const [processing, setProcessing] = useState<boolean>(false);
 
+    console.log('youtubeAccessToken', youtubeAccessToken);
+    
 
     const fetchUserData = async (page: number = 1) => {
         let apiUrl = `/api/users/${authUser.PublicKeyBase58Check}`;
@@ -30,12 +33,35 @@ const Settings = () => {
             await apiService(apiData, (res: any, err: any) => {
                 if (err) return err.response
                 setAccounts(res?.accounts)
+                // setYoutubeAccessToken(res?.youtubeAccessToken)
 
             });
         } catch (error: any) {
             console.error('error', error.response);
         } finally {
             setIsLoading(false);
+        }
+    }
+
+    const updateUserData = async (data: any) => {
+        let apiUrl = `/api/users/${authUser.PublicKeyBase58Check}`;
+        const apiData: ApiDataType = {
+            method: 'patch',
+            url: apiUrl,
+            data,
+            customUrl: process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL,
+        };
+        setProcessing(true);
+
+        try {
+            await apiService(apiData, (res: any, err: any) => {
+                if (err) return err.response
+                console.log('updated res', res);
+            });
+        } catch (error: any) {
+            console.error('error', error.response);
+        } finally {
+            setProcessing(false);
         }
     }
 
@@ -49,8 +75,8 @@ const Settings = () => {
         const params = new URLSearchParams(hash);
         const token = params.get("access_token");
 
-        if (token) {
-            setAccessToken(token);
+        if (token && !youtubeAccessToken) {
+            setYoutubeAccessToken(token);
             // remove the access token from the URL for security reasons
             window.history.replaceState(null, "", window.location.pathname);
         }
@@ -67,15 +93,21 @@ const Settings = () => {
     };
 
     const syncYoutubeVideos = async () => {
-        if (!accessToken) {
-            console.error("No access token available");
+        // const data = {
+        //     youtubeAccessToken
+        // }
+        // updateUserData(data)
+
+        // return
+        if (!youtubeAccessToken) {
+            handleLoginClick()
             return;
         }
 
         try {
             const response = await fetch("https://www.googleapis.com/youtube/v3/search?type=video&part=snippet&forMine=true&maxResults=50", {
                 headers: {
-                    Authorization: `Bearer ${accessToken}`
+                    Authorization: `Bearer ${youtubeAccessToken}`
                 }
             });
 
@@ -111,8 +143,8 @@ const Settings = () => {
                                     <div className='mr-5'>{capitalizeFirstLetter(account.name)}</div>
                                     <PrimaryButton
                                         disabled={account.isActive}
-                                        text={accessToken ? 'Sync' : 'Login with Google'}
-                                        onClick={accessToken ? syncYoutubeVideos : handleLoginClick}
+                                        text='Sync'
+                                        onClick={syncYoutubeVideos}
                                     />
                                 </li>
                             )

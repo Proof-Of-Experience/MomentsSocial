@@ -131,5 +131,5 @@ export const mergeVideoData = (prevVideoData: any[], newVideoData: any[]) => {
 }
 
 export const capitalizeFirstLetter = (string: string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    return string?.charAt(0).toUpperCase() + string?.slice(1);
 }
