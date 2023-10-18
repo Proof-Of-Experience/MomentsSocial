@@ -1,13 +1,32 @@
 import React from 'react'
 import { PrimaryButtonProps } from '@/model/core'
 
-const PrimaryButton: React.FC<PrimaryButtonProps> = ({ text = 'text', loader, disabled, className = '', ...rest }) => {
+interface ExtendedProps extends PrimaryButtonProps {
+  color?: 'primary' | 'warning' | 'error';
+}
+
+const PrimaryButton: React.FC<ExtendedProps> = ({ text = 'text', loader, disabled, color = 'primary', className = '', ...rest }) => {
+  let bgColor;
+  switch (color) {
+    case 'primary':
+      bgColor = 'bg-blue-500 hover:bg-blue-400';
+      break;
+    case 'warning':
+      bgColor = 'bg-yellow-500 hover:bg-yellow-400';
+      break;
+    case 'error':
+      bgColor = 'bg-red-500 hover:bg-red-400';
+      break;
+    default:
+      bgColor = 'bg-blue-500 hover:bg-blue-400';
+  }
+
   return (
     <button
       {...rest}
       disabled={disabled || loader ? true : false}
       className={
-        `bg-blue-500 text-white transition-all rounded-lg px-10 py-2 font-poppins font-bold hover:bg-blue-400 disabled:bg-gray-400
+        `${bgColor} text-white transition-all rounded-lg px-10 py-2 font-poppins font-bold disabled:bg-gray-400
           ${className}
         `}>
       <span className={`${loader ? 'mr-3' : ''}`}>{text}</span>

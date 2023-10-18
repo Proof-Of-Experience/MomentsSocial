@@ -10,14 +10,13 @@ import { toast } from 'react-toastify';
 
 
 const Settings = () => {
+    const MAX_YT_VIDEOS = 50
     const router = useRouter()
     const authUser = useSelector(selectAuthUser)
     const [accounts, setAccounts] = useState<any>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [youtubeAccessToken, setYoutubeAccessToken] = useState<string | null>(null);
     const [processing, setProcessing] = useState<boolean>(false);
-
-    console.log('youtubeAccessToken', youtubeAccessToken);
     
 
     const fetchUserData = async (page: number = 1) => {
@@ -33,7 +32,7 @@ const Settings = () => {
             await apiService(apiData, (res: any, err: any) => {
                 if (err) return err.response
                 setAccounts(res?.accounts)
-                // setYoutubeAccessToken(res?.youtubeAccessToken)
+                setYoutubeAccessToken(res?.youtubeAccessToken)
 
             });
         } catch (error: any) {
@@ -44,9 +43,9 @@ const Settings = () => {
     }
 
     const updateUserData = async (data: any) => {
-        let apiUrl = `/api/users/${authUser.PublicKeyBase58Check}`;
+        let apiUrl = `/api/users/${authUser?.PublicKeyBase58Check}`;
         const apiData: ApiDataType = {
-            method: 'patch',
+            method: 'put',
             url: apiUrl,
             data,
             customUrl: process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL,
@@ -56,7 +55,7 @@ const Settings = () => {
         try {
             await apiService(apiData, (res: any, err: any) => {
                 if (err) return err.response
-                console.log('updated res', res);
+                fetchUserData()
             });
         } catch (error: any) {
             console.error('error', error.response);
@@ -75,17 +74,15 @@ const Settings = () => {
         const params = new URLSearchParams(hash);
         const token = params.get("access_token");
 
-        if (token && !youtubeAccessToken) {
-            setYoutubeAccessToken(token);
+        if (token && !youtubeAccessToken && authUser) {
+            updateUserData({youtubeAccessToken: token})
             // remove the access token from the URL for security reasons
             window.history.replaceState(null, "", window.location.pathname);
         }
     }, [router.isReady, authUser]);
 
-    const handleLoginClick = async () => {
+    const handleYoutubeAuthentication = async () => {
         const redirectUri = `${window.location.origin}/api/auth/callback`;
-        console.log('redirectUri', redirectUri);
-
         const scope = "https://www.googleapis.com/auth/youtube.readonly";
         const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline`;
 
@@ -93,19 +90,14 @@ const Settings = () => {
     };
 
     const syncYoutubeVideos = async () => {
-        // const data = {
-        //     youtubeAccessToken
-        // }
-        // updateUserData(data)
 
-        // return
         if (!youtubeAccessToken) {
-            handleLoginClick()
+            handleYoutubeAuthentication()
             return;
         }
 
         try {
-            const response = await fetch("https://www.googleapis.com/youtube/v3/search?type=video&part=snippet&forMine=true&maxResults=50", {
+            const response = await fetch(`https://www.googleapis.com/youtube/v3/search?type=video&part=snippet&forMine=true&maxResults=${MAX_YT_VIDEOS}`, {
                 headers: {
                     Authorization: `Bearer ${youtubeAccessToken}`
                 }
@@ -136,16 +128,27 @@ const Settings = () => {
 
                 <ul className='mt-4'>
                     {
-                        accounts?.length > 0 && accounts.map((account: any) => {
+                        authUser && accounts?.length > 0 && accounts.map((account: any) => {
 
                             return (
                                 <li className='flex items-center' key={account._id}>
                                     <div className='mr-5'>{capitalizeFirstLetter(account.name)}</div>
                                     <PrimaryButton
                                         disabled={account.isActive}
-                                        text='Sync'
+                                        text={youtubeAccessToken ? 'Sync Now' : 'Authenticate to Sync'}
                                         onClick={syncYoutubeVideos}
                                     />
+
+                                    {
+                                        youtubeAccessToken &&
+                                        <PrimaryButton
+                                            disabled={account.isActive}
+                                            text='Unauthenticate'
+                                            onClick={() => updateUserData({youtubeAccessToken: null})}
+                                            className='ml-3'
+                                            color='error'
+                                        />
+                                    }
                                 </li>
                             )
                         })
