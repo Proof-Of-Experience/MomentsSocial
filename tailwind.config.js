@@ -10,12 +10,15 @@ module.exports = {
   ],
   theme: {
     extend: {
+      animation: {
+        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
       fontFamily: {
         'poppins': ['Poppins', 'sans-serif']
       },
-      animation: {
-        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-      }
+      height: {
+        'sidebar': 'calc(100vh - 72px)'
+     },
     },
   },
   plugins: [

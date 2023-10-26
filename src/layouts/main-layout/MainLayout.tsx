@@ -156,7 +156,7 @@ const MainLayout = ({ title, isLoading, mainWrapClass, children }: MainLayoutPro
         <ToastContainer />
 
         <div className='flex font-poppins'>
-          <div className='w-[80px] bg-gray-50 h-screen shadow-md'>
+          <div className='w-[80px] bg-gray-50 h-sidebar shadow-md'>
             <LeftSidebar />
           </div>
           <div className='w-[calc(100%_-_72px)]'>

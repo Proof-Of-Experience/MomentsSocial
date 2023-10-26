@@ -31,7 +31,7 @@ const Header = () => {
 
 	useEffect(() => {
 		window.addEventListener('scroll', () => {
-			if (window.scrollY >= 30) {
+			if (window.scrollY >= 50) {
 				setSticky(true);
 			} else {
 				setSticky(false);
@@ -105,7 +105,7 @@ const Header = () => {
 	)
 
 	return (
-		<header className={`${isSticky ? 'fixed' : 'relative'} bg-white top-0 left-0 right-0 z-10 px-2 py-3 lg:px-5 shadow leading-[30px]`}>
+		<header className={`${isSticky ? 'fixed' : 'relative'} bg-white top-0 left-0 right-0 z-10 px-2 py-3 lg:px-5 shadow leading-[30px] max-h-[72px]`}>
 			<div className="flex items-center flex-wrap m-1 justify-left justify-between">
 
 				<div className="flex flex-wrap">
