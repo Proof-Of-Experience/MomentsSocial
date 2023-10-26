@@ -10,7 +10,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
-const ProfileWallet = ({ username, publiKey, userDetails }: any) => {
+const ProfileWallet = ({ username, publicKey, userDetails }: any) => {
     const router = useRouter()
     const authUser = useSelector(selectAuthUser)
     const [exchangeData, setExchangeData] = useState<any>({})

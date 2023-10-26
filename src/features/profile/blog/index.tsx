@@ -56,7 +56,7 @@ const parseAndRenderJSON = (jsonData: string) => {
 };
 
 
-const ProfileBlog = ({ username, publiKey, userDetails }: any) => {
+const ProfileBlog = ({ username, publicKey, userDetails }: any) => {
     const [isLoaded, setisLoaded] = useState<boolean>(true);
     const [blogs, setBlogs] = useState<any>([]);
 
@@ -66,7 +66,7 @@ const ProfileBlog = ({ username, publiKey, userDetails }: any) => {
         const data = {
             MediaRequired: false,
             NumToFetch: 1000,
-            ReaderPublicKeyBase58Check: publiKey,
+            ReaderPublicKeyBase58Check: publicKey,
             Username: username,
         }
         const publicData = await getPostsForUser(data);
@@ -79,10 +79,10 @@ const ProfileBlog = ({ username, publiKey, userDetails }: any) => {
     }
 
     useEffect(() => {
-        if (username && publiKey) {
+        if (username && publicKey) {
             fetchPublicPost()
         }
-    }, [username, publiKey])
+    }, [username, publicKey])
 
 
 

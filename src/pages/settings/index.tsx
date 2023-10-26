@@ -14,10 +14,31 @@ const Settings = () => {
     const router = useRouter()
     const authUser = useSelector(selectAuthUser)
     const [accounts, setAccounts] = useState<any>([]);
+    const [videoData, setVideoData] = useState<any>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [postProcessing, setPostProcessing] = useState<boolean>(false);
     const [youtubeAccessToken, setYoutubeAccessToken] = useState<string | null>(null);
     const [processing, setProcessing] = useState<boolean>(false);
+
+
+    const fetchUserPosts = async () => {
+
+        const { getPostsForUser } = await import('deso-protocol')
+        const data = {
+            MediaRequired: true,
+            NumToFetch: 20,
+            ReaderPublicKeyBase58Check: authUser?.Profile?.PublicKeyBase58Check,
+            Username: authUser?.Profile?.Username,
+        }
+        const publicData = await getPostsForUser(data);
+
+        if (publicData?.Posts) {
+            const newVideoData: any = publicData?.Posts.filter((item: any) => item.VideoURLs)
+            setVideoData(newVideoData)
+        } else {
+            setVideoData([])
+        }
+    }
 
 
     const fetchUserData = async (page: number = 1) => {
@@ -43,27 +64,12 @@ const Settings = () => {
         }
     }
 
-    const updateUserData = async (data: any) => {
-        let apiUrl = `/api/users/${authUser?.PublicKeyBase58Check}`;
-        const apiData: ApiDataType = {
-            method: 'put',
-            url: apiUrl,
-            data,
-            customUrl: process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL,
-        };
-        setProcessing(true);
-
-        try {
-            await apiService(apiData, (res: any, err: any) => {
-                if (err) return err.response
-                fetchUserData()
-            });
-        } catch (error: any) {
-            console.error('error', error.response);
-        } finally {
-            setProcessing(false);
+    useEffect(() => {
+        if (!router.isReady) return;
+        if (authUser) {
+            fetchUserPosts();
         }
-    }
+    }, [router.isReady, authUser]);
 
     useEffect(() => {
         if (!router.isReady) return;
@@ -82,6 +88,28 @@ const Settings = () => {
         }
     }, [router.isReady, authUser]);
 
+    const updateUserData = async (data: any) => {
+        let apiUrl = `/api/users/${authUser?.PublicKeyBase58Check}`;
+        const apiData: ApiDataType = {
+            method: 'patch',
+            url: apiUrl,
+            data,
+            customUrl: process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL,
+        };
+        setProcessing(true);
+
+        try {
+            await apiService(apiData, (res: any, err: any) => {
+                if (err) return err.response
+                fetchUserData()
+            });
+        } catch (error: any) {
+            console.error('error', error.response);
+        } finally {
+            setProcessing(false);
+        }
+    }
+
     const handleYoutubeAuthentication = async () => {
         const redirectUri = `${window.location.origin}/api/auth/callback`;
         const scope = "https://www.googleapis.com/auth/youtube.readonly";
@@ -89,6 +117,18 @@ const Settings = () => {
 
         window.location.href = authUrl;
     };
+
+    const isVideoIdInVideoData = (videoId: string, videoDataArray: any[]): boolean => {
+        for (let videoUrl of videoDataArray) {
+            const urlObj = new URL(videoUrl.VideoURLs[0]);
+            const params = new URLSearchParams(urlObj.search);
+            const idFromUrl = params.get("v");
+            if (videoId === idFromUrl) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     const fetchSubmitPost = async (item: any) => {
         const { submitPost } = await import('deso-protocol')
@@ -142,22 +182,34 @@ const Settings = () => {
             });
 
             const data = await response.json();
+            if (data?.error?.code === 401) {
+                setYoutubeAccessToken(null)
+                toast.success('Please authenticate again')
+                return
+            }
+
             const videoItems = data.items
 
             if (videoItems.length > 0) {
-                await videoItems.forEach(async (videoItem: any) => {
-                    await fetchSubmitPost(videoItem)
-                });
-                accounts.forEach((account: any) => {
-                    if (account.name === 'youtube') {
-                        updateUserData({ isActive: true })
+                videoItems.forEach(async (videoItem: any) => {
+
+                    const videoId = videoItem?.id?.videoId;
+                    if (videoId) {
+                        if (!isVideoIdInVideoData(videoId, videoData)) {
+                            await fetchSubmitPost(videoItem)
+                            updateUserData({ accounts: [{ isActive: true, name: 'youtube' }] });
+                        }
                     }
-                })
+                });
+
+
+
                 toast.success('Synced successfully')
+
+
             } else {
                 toast.error('No videos found for this account!')
             }
-            // Sync these videos to the platform
 
         } catch (error) {
             console.error("Error fetching YouTube videos:", error);
@@ -182,14 +234,13 @@ const Settings = () => {
                                     <div className='mr-5'>{capitalizeFirstLetter(account.name)}</div>
                                     <PrimaryButton
                                         disabled={account.isActive || processing || postProcessing}
-                                        text={youtubeAccessToken ? (postProcessing ? 'Syncing' : 'Sync Now') : 'Authenticate to Sync'}
+                                        text={account.isActive ? 'Already Synced' : (youtubeAccessToken ? (postProcessing ? 'Syncing' : 'Sync Now') : 'Authenticate to Sync')}
                                         onClick={syncYoutubeVideos}
                                     />
 
                                     {
                                         youtubeAccessToken &&
                                         <PrimaryButton
-                                            disabled={account.isActive}
                                             text='Unauthenticate'
                                             onClick={() => updateUserData({ youtubeAccessToken: null })}
                                             className='ml-3'

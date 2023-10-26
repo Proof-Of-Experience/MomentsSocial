@@ -4,7 +4,7 @@ import { parseStringInnerHtml } from '@/utils';
 import React, { useEffect, useState } from 'react'
 
 
-const ProfileNFT = ({ username, publiKey, userDetails }: any) => {
+const ProfileNFT = ({ username, publicKey, userDetails }: any) => {
     const [isLoaded, setisLoaded] = useState<boolean>(true);
     const [nfts, setNfts] = useState<any>({});
 
@@ -13,7 +13,7 @@ const ProfileNFT = ({ username, publiKey, userDetails }: any) => {
         const { getNFTsForUser } = await import('deso-protocol')
         const params = {
             IsPending: false,
-            ReaderPublicKeyBase58Check: publiKey,
+            ReaderPublicKeyBase58Check: publicKey,
             UserPublicKeyBase58Check: userDetails.Profile?.PublicKeyBase58Check,
         }
         const nftData: any = await getNFTsForUser(params);
@@ -25,10 +25,10 @@ const ProfileNFT = ({ username, publiKey, userDetails }: any) => {
     }
 
     useEffect(() => {
-        if (publiKey) {
+        if (publicKey) {
             fetchPublicPost()
         }
-    }, [publiKey])
+    }, [publicKey])
 
 
 

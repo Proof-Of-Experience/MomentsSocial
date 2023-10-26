@@ -21,7 +21,7 @@ const PublicProfile = () => {
     const router = useRouter()
     const authUser = useSelector(selectAuthUser)
     const { username }: any = router.query
-    const [publiKey, setPubliKey] = useState<string>("")
+    const [publicKey, setPublicKey] = useState<string>("")
     const [userDetails, setUserDetails] = useState<any>({})
     const [videoData, setVideoData] = useState<string[]>([])
     const [imageData, setImageData] = useState<string[]>([])
@@ -46,7 +46,7 @@ const PublicProfile = () => {
             ...profileData, Avatar,
         }
         setUserDetails(updatedData)
-        setPubliKey(profileData?.Profile?.PublicKeyBase58Check)
+        setPublicKey(profileData?.Profile?.PublicKeyBase58Check)
     }
 
     const fetchPublicPost = async () => {
@@ -55,7 +55,7 @@ const PublicProfile = () => {
         const data = {
             MediaRequired: true,
             NumToFetch: 20,
-            ReaderPublicKeyBase58Check: publiKey,
+            ReaderPublicKeyBase58Check: publicKey,
             Username: username,
         }
         const publicData = await getPostsForUser(data);
@@ -79,10 +79,10 @@ const PublicProfile = () => {
     }, [username])
 
     useEffect(() => {
-        if (username && publiKey) {
+        if (username && publicKey) {
             fetchPublicPost()
         }
-    }, [username, publiKey, reactionClick])
+    }, [username, publicKey, reactionClick])
 
     const tabHeaders = [
         'Videos',
@@ -164,15 +164,15 @@ const PublicProfile = () => {
                                         <Diamonds username={username} />
                                     </Tab.Panel>
                                     <Tab.Panel>
-                                        <ProfileBlog username={username} publiKey={publiKey} userDetails={userDetails} />
+                                        <ProfileBlog username={username} publicKey={publicKey} userDetails={userDetails} />
                                     </Tab.Panel>
                                     <Tab.Panel>
-                                        <ProfileNFT username={username} publiKey={publiKey} userDetails={userDetails} />
+                                        <ProfileNFT username={username} publicKey={publicKey} userDetails={userDetails} />
                                     </Tab.Panel>
                                     {
                                         authUser?.ProfileEntryResponse?.Username === username &&
                                         <Tab.Panel>
-                                            <ProfileWallet username={username} publiKey={publiKey} userDetails={userDetails} />
+                                            <ProfileWallet username={username} publicKey={publicKey} userDetails={userDetails} />
                                         </Tab.Panel>
                                     }
                                     <Tab.Panel>
