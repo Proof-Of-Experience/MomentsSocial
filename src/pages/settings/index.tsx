@@ -15,9 +15,10 @@ const Settings = () => {
     const authUser = useSelector(selectAuthUser)
     const [accounts, setAccounts] = useState<any>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [postProcessing, setPostProcessing] = useState<boolean>(false);
     const [youtubeAccessToken, setYoutubeAccessToken] = useState<string | null>(null);
     const [processing, setProcessing] = useState<boolean>(false);
-    
+
 
     const fetchUserData = async (page: number = 1) => {
         let apiUrl = `/api/users/${authUser.PublicKeyBase58Check}`;
@@ -75,7 +76,7 @@ const Settings = () => {
         const token = params.get("access_token");
 
         if (token && !youtubeAccessToken && authUser) {
-            updateUserData({youtubeAccessToken: token})
+            updateUserData({ youtubeAccessToken: token })
             // remove the access token from the URL for security reasons
             window.history.replaceState(null, "", window.location.pathname);
         }
@@ -89,12 +90,49 @@ const Settings = () => {
         window.location.href = authUrl;
     };
 
+    const fetchSubmitPost = async (item: any) => {
+        const { submitPost } = await import('deso-protocol')
+        const videodUrl = `https://www.youtube.com/watch?v=${item?.id?.videoId}`
+
+        setPostProcessing(true)
+
+        try {
+            const postParams = {
+                BodyObj: {
+                    Body: item?.snippet?.description,
+                    ImageURLs: [],
+                    VideoURLs: [videodUrl]
+                },
+                IsHidden: false,
+                MinFeeRateNanosPerKB: 1000,
+                ParentStakeID: '',
+                RepostedPostHashHex: '',
+                UpdaterPublicKeyBase58Check: authUser.PublicKeyBase58Check || ''
+            }
+
+            const response: any = await submitPost(postParams)
+            // const result = await identity.submitTx(response?.TransactionHex)            
+
+            setPostProcessing(false)
+        } catch (error) {
+            console.error('error', error);
+        }
+
+    }
+
     const syncYoutubeVideos = async () => {
 
         if (!youtubeAccessToken) {
             handleYoutubeAuthentication()
             return;
         }
+
+        accounts.forEach((account: any) => {
+            if (account.isActive === true) {
+                toast.success('Already synced')
+                return;
+            }
+        })
 
         try {
             const response = await fetch(`https://www.googleapis.com/youtube/v3/search?type=video&part=snippet&forMine=true&maxResults=${MAX_YT_VIDEOS}`, {
@@ -104,9 +142,18 @@ const Settings = () => {
             });
 
             const data = await response.json();
-            console.log(data.items); // Here's your list of videos.
-            if (data.items.length > 0) {
+            const videoItems = data.items
 
+            if (videoItems.length > 0) {
+                await videoItems.forEach(async (videoItem: any) => {
+                    await fetchSubmitPost(videoItem)
+                });
+                accounts.forEach((account: any) => {
+                    if (account.name === 'youtube') {
+                        updateUserData({ isActive: true })
+                    }
+                })
+                toast.success('Synced successfully')
             } else {
                 toast.error('No videos found for this account!')
             }
@@ -134,8 +181,8 @@ const Settings = () => {
                                 <li className='flex items-center' key={account._id}>
                                     <div className='mr-5'>{capitalizeFirstLetter(account.name)}</div>
                                     <PrimaryButton
-                                        disabled={account.isActive}
-                                        text={youtubeAccessToken ? 'Sync Now' : 'Authenticate to Sync'}
+                                        disabled={account.isActive || processing || postProcessing}
+                                        text={youtubeAccessToken ? (postProcessing ? 'Syncing' : 'Sync Now') : 'Authenticate to Sync'}
                                         onClick={syncYoutubeVideos}
                                     />
 
@@ -144,7 +191,7 @@ const Settings = () => {
                                         <PrimaryButton
                                             disabled={account.isActive}
                                             text='Unauthenticate'
-                                            onClick={() => updateUserData({youtubeAccessToken: null})}
+                                            onClick={() => updateUserData({ youtubeAccessToken: null })}
                                             className='ml-3'
                                             color='error'
                                         />

@@ -3,23 +3,33 @@ import { VideoItemProps } from '@/model/video'
 import EmojiReaction from '../emoji-reaction';
 
 
-const VideoItem = memo(({ desoResponse, item, onReactionClick, ...rest }: VideoItemProps) => {	
+const VideoItem = memo(({ desoResponse, item, onReactionClick, ...rest }: VideoItemProps) => {
 
 	const sanitizeURL = (url: any) => {
 		let parsedUrl;
 		try {
 			parsedUrl = new URL(url);
-			parsedUrl.searchParams.set('autoplay', '0');
+
+			 // For YouTube
+			 if (parsedUrl.hostname.includes("youtube.com")) {
+				const videoId = parsedUrl.searchParams.get('v');
+				return `https://www.youtube.com/embed/${videoId}?autoplay=0`;
+			}
+
+			// For lvpr.tv
+			if (parsedUrl.hostname.includes("lvpr.tv")) {
+				parsedUrl.searchParams.set('autoplay', '0');
+				return parsedUrl.toString();
+			}
+
 			return parsedUrl.toString();
 		} catch (error) {
 			console.error('Invalid URL:', url);
-			return ""; // Return a default or empty string
+			return "";
 		}
 	};
 
 	const videoUrl = sanitizeURL(desoResponse ? item?.VideoURLs[0] : item?.VideoURL);
-
-
 
 	return (
 		<div className="relative">

@@ -30,8 +30,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         // Save the access token for the user in your database, or send it to the frontend to use in the next step.
 
-        // res.redirect('/settings'); // Redirect to settings or where you want to fetch videos.
-
     } catch (error: any) {
         console.error("Error fetching token", error);
         res.status(error.response?.status || 500).json(error.response?.data);
