@@ -7,6 +7,7 @@ import { ApiDataType, apiService } from '@/utils/request';
 import { PrimaryButton } from '@/components/core/button';
 import { capitalizeFirstLetter } from '@/utils';
 import { toast } from 'react-toastify';
+import { isVideoIdInVideoData } from '@/utils/video';
 
 
 const Settings = () => {
@@ -91,7 +92,7 @@ const Settings = () => {
     const updateUserData = async (data: any) => {
         let apiUrl = `/api/users/${authUser?.PublicKeyBase58Check}`;
         const apiData: ApiDataType = {
-            method: 'patch',
+            method: 'PATCH',
             url: apiUrl,
             data,
             customUrl: process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL,
@@ -117,18 +118,6 @@ const Settings = () => {
 
         window.location.href = authUrl;
     };
-
-    const isVideoIdInVideoData = (videoId: string, videoDataArray: any[]): boolean => {
-        for (let videoUrl of videoDataArray) {
-            const urlObj = new URL(videoUrl.VideoURLs[0]);
-            const params = new URLSearchParams(urlObj.search);
-            const idFromUrl = params.get("v");
-            if (videoId === idFromUrl) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     const fetchSubmitPost = async (item: any) => {
         const { submitPost } = await import('deso-protocol')
