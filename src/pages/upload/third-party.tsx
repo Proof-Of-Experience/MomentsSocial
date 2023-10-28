@@ -33,7 +33,7 @@ const ThirdParty = () => {
 
         if (token && !youtubeAccessToken && authUser) {            
             updateUserData({ youtubeAccessToken: token })
-            
+
             // remove the access token from the URL for security reasons
             window.history.replaceState(null, "", window.location.pathname);
         }
@@ -145,7 +145,7 @@ const ThirdParty = () => {
 
 
     return (
-        <MainLayout title='Upload'>
+        <MainLayout title='Upload Third Party Link'>
 
             <div className="grid grid-cols-5 my-10 gap-5">
 

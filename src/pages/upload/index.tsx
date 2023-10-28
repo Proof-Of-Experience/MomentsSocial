@@ -13,7 +13,7 @@ const Upload: NextPage = () => {
   const authUser = useSelector(selectAuthUser);
 
   return (
-    <MainLayout title='Upload'>
+    <MainLayout title='Upload Videos'>
 
       {
         authUser ?
