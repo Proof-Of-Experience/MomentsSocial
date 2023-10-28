@@ -112,9 +112,10 @@ const Settings = () => {
     }
 
     const handleYoutubeAuthentication = async () => {
+        const currentUrl = encodeURIComponent(window.location.href);
         const redirectUri = `${window.location.origin}/api/auth/callback`;
         const scope = "https://www.googleapis.com/auth/youtube.readonly";
-        const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline`;
+        const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&state=${currentUrl}`;
 
         window.location.href = authUrl;
     };

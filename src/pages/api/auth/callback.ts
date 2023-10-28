@@ -10,6 +10,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     const code = req.query.code;
+    const originalUrl = req.query.state || '/'
     const protocol = req.headers['x-forwarded-proto'] || 'http';
     const host = req.headers.host;
     const redirectUri = `${protocol}://${host}/api/auth/callback`;
@@ -26,7 +27,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const accessToken = response.data.access_token;
 
         // Redirect to settings with the access token in the URL fragment
-        res.redirect(`/settings#access_token=${accessToken}`);
+        res.redirect(`${originalUrl}#access_token=${accessToken}`);
 
         // Save the access token for the user in your database, or send it to the frontend to use in the next step.
 

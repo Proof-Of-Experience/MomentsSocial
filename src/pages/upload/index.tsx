@@ -5,7 +5,7 @@ import UploadCard from '@/features/upload/card';
 import LoginRequired from '@/features/upload/login-required';
 import MainLayout from '@/layouts/main-layout'
 import { selectAuthUser } from '@/slices/authSlice';
-import { ArrowUpTrayIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
+import { ArrowUpTrayIcon, GlobeAltIcon, LinkIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
 
 const Upload: NextPage = () => {
@@ -28,8 +28,9 @@ const Upload: NextPage = () => {
                   title="Peer to Peer"
                 />
                 <UploadCard
-                  icon={<GlobeAltIcon className="h-[100px] text-gray-600" />}
+                  icon={<LinkIcon className="h-[100px] text-gray-600" />}
                   title="Third Party"
+                  onClick={() => router.push('/upload/third-party')}
                 />
                 <UploadCard
                   icon={<ArrowUpTrayIcon className="h-[100px] text-gray-600" />}
