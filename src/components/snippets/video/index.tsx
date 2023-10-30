@@ -1,17 +1,19 @@
 import React, { memo } from 'react'
 import { VideoItemProps } from '@/model/video'
 import EmojiReaction from '../emoji-reaction';
+import { useRouter } from 'next/router';
 
 
 const VideoItem = memo(({ desoResponse, item, onReactionClick, ...rest }: VideoItemProps) => {
+	const router = useRouter();
 
 	const sanitizeURL = (url: any) => {
 		let parsedUrl;
 		try {
 			parsedUrl = new URL(url);
 
-			 // For YouTube
-			 if (parsedUrl.hostname.includes("youtube.com")) {
+			// For YouTube
+			if (parsedUrl.hostname.includes("youtube.com")) {
 				const videoId = parsedUrl.searchParams.get('v');
 				return `https://www.youtube.com/embed/${videoId}?autoplay=0`;
 			}
@@ -30,9 +32,17 @@ const VideoItem = memo(({ desoResponse, item, onReactionClick, ...rest }: VideoI
 	};
 
 	const videoUrl = sanitizeURL(desoResponse ? item?.VideoURLs[0] : item?.VideoURL);
+	console.log('item?.PostHashHex', item?.PostHashHex);
+
 
 	return (
-		<div className="relative">
+		<div
+			className="relative cursor-pointer"
+			onClick={(e: any) => {
+				router.push({
+					pathname: `video/${item?.PostHashHex}`,
+				})
+			}}>
 
 			<div className="relative overflow-hidden w-full pt-[75%]">
 				<iframe

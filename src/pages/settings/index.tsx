@@ -150,7 +150,7 @@ const Settings = () => {
         }
 
         accounts.forEach((account: any) => {
-            if (account.isActive === true) {
+            if (account.isSynced === true) {
                 toast.success('Already synced')
                 return;
             }
@@ -179,7 +179,7 @@ const Settings = () => {
                     if (videoId) {
                         if (!isVideoIdInVideoData(videoId, videoData)) {
                             await fetchSubmitPost(videoItem)
-                            updateUserData({ accounts: [{ isActive: true, name: 'youtube' }] });
+                            updateUserData({ accounts: [{ isSynced: true, name: 'youtube' }] });
                         }
                     }
                 });
@@ -215,8 +215,8 @@ const Settings = () => {
                                 <li className='flex items-center' key={account._id}>
                                     <div className='mr-5'>{capitalizeFirstLetter(account.name)}</div>
                                     <PrimaryButton
-                                        disabled={account.isActive || processing || postProcessing}
-                                        text={account.isActive ? 'Already Synced' : (youtubeAccessToken ? (postProcessing ? 'Syncing' : 'Sync Now') : 'Authenticate to Sync')}
+                                        disabled={account.isSynced || processing || postProcessing}
+                                        text={account.isSynced ? 'Already Synced' : (youtubeAccessToken ? (postProcessing ? 'Syncing' : 'Sync Now') : 'Authenticate to Sync')}
                                         onClick={syncYoutubeVideos}
                                     />
 

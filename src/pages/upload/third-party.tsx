@@ -103,6 +103,9 @@ const ThirdParty = () => {
         setPostProcessing(true)
         const exists = await checkIfYoutubeUrlExists(url, youtubeAccessToken);
 
+        console.log('exists', exists);
+        
+
         if (exists) {
             const isOwner = await checkVideoOwnership(youtubeAccessToken, extractVideoIdFromUrl(url))
 
@@ -171,7 +174,7 @@ const ThirdParty = () => {
                                 <PrimaryButton
                                     className="w-full mt-1 py-3 text-lg"
                                     type="submit"
-                                    text={youtubeAccessToken ? 'Upload Now' : 'Add youtube link'}
+                                    text={youtubeAccessToken ? 'Upload Now' : 'Youtube'}
                                     loader={postProcessing}
                                     disabled={!url && youtubeAccessToken || postProcessing}
                                 />
