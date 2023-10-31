@@ -11,7 +11,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     const code = req.query.code;
     const originalUrl = req.query.state || '/'
-    const protocol = req.headers['x-forwarded-proto'] || 'http' || 'https';
+    const protocol = req.headers['x-forwarded-proto'] || 'https';
     const host = req.headers.host;
     const redirectUri = `${protocol}://${host}/api/auth/callback`;
 
