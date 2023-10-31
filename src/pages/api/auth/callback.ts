@@ -11,7 +11,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     const code = req.query.code;
     const originalUrl = req.query.state || '/'
-    const protocol = req.headers['x-forwarded-proto'] || 'http';
+    const protocol = req.headers['x-forwarded-proto'] || 'http' || 'https';
     const host = req.headers.host;
     const redirectUri = `${protocol}://${host}/api/auth/callback`;
 
@@ -33,6 +33,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     } catch (error: any) {
         console.error("Error fetching token", error);
+        console.error("Error fetching message", error.message);
         res.status(error.response?.status || 500).json(error.response?.data);
     }
 };
