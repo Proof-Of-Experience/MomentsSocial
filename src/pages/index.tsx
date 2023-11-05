@@ -28,8 +28,7 @@ const Home: NextPage = () => {
 	const [momentsCurrentPage, setMomentsCurrentPage] = useState(1);
 	const [momentsTotalPages, setMomentsTotalPages] = useState<number>(Infinity);
 
-	console.log('momentsData', momentsData);
-
+	console.log('momentsData ->', momentsData);
 
 	const fetchVideos = async (page: number) => {
 		if (page > videoTotalPages || isVideoPaginating) {

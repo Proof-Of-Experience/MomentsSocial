@@ -55,6 +55,7 @@ const Settings = () => {
         try {
             await apiService(apiData, (res: any, err: any) => {
                 if (err) return err.response
+                console.log(res.accounts)
                 setAccounts(res?.accounts)
                 setYoutubeAccessToken(res?.youtubeAccessToken)
 
@@ -133,7 +134,7 @@ const Settings = () => {
             }
 
             const response: any = await submitPost(postParams)
-            // const result = await identity.submitTx(response?.TransactionHex)            
+            // const result = await identity.submitTx(response?.TransactionHex)
 
             setPostProcessing(false)
         } catch (error) {
@@ -143,7 +144,6 @@ const Settings = () => {
     }
 
     const syncYoutubeVideos = async () => {
-
         if (!youtubeAccessToken) {
             handleYoutubeAuthentication()
             return;
@@ -184,10 +184,7 @@ const Settings = () => {
                     }
                 });
 
-
-
                 toast.success('Synced successfully')
-
 
             } else {
                 toast.error('No videos found for this account!')
@@ -195,6 +192,13 @@ const Settings = () => {
 
         } catch (error) {
             console.error("Error fetching YouTube videos:", error);
+        }
+    }
+
+    const syncVideos = async (accountName: string) => {
+        if (accountName === 'youtube') {
+            await syncYoutubeVideos()
+            return
         }
     }
 
@@ -215,9 +219,9 @@ const Settings = () => {
                                 <li className='flex items-center' key={account._id}>
                                     <div className='mr-5'>{capitalizeFirstLetter(account.name)}</div>
                                     <PrimaryButton
-                                        disabled={account.isSynced || processing || postProcessing}
+                                        disabled={!account.isSynced || processing || postProcessing}
                                         text={account.isSynced ? 'Already Synced' : (youtubeAccessToken ? (postProcessing ? 'Syncing' : 'Sync Now') : 'Authenticate to Sync')}
-                                        onClick={syncYoutubeVideos}
+                                        onClick={() => syncVideos(account.name)}
                                     />
 
                                     {

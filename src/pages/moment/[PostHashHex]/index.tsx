@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import MainLayout from '@/layouts/main-layout';
 import { LoadingSpinner } from '@/components/core/loader';
-import { mergeVideoData } from '@/utils';
+import { debounce, mergeVideoData } from '@/utils';
 
 
 const MomentDetailsPage = () => {
@@ -43,7 +43,7 @@ const MomentDetailsPage = () => {
   useEffect(() => {
     const wheelDiv = wheelDivRef.current;
 
-    const handleWheel = (event: globalThis.WheelEvent) => {
+    const handleWheel = debounce((event: globalThis.WheelEvent) => {
       if (videoData.length <= 1) {
         return;
       }
@@ -52,18 +52,19 @@ const MomentDetailsPage = () => {
 
       const delta = event.deltaY > 0 ? 1 : -1;
       const newIndex = (activeVideoIndex + delta + videoData.length) % videoData.length;
+
       setActiveVideoIndex(newIndex);
       const videoId = videoData?.length > 0 && videoData[newIndex].PostHashHex;
       router.push(`/moment/${videoId}${Tag ? `?Tag=${Tag}` : ''}`, undefined, { shallow: true });
-    };
+
+    }, 100); // delay handler
+
 
     if (wheelDiv) {
-      // Adding the event listener with the passive option set to false
       wheelDiv.addEventListener('wheel', handleWheel, { passive: false });
     }
 
     return () => {
-      // Cleanup - remove the event listener
       if (wheelDiv) {
         wheelDiv.removeEventListener('wheel', handleWheel);
       }
@@ -113,7 +114,6 @@ const MomentDetailsPage = () => {
       setVideoData((prevVideoData: any) => mergeVideoData(prevVideoData, filteredData));
     }
   }
-
 
   return (
     <MainLayout>

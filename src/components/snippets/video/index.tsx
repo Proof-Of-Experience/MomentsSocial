@@ -32,8 +32,6 @@ const VideoItem = memo(({ desoResponse, item, onReactionClick, ...rest }: VideoI
 	};
 
 	const videoUrl = sanitizeURL(desoResponse ? item?.VideoURLs[0] : item?.VideoURL);
-	console.log('item?.PostHashHex', item?.PostHashHex);
-
 
 	return (
 		<div
