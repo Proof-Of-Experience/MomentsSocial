@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import MainLayout from '@/layouts/main-layout';
 import { LoadingSpinner } from '@/components/core/loader';
 import { debounce, mergeVideoData } from '@/utils';
+import { ApiDataType, apiService } from '@/utils/request';
 
 
 const MomentDetailsPage = () => {
@@ -14,17 +15,20 @@ const MomentDetailsPage = () => {
   const [hasLoaded, setHasLoaded] = useState<boolean>(true)
   const [videoData, setVideoData] = useState<any>([])
   const wheelDivRef = useRef<HTMLDivElement>(null);
-
-  console.log('videoData', videoData);
+  let [currentPage, setCurrentPage] = useState<number>(1)
 
   useEffect(() => {
     if (!router.isReady) return
     fetchSingleProfile()
+
+
     if (Tag) {
       fetchFeedData()
     } else {
       fetchStatelessPostData()
     }
+
+    fetchMoments(currentPage)
   }, [router.isReady])
 
   useEffect(() => {
@@ -55,6 +59,14 @@ const MomentDetailsPage = () => {
 
       setActiveVideoIndex(newIndex);
       const videoId = videoData?.length > 0 && videoData[newIndex].PostHashHex;
+
+      console.log('new index %d length %d', newIndex, videoData.length)
+
+      if (newIndex + 5 >= videoData.length) {
+        console.log('new index calling fetch moments')
+        setCurrentPage(currentPage++)
+        fetchMoments(currentPage)
+      }
       router.push(`/moment/${videoId}${Tag ? `?Tag=${Tag}` : ''}`, undefined, { shallow: true });
 
     }, 100); // delay handler
@@ -114,6 +126,45 @@ const MomentDetailsPage = () => {
       setVideoData((prevVideoData: any) => mergeVideoData(prevVideoData, filteredData));
     }
   }
+
+	const fetchMoments = async (page: number = 1) => {
+		let apiUrl = `/api/posts?page=${page}&limit=5&moment=true`;
+
+		if (Tag) {
+			const tagWithHash = Tag.startsWith('#') ? Tag : `#${Tag}`;
+			apiUrl += `&hashtag=${encodeURIComponent(tagWithHash)}`;
+		}
+
+		const apiData: ApiDataType = {
+			method: 'get',
+			url: apiUrl,
+			customUrl: process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL,
+		};
+
+		try {
+			await apiService(apiData, (res: any, err: any) => {
+				if (err) return err.response
+
+        let data : any = []
+
+        res.posts.forEach((post: any) => {
+          if (post.PostHashHex !== videoData?.PostHashHex) {
+            post.VideoURLs = [post.VideoURL]
+            data.push(post)
+          }
+        })
+        data = mergeVideoData(data,videoData)
+        setVideoData(data)
+
+      });
+		} catch (error: any) {
+			console.error('error', error.response);
+		} finally {
+      setCurrentPage(currentPage++)
+    }
+	}
+
+
 
   return (
     <MainLayout>

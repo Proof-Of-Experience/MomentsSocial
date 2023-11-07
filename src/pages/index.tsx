@@ -116,12 +116,10 @@ const Home: NextPage = () => {
 		}
 	}
 
-
 	useEffect(() => {
 		if (!router.isReady) return;
 		fetchVideos(videoCurrentPage);
 	}, [tagParam, initialLoadComplete, router.isReady]);
-
 
 	useEffect(() => {
 		if (!router.isReady) return;
