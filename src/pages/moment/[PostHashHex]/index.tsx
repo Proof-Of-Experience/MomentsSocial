@@ -67,11 +67,6 @@ const MomentDetailsPage = () => {
     } else {
       fetchStatelessPostData();
     }
-<<<<<<< HEAD
-=======
-
-
->>>>>>> @{-1}
   }, [router.isReady]);
 
   useEffect(() => {
