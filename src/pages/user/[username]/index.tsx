@@ -29,7 +29,7 @@ const PublicProfile = () => {
     const [reactionClick, onReactionClick] = useState<any>(null)
     const [activeTab, setActiveTab] = useState<number>(0)
 
-    
+
     const fetchSingleProfile = async () => {
         const { getSingleProfile, buildProfilePictureUrl } = await import('deso-protocol')
         const params = {
@@ -38,6 +38,7 @@ const PublicProfile = () => {
         }
 
         const profileData: any = await getSingleProfile(params)
+
         const Avatar = await buildProfilePictureUrl(profileData?.Profile?.PublicKeyBase58Check, {
             fallbackImageUrl: ''
         })

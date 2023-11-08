@@ -21,6 +21,7 @@ const EmojiReaction = memo(({ onReactionClick, postHashHex }: any) => {
     }
 
     const result = await countPostAssociations(reactionParams)
+
     const modifiedEmojiList = emojiList.filter(({ name }) => result?.Counts[name] > 0);
     modifiedEmojiList.sort((a, b) => result?.Counts[b.name] - result?.Counts[a.name]);
     const appendedString = modifiedEmojiList.reduce((accumulator, emojiItem) => accumulator + emojiItem.emoji, '');

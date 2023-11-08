@@ -3,6 +3,9 @@ import { useRouter } from "next/router";
 import MainLayout from "@/layouts/main-layout";
 import { LoadingSpinner } from "@/components/core/loader";
 import { ApiDataType, apiService } from "@/utils/request";
+import Comment from "@/components/snippets/comments";
+import SocialShare from "@/components/snippets/social-share";
+import { getVideoShareUrl } from "@/utils";
 
 const VideoDetailsPage = () => {
   const router = useRouter();
@@ -89,7 +92,6 @@ const VideoDetailsPage = () => {
     return "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
   };
 
-
   const renderRelatedVidoes = () => {
     return relatedVideos.map((item: any, index: any) => (
       <div
@@ -152,6 +154,16 @@ const VideoDetailsPage = () => {
                 <p className="mt-4 max-h-[74px] overflow-y-auto">
                   {videoData.Body}
                 </p>
+
+                <div>
+                  {videoData.Comments !== null &&
+                    videoData.Comments.map(
+                      (comment: any, commentIndex: number) => (
+                        <Comment comment={comment} key={commentIndex} />
+                      )
+                    )}
+                </div>
+              <SocialShare url={getVideoShareUrl(videoData?.PostHashHex)} title={videoData?.Body} ></SocialShare>
               </div>
               <div className="mt-4 flex space-x-2">
                 <div className="likes-count flex space-x-2">

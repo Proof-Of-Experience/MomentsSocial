@@ -177,3 +177,12 @@ export const debounce = <F extends (...args: any[]) => void>(
     timeoutId = setTimeout(() => func.apply(this, args), delay);
   };
 };
+
+
+export const getMomentShareUrl = (postId : string) => {
+  return process.env.NEXT_PUBLIC_MOMENTS_DOMAIN_URL + '/moment/' + postId
+}
+
+export const getVideoShareUrl = (postId : string) => {
+  return process.env.NEXT_PUBLIC_MOMENTS_DOMAIN_URL + '/video/' + postId
+}
