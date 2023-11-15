@@ -6,9 +6,14 @@ import { ApiDataType, apiService } from "@/utils/request";
 import Comment from "@/components/snippets/comments";
 import SocialShare from "@/components/snippets/social-share";
 import { getVideoShareUrl } from "@/utils";
+import video from "@/components/skeletons/video";
+import MakeComment from "@/components/snippets/comments/makeComment";
+import { selectAuthUser } from "@/slices/authSlice";
+import { useSelector } from "react-redux";
 
 const VideoDetailsPage = () => {
   const router = useRouter();
+  const authUser = useSelector(selectAuthUser);
 
   const { PostHashHex, Tag }: any = router.query;
   const tagParam: any = router.query.tag;
@@ -80,18 +85,6 @@ const VideoDetailsPage = () => {
     }
   };
 
-  const getVideoPreview = (screenshot?: string, videoUrl?: string) => {
-    if (screenshot) {
-      return screenshot;
-    }
-
-    if (videoUrl) {
-      return videoUrl;
-    }
-
-    return "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
-  };
-
   const renderRelatedVidoes = () => {
     return relatedVideos.map((item: any, index: any) => (
       <div
@@ -99,14 +92,13 @@ const VideoDetailsPage = () => {
         className="overflow-hidden flex grid grid-cols-3 items-center mt-2"
       >
         <div className="col-span-1">
-          <video
-            className="h-[200px] w-full rounded-lg"
-            height={"200"}
-            src={getVideoPreview(item.screenshot, item.VideoURL)}
-            autoPlay
-            muted
-            controls
-          />
+          <iframe
+            className="w-36 h-36"
+            src={item.VideoURL}
+            title="YouTube video player"
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
         </div>
         <div
           className="col-span-2"
@@ -147,10 +139,6 @@ const VideoDetailsPage = () => {
                   allowFullScreen
                 ></iframe>
 
-                {/* <video width="320" height="240" controls>
-                <source src={videoData.VideoURLs[0]} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video> */}
                 <p className="mt-4 max-h-[74px] overflow-y-auto">
                   {videoData.Body}
                 </p>
@@ -163,8 +151,28 @@ const VideoDetailsPage = () => {
                       )
                     )}
                 </div>
-              <SocialShare url={getVideoShareUrl(videoData?.PostHashHex)} title={videoData?.Body} ></SocialShare>
+                <SocialShare
+                  url={getVideoShareUrl(videoData?.PostHashHex)}
+                  title={videoData?.Body}
+                ></SocialShare>
+
+                {authUser && (
+                  <MakeComment
+                    postId={videoData.PostHashHex}
+                    userId={authUser?.PublicKeyBase58Check}
+                  ></MakeComment>
+                )}
+
+                <div>
+                  {videoData.Comments !== null &&
+                    videoData.Comments.map(
+                      (comment: any, commentIndex: number) => (
+                        <Comment comment={comment} key={commentIndex} />
+                      )
+                    )}
+                </div>
               </div>
+
               <div className="mt-4 flex space-x-2">
                 <div className="likes-count flex space-x-2">
                   <svg

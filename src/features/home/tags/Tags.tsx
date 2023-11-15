@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { ApiDataType, apiService } from '@/utils/request';
 import { useRouter } from 'next/router';
@@ -17,6 +17,59 @@ const Tags: React.FC<TagsProps> = ({ onClick, tagParam, tagSearch, onChangeTagSe
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [tags, setTags] = useState<any>([]);
+
+  const slider: any = useRef(null);
+
+  const dynamicSlidesToShow = useMemo(() => {
+      if (tags.length > 5) {
+          return 6;
+      } else if (tags.length > 4) {
+          return 3;
+      } else if (tags.length < 1) {
+          return 1;
+      } else {
+          return tags.length;
+      }
+  }, [tags]);
+
+  const momentSliderSettings = {
+      dots: false,
+      infinite: true,
+      loop: false,
+      arrows: false,
+      speed: 500,
+      slidesToShow: dynamicSlidesToShow,
+      slidesToScroll: 3,
+      responsive: [
+          {
+              breakpoint: 1200,
+              settings: {
+                  slidesToShow: 5,
+                  slidesToScroll: 3,
+              }
+          },
+          {
+              breakpoint: 991,
+              settings: {
+                  slidesToShow: 3,
+                  slidesToScroll: 2,
+              }
+          },
+          {
+              breakpoint: 700,
+              settings: {
+                  slidesToShow: 2,
+                  slidesToScroll: 1
+              }
+          },
+          {
+              breakpoint: 575,
+              settings: {
+                  slidesToShow: 1,
+              }
+          }
+      ]
+  };
 
   const fetchTags = async (page: number = 1) => {
     const apiData: ApiDataType = {
@@ -48,7 +101,7 @@ const Tags: React.FC<TagsProps> = ({ onClick, tagParam, tagSearch, onChangeTagSe
 
 
   return (
-    <div className="flex items-center max-w-[94%] overflow-hidden">
+    <div className="flex items-center max-w-[94%] overflow-x-scroll scrollbar-hidden">
 
       <div className='flex justify-between items-center border rounded-md px-3 max-w-[280px] mr-3'>
         <span className='mr-1'>#</span>
@@ -97,6 +150,7 @@ const Tags: React.FC<TagsProps> = ({ onClick, tagParam, tagSearch, onChangeTagSe
                 )
               })
             }
+
           </>
       }
 

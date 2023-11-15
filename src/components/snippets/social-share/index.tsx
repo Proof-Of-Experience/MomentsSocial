@@ -17,7 +17,6 @@ import {
 } from "react-share";
 
 const SocialShare = memo(({ url, title }: any) => {
-  console.log("got", url)
 
   return (
     <div className="flex items-center text-lg font-bold text-gray-700">

@@ -6,9 +6,11 @@ import { debounce, getMomentShareUrl, mergeVideoData } from "@/utils";
 import EmojiReaction from "@/components/snippets/emoji-reaction";
 import { selectAuthUser } from "@/slices/authSlice";
 import { useSelector } from "react-redux";
-import { makeReaction, getReactionsCount } from "@/services/reaction/reaction";
+import { makeReaction } from "@/services/reaction/reaction";
 import Comment from "@/components/snippets/comments";
 import SocialShare from "@/components/snippets/social-share";
+import { ApiDataType, apiService } from "@/utils/request";
+import MakeComment from "@/components/snippets/comments/makeComment";
 
 const MomentDetailsPage = () => {
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
@@ -20,6 +22,7 @@ const MomentDetailsPage = () => {
   const [hasLoaded, setHasLoaded] = useState<boolean>(true);
   const [videoData, setVideoData] = useState<any>([]);
   const wheelDivRef = useRef<HTMLDivElement>(null);
+  let [currentPage, setCurrentPage] = useState<number>(1);
 
   const react = async () => {
     console.log("reacting");
@@ -28,17 +31,39 @@ const MomentDetailsPage = () => {
       return;
     }
 
+    if (!authUser) {
+      console.log("uautneticated");
+      return;
+    }
+
     let cv = videoData[activeVideoIndex];
     if (!cv) {
       console.log("no cv");
       return;
     }
-    const result = await makeReaction(
-      "LIKE",
-      cv.PostHashHex,
-      authUser.PublicKeyBase58Check
-    );
+    // const result = await makeReaction(
+    //   "LIKE",
+    //   cv.PostHashHex,
+    //   authUser.PublicKeyBase58Check
+    // );
+    // console.log("result", result);
+
+    const { createPostAssociation } = await import("deso-protocol");
+
+    const params = {
+      TransactorPublicKeyBase58Check: authUser.PublicKeyBase58Check,
+      PostHashHex: cv.PostHashHex,
+      // AppPublicKeyBase58Check:
+      // "BC1YLgTKfwSeHuNWtuqQmwduJM2QZ7ZQ9C7HFuLpyXuunUN7zTEr5WL",
+      AssociationType: "REACTION",
+      AssociationValue: "LIKE",
+      MinFeeRateNanosPerKB: 1000,
+    };
+
+    const result = await createPostAssociation(params);
     console.log("result", result);
+
+    return;
 
     const { countPostAssociations } = await import("deso-protocol");
     const reactionParams = {
@@ -100,6 +125,12 @@ const MomentDetailsPage = () => {
 
       setActiveVideoIndex(newIndex);
       const videoId = videoData?.length > 0 && videoData[newIndex].PostHashHex;
+
+      if (newIndex + 5 >= videoData.length) {
+        setCurrentPage(currentPage++);
+        fetchMoments(currentPage);
+      }
+
       router.push(`/moment/${videoId}${Tag ? `?Tag=${Tag}` : ""}`, undefined, {
         shallow: true,
       });
@@ -130,6 +161,42 @@ const MomentDetailsPage = () => {
     setHasLoaded(false);
   };
 
+  const fetchMoments = async (page: number = 1) => {
+    let apiUrl = `/api/posts?page=${page}&limit=5&moment=true`;
+
+    if (Tag) {
+      const tagWithHash = Tag.startsWith("#") ? Tag : `#${Tag}`;
+      apiUrl += `&hashtag=${encodeURIComponent(tagWithHash)}`;
+    }
+
+    const apiData: ApiDataType = {
+      method: "get",
+      url: apiUrl,
+      customUrl: process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL,
+    };
+
+    try {
+      await apiService(apiData, (res: any, err: any) => {
+        if (err) return err.response;
+
+        let data: any = [];
+
+        res.posts.forEach((post: any) => {
+          if (post.PostHashHex !== videoData?.PostHashHex) {
+            post.VideoURLs = [post.VideoURL];
+            data.push(post);
+          }
+        });
+        data = mergeVideoData(data, videoData);
+        setVideoData(data);
+      });
+    } catch (error: any) {
+      console.error("error", error.response);
+    } finally {
+      setCurrentPage(currentPage++);
+    }
+  };
+
   const fetchStatelessPostData = async () => {
     const { getPostsStateless } = await import("deso-protocol");
     const formData = {
@@ -147,6 +214,14 @@ const MomentDetailsPage = () => {
         mergeVideoData(prevVideoData, filteredData)
       );
     }
+  };
+
+  const videoComments = (comments: any) => {
+    if (!comments) {
+      return [];
+    }
+
+    return comments;
   };
 
   const fetchFeedData = async () => {
@@ -208,13 +283,25 @@ const MomentDetailsPage = () => {
                 </p>
               </div>
 
+              <SocialShare
+                url={getMomentShareUrl(video?.PostHashHex)}
+                title={video?.Body}
+              ></SocialShare>
+
+              {authUser && (
+                <MakeComment
+                  postId={video.PostHashHex}
+                  userId={authUser?.PublicKeyBase58Check}
+                ></MakeComment>
+              )}
+
               <div>
-                {video.Comments !== null && video.Comments.map((comment: any, commentIndex: number) => (
-                  <Comment comment={comment} key={commentIndex} />
-                ))}
+                {videoComments(video.Comments).map(
+                  (comment: any, commentIndex: number) => (
+                    <Comment comment={comment} key={commentIndex} />
+                  )
+                )}
               </div>
-              <p className="mt-4 max-h-[74px] overflow-y-auto">{video.Body}</p>
-              <SocialShare url={getMomentShareUrl(video?.PostHashHex)} title={video?.Body} ></SocialShare>
             </div>
           ))
         )}
