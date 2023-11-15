@@ -12,7 +12,7 @@ const Moment = memo(({ className, onClick, item, isLoading }: MomentProps) => {
       <MomentSkeleton />
     ) :
       (
-        <div className={`block border rounded-xl cursor-pointer h-[368px] mb-4 ${className ? className : ''}`}>
+        <div className={`block cursor-pointer h-[368px] mb-4 ${className ? className : ''}`}>
           <Fragment>
             <div className="flex flex-wrap">
               <img
@@ -26,10 +26,13 @@ const Moment = memo(({ className, onClick, item, isLoading }: MomentProps) => {
             <div className="px-2 pb-3 mt-2">
               <p className="font-semibold text-sm line-clamp-2 text-left min-h-[40px]">{item?.Body}</p>
 
-              <EmojiReaction
-                onReactionClick={() => {}}
-                postHashHex={item?.PostHashHex}
-              />
+              <div className='flex justify-between'>
+                <p>{item?.GiftCount}</p>
+                <EmojiReaction
+                  onReactionClick={() => { }}
+                  postHashHex={item?.PostHashHex}
+                />
+              </div>
             </div>
           </Fragment>
         </div>

@@ -4,7 +4,7 @@ import EmojiReaction from '../emoji-reaction';
 import { useRouter } from 'next/router';
 
 
-const VideoItem = memo(({ desoResponse, item, onReactionClick, ...rest }: VideoItemProps) => {
+const VideoItem = memo(({ desoResponse, item, onReactionClick, ...rest }: VideoItemProps) => {	
 	const router = useRouter();
 
 	const sanitizeURL = (url: any) => {
@@ -41,6 +41,11 @@ const VideoItem = memo(({ desoResponse, item, onReactionClick, ...rest }: VideoI
 					pathname: `video/${item?.PostHashHex}`,
 				})
 			}}>
+
+			<img
+				src={`https://diamondapp.com/api/v0/get-single-profile-picture/${item?.PublicKeyBase58Check}?fallback=https://diamondapp.com/assets/img/default-profile-pic.png`}
+				alt=''
+			/>
 
 			<div className="relative overflow-hidden w-full pt-[75%]">
 				<iframe
