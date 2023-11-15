@@ -207,7 +207,7 @@ const Settings = () => {
 
         <MainLayout title="Settings" mainWrapClass='p-5' isLoading={isLoading}>
             <section className="">
-                <h2 className="text-2xl font-bold">Settings</h2>
+                <h2 className="text-2xl font-semibold">Settings</h2>
 
                 <h3 className="text-xl mt-2">Sync your video from other platforms</h3>
 

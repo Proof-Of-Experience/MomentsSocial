@@ -68,7 +68,7 @@ const EmojiReaction = memo(({ onReactionClick, postHashHex }: any) => {
 
   return (
     <div
-      className="flex items-center text-lg font-bold text-gray-700"
+      className="flex items-center text-lg font-semibold text-gray-700"
       onMouseEnter={handleButtonHover}
       onMouseLeave={handleButtonMouseLeave}>
       {selectedReaction ? selectedReaction : '👍'}

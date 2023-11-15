@@ -56,7 +56,7 @@ const ProfileNFT = ({ username, publicKey, userDetails }: any) => {
                         return (
                             <div key={key.PostHashHex} className="mb-12 border border-b rounded-lg p-5">
                                 <div className="mb-5 flex items-center">
-                                    <a href={`/user/${value?.PostEntryResponse?.ProfileEntryResponse?.Username}`} className="flex items-center font-bold">
+                                    <a href={`/user/${value?.PostEntryResponse?.ProfileEntryResponse?.Username}`} className="flex items-center font-semibold">
                                         <img alt="..."
                                             src={`https://node.deso.org/api/v0/get-single-profile-picture/${value?.PostEntryResponse?.PosterPublicKeyBase58Check}`}
                                             className=" shadow-xl rounded-full h-[40px] w-[40px] border-none" />

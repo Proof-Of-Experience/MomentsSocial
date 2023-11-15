@@ -260,7 +260,7 @@ const MomentDetailsPage = () => {
               style={{ marginLeft: "30%", marginRight: "30%", width: "40%" }}
             >
               <div>
-                <h1 className="text-4xl font-bold mb-4">
+                <h1 className="text-4xl font-semibold mb-4">
                   {video?.ProfileEntryResponse?.Username}
                 </h1>
                 <iframe

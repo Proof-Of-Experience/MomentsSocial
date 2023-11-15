@@ -97,7 +97,7 @@ const ProfileBlog = ({ username, publicKey, userDetails }: any) => {
                             <div className="mb-5 flex items-center">
                                 <a 
                                 // href={`/user/${value?.PostEntryResponse?.ProfileEntryResponse?.Username}`}
-                                 className="flex items-center font-bold">
+                                 className="flex items-center font-semibold">
                                 <img alt="..."
                                     src={userDetails?.Avatar}
                                     className=" shadow-xl rounded-full h-[40px] w-[40px] border-none" />
@@ -106,7 +106,7 @@ const ProfileBlog = ({ username, publicKey, userDetails }: any) => {
                             </div>
 
                             <img src={blog.PostExtraData?.CoverImage} alt='' className="max-w-[600px]" />
-                            <h3 className="text-2xl font-bold mt-4">{blog.PostExtraData?.Title}</h3>
+                            <h3 className="text-2xl font-semibold mt-4">{blog.PostExtraData?.Title}</h3>
                             <p>{blog.PostExtraData?.Description}</p>
                             <div>{renderedContent}</div>
                         </div>

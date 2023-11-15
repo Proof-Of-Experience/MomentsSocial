@@ -26,7 +26,7 @@ const PrimaryButton: React.FC<ExtendedProps> = ({ text = 'text', loader, disable
       {...rest}
       disabled={disabled || loader ? true : false}
       className={
-        `${bgColor} text-white transition-all rounded-lg px-10 py-2 font-poppins font-bold disabled:bg-gray-400
+        `${bgColor} text-white transition-all rounded-lg px-10 py-2 font-inter font-semibold disabled:bg-gray-400
           ${className}
         `}>
       <span className={`${loader ? 'mr-3' : ''}`}>{text}</span>

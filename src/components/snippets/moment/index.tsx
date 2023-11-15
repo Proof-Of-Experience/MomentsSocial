@@ -24,7 +24,7 @@ const Moment = memo(({ className, onClick, item, isLoading }: MomentProps) => {
             </div>
 
             <div className="px-2 pb-3 mt-2">
-              <p className="font-bold text-sm line-clamp-2 text-left min-h-[40px]">{item?.Body}</p>
+              <p className="font-semibold text-sm line-clamp-2 text-left min-h-[40px]">{item?.Body}</p>
 
               <EmojiReaction
                 onReactionClick={() => {}}

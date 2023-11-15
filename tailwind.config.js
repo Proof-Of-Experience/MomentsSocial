@@ -14,7 +14,7 @@ module.exports = {
         'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       fontFamily: {
-        'poppins': ['Poppins', 'sans-serif']
+        'inter': ['Inter', 'sans-serif']
       },
       height: {
         'sidebar': 'calc(100vh - 72px)'

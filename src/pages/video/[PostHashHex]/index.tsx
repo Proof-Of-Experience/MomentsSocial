@@ -126,7 +126,7 @@ const VideoDetailsPage = () => {
           <div className="min-h-[calc(100vh_-_72px)] grid grid-cols-3 p-5 gap-5 bg-[#ddd]">
             <div className="col-span-2">
               <div className="">
-                <h1 className="text-4xl font-bold mb-4">
+                <h1 className="text-4xl font-semibold mb-4">
                   {videoData?.ProfileEntryResponse?.Username}
                 </h1>
                 <iframe

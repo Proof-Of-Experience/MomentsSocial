@@ -108,7 +108,7 @@ const ProfileWallet = ({ username, publicKey, userDetails }: any) => {
                         <div className="grid grid-cols-4 gap-6">
                             <div className="bg-gray-100 shadow rounded-lg px-5 py-6 col-span-1">
                                 <div className="mb-4">
-                                    <p className="font-bold">Publick Key</p>
+                                    <p className="font-semibold">Publick Key</p>
                                     <div className="flex items-center">
                                         <p className="truncate">
                                             <span>{authUser?.PublicKeyBase58Check}</span>
@@ -135,11 +135,11 @@ const ProfileWallet = ({ username, publicKey, userDetails }: any) => {
                                 <div className="mb-5">
                                     <p>
                                         <span>DESO Price</span>
-                                        <span className="font-bold"> ≈ {desoPrice(exchangeData?.USDCentsPerDeSoCoinbase)}</span>
+                                        <span className="font-semibold"> ≈ {desoPrice(exchangeData?.USDCentsPerDeSoCoinbase)}</span>
                                     </p>
                                     <p>
                                         <span>Your DESO </span>
-                                        <span className="font-bold">
+                                        <span className="font-semibold">
                                             {nanosToUSD(authUser?.Profile?.DESOBalanceNanos, 2)}
                                         </span>
                                     </p>

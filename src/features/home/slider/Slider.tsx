@@ -62,7 +62,15 @@ const MomentsSlider = ({ momentsData, isLoading, loadMoreMoments, onClickMoment 
     return (
         <>
             <div className="flex justify-between items-center mr-10 mb-3">
-                <h3 className="font-semibold text-3xl">Moments</h3>
+                <h2 className='flex'>
+                    <img
+                        className=""
+                        src="/moments.svg"
+                        alt="No data"
+                    />
+                    <span className="font-semibold text-3xl">Moments</span>
+                </h2>
+
                 {
                     momentsData.length > 4 && (
                         <div>

@@ -155,7 +155,7 @@ const MainLayout = ({ title, isLoading, mainWrapClass, children }: MainLayoutPro
         <Header />
         <ToastContainer />
 
-        <div className='flex font-poppins'>
+        <div className='flex font-inter'>
           <div className='w-[80px] bg-gray-50 h-sidebar shadow-md'>
             <LeftSidebar />
           </div>

@@ -19,7 +19,7 @@ import {
 const SocialShare = memo(({ url, title }: any) => {
 
   return (
-    <div className="flex items-center text-lg font-bold text-gray-700">
+    <div className="flex items-center text-lg font-semibold text-gray-700">
       <FacebookShareButton url={url} quote={title} >
         <FacebookIcon size={24} round></FacebookIcon>
       </FacebookShareButton>

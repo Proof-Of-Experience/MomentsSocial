@@ -14,7 +14,7 @@ const Notifications = ({ notifications }: any) => {
 
     return (
         <div className="bg-white shadow px-5 py-4 w-[300px]">
-            <h3 className="font-bold">Notifications</h3>
+            <h3 className="font-semibold">Notifications</h3>
 
             {
                 notificationList.map((notification: any, index: number) => 

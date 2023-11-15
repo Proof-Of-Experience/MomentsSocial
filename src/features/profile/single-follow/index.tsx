@@ -12,7 +12,7 @@ const SingleFollow = ({ followData }: any) => {
                     alt="avatar"
                     className="rounded-full h-10 w-10 mr-2" />
                 <div className="overflow-hidden">
-                    <span className="flex w-[150px] truncate font-bold">
+                    <span className="flex w-[150px] truncate font-semibold">
                         {followData?.Username ? followData?.Username : followData.PublicKeyBase58Check}
                         {followData?.IsVerified && <CheckBadgeIcon className="ml-1 w-5 h-5 text-blue-500" />}
                     </span>
