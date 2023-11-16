@@ -9,6 +9,10 @@ import VideoItem from '@/components/snippets/video';
 import VideoSkeleton from '@/components/skeletons/video';
 import MomentsSlider from '@/features/home/slider/Slider';
 import { ApiDataType, apiService } from '@/utils/request';
+import { getPreferencePopupRandomInterval, wasPreferenceSavedBeforeLastXMinutes } from '@/services/tag/tag';
+import ProfilePreferences from '@/components/snippets/preferences/profilePreferences';
+import { useSelector } from 'react-redux';
+import { selectAuthUser } from '@/slices/authSlice';
 
 const Home: NextPage = () => {
 	const router = useRouter();
@@ -16,6 +20,7 @@ const Home: NextPage = () => {
 	const SKELETON_COUNT = 8;
 	const { gridView }: any = useContext(VideoLayoutContext)
 	const loadMoreRef = useRef(null);
+	const authUser = useSelector(selectAuthUser)
 
 	const [isVideoPaginating, setIsVideoPaginating] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -27,6 +32,8 @@ const Home: NextPage = () => {
 	const [currentTag, setCurrentTag] = useState<string>('');
 	const [momentsCurrentPage, setMomentsCurrentPage] = useState(1);
 	const [momentsTotalPages, setMomentsTotalPages] = useState<number>(Infinity);
+	const [displayPreference, setDisplayPreference] = useState<boolean>(false);
+	const [authUserId, setAuthUserId] = useState<string|null>(null)
 
 	console.log('momentsData ->', momentsData);
 
@@ -84,6 +91,7 @@ const Home: NextPage = () => {
 		}
 	}
 
+
 	const fetchMoments = async (page: number = 1) => {
 		let apiUrl = `/api/posts?page=${page}&limit=6&moment=true`;
 		if (tagParam) {
@@ -119,6 +127,19 @@ const Home: NextPage = () => {
 	useEffect(() => {
 		if (!router.isReady) return;
 		fetchVideos(videoCurrentPage);
+
+		if(!authUser) {
+			return
+		}
+		setAuthUserId(authUser.PublicKeyBase58Check)
+		// user is logged in
+
+		if(wasPreferenceSavedBeforeLastXMinutes(authUser.PublicKeyBase58Check, getPreferencePopupRandomInterval())) {
+			// the preference have been saved current time - randomInterval minutes at least
+			// display preference
+			setDisplayPreference(true)
+		}
+
 	}, [tagParam, initialLoadComplete, router.isReady]);
 
 	useEffect(() => {
@@ -239,6 +260,10 @@ const Home: NextPage = () => {
 						<Layout />
 					</div>
 				</div >
+
+				{displayPreference && (
+					<ProfilePreferences userId={authUserId} />
+				)}
 
 				{
 					momentsData.length > 0 &&

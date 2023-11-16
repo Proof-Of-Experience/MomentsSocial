@@ -6,7 +6,6 @@ import EmojiReaction from '../emoji-reaction';
 
 const Moment = memo(({ className, onClick, item, isLoading }: MomentProps) => {
 
-
   return (
     isLoading ? (
       <MomentSkeleton />

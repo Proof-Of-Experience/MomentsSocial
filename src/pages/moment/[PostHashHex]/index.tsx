@@ -11,6 +11,7 @@ import Comment from "@/components/snippets/comments";
 import SocialShare from "@/components/snippets/social-share";
 import { ApiDataType, apiService } from "@/utils/request";
 import MakeComment from "@/components/snippets/comments/makeComment";
+import { fakeComments, getNFakeComments } from "@/data/comments";
 
 const MomentDetailsPage = () => {
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
@@ -218,7 +219,8 @@ const MomentDetailsPage = () => {
 
   const videoComments = (comments: any) => {
     if (!comments) {
-      return [];
+      // return [];
+      return getNFakeComments(5);
     }
 
     return comments;

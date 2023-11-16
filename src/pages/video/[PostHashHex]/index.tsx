@@ -10,6 +10,7 @@ import video from "@/components/skeletons/video";
 import MakeComment from "@/components/snippets/comments/makeComment";
 import { selectAuthUser } from "@/slices/authSlice";
 import { useSelector } from "react-redux";
+import { getNFakeComments } from "@/data/comments";
 
 const VideoDetailsPage = () => {
   const router = useRouter();
@@ -83,6 +84,15 @@ const VideoDetailsPage = () => {
     } finally {
       setIsRelatedVideosLoading(false);
     }
+  };
+
+  const videoComments = (comments: any) => {
+    if (!comments) {
+      // return [];
+      return getNFakeComments(5);
+    }
+
+    return comments;
   };
 
   const renderRelatedVidoes = () => {
@@ -164,8 +174,7 @@ const VideoDetailsPage = () => {
                 )}
 
                 <div>
-                  {videoData.Comments !== null &&
-                    videoData.Comments.map(
+                  {videoComments(videoData.Comments).map(
                       (comment: any, commentIndex: number) => (
                         <Comment comment={comment} key={commentIndex} />
                       )

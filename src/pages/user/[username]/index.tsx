@@ -15,11 +15,13 @@ import ProfileNFT from '@/features/profile/nft';
 import ProfileWallet from '@/features/profile/wallet';
 import { useSelector } from 'react-redux';
 import { selectAuthUser } from '@/slices/authSlice';
+import ProfilePreferences from '@/components/snippets/preferences/profilePreferences';
 
 
 const PublicProfile = () => {
     const router = useRouter()
     const authUser = useSelector(selectAuthUser)
+
     const { username }: any = router.query
     const [publicKey, setPublicKey] = useState<string>("")
     const [userDetails, setUserDetails] = useState<any>({})
@@ -90,6 +92,7 @@ const PublicProfile = () => {
         'Moments',
         'Creator Coin',
         'Diamonds',
+        'Preferences',
         'Blog',
         'NFTs',
         'My Wallets',
@@ -163,6 +166,9 @@ const PublicProfile = () => {
                                     </Tab.Panel>
                                     <Tab.Panel>
                                         <Diamonds username={username} />
+                                    </Tab.Panel>
+                                    <Tab.Panel>
+                                        <ProfilePreferences userId={authUser?.PublicKeyBase58Check} />
                                     </Tab.Panel>
                                     <Tab.Panel>
                                         <ProfileBlog username={username} publicKey={publicKey} userDetails={userDetails} />
