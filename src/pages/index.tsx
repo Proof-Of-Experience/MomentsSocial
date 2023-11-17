@@ -33,7 +33,7 @@ const Home: NextPage = () => {
 	const [momentsCurrentPage, setMomentsCurrentPage] = useState(1);
 	const [momentsTotalPages, setMomentsTotalPages] = useState<number>(Infinity);
 	const [displayPreference, setDisplayPreference] = useState<boolean>(false);
-	const [authUserId, setAuthUserId] = useState<string|null>(null)
+	const [authUserId, setAuthUserId] = useState<string | null>(null)
 
 	console.log('momentsData ->', momentsData);
 
@@ -128,13 +128,13 @@ const Home: NextPage = () => {
 		if (!router.isReady) return;
 		fetchVideos(videoCurrentPage);
 
-		if(!authUser) {
+		if (!authUser) {
 			return
 		}
 		setAuthUserId(authUser.PublicKeyBase58Check)
 		// user is logged in
 
-		if(wasPreferenceSavedBeforeLastXMinutes(authUser.PublicKeyBase58Check, getPreferencePopupRandomInterval())) {
+		if (wasPreferenceSavedBeforeLastXMinutes(authUser.PublicKeyBase58Check, getPreferencePopupRandomInterval())) {
 			// the preference have been saved current time - randomInterval minutes at least
 			// display preference
 			setDisplayPreference(true)
@@ -281,6 +281,8 @@ const Home: NextPage = () => {
 						}}
 					/>
 				}
+
+				<h2 className="text-[#1C1B1F] leading-trim capitalize font-inter text-lg font-semibold mb-[32px]">Explore</h2>
 
 				<div className={`grid ${showGridCol()} gap-x-5 gap-y-10`}>
 					{renderVideoItems()}

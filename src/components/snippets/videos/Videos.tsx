@@ -36,9 +36,13 @@ const Videos = ({ videoData = [], onReactionClick, videoLoaded, ...rest }: any) 
 
 
     return (
-        <div className={`grid ${showGridCol()} gap-x-5 gap-y-10`}>
-            {renderVideoItems()}
+        <div>
+
+            <div className={`grid ${showGridCol()} gap-x-7 gap-y-12`}>
+                {renderVideoItems()}
+            </div>
         </div>
+
     );
 }
 

@@ -35,41 +35,45 @@ const LeftSidebar = () => {
 	};
 
 	return (
-		<div className={`${isSticky ? 'mt-[72px]' : ''} fixed w-[80px] flex flex-col items-center pt-5 bg-gray-200 h-full`}>
+		<div className={`${isSticky ? 'mt-[80px]' : ''} fixed w-[207px] flex flex-col pt-[16px] bg-white h-full`}>
 			<button
-				className={`mb-3 hover:bg-gray-300 transition-all rounded-md px-2 py-1 text-gray-600 focus:bg-gray-300 ${activeItem === '/' ? 'bg-gray-300' : ''}`}
+				className={`group mb-[16px] hover:bg-[#F0F9FC] hover:text-[#00A1D4] transition-all flex flex-row rounded-[8px] p-[12px] focus:bg-[#F0F9FC] ${activeItem === '/' ? 'bg-[#F0F9FC] text-[#00A1D4]' : 'text-[#1C1B1F]'}`}
 				title="Home"
 				onClick={() => onClickItem('/')}>
-				<HomeIcon className="mx-auto h-7 w-7" />
+				<HomeIcon className={`h-[20px] w-[20px] group-hover:text-[#00A1D4] ${activeItem === '/' ? 'bg-[#F0F9FC]  text-[#00A1D4]' : 'text-[#1C1B1F]'}`} />
+				<p className={`group-hover:text-[#00A1D4] font-[14px] ml-1 ${activeItem === '/' ? 'bg-[#F0F9FC]  text-[#00A1D4]' : 'text-[#1C1B1F]'}`}>Home</p>
 			</button>
 
 			<button
-				className={`mb-3 hover:bg-gray-300 transition-all rounded-md px-2 py-1 text-gray-600 focus:bg-gray-300 ${activeItem === '/moments' ? 'bg-gray-300' : ''}`}
+				className={`group mb-[16px] hover:bg-[#F0F9FC] transition-all flex flex-row rounded-[8px] p-[12px] focus:bg-[#F0F9FC] ${activeItem === '/moments' ? 'bg-[#F0F9FC]' : ''}`}
 				title="Moments"
 				onClick={() => onClickItem('/moments')}>
-				<BoltIcon className="mx-auto h-7 w-7" />
+				<BoltIcon className={`h-[20px] w-[20px] group-hover:text-[#00A1D4] ${activeItem === '/moments' ? 'bg-[#F0F9FC]  text-[#00A1D4]' : 'text-[#1C1B1F]'}`} />
+				<p className={`group-hover:text-[#00A1D4] font-[14px] ml-1 ${activeItem === '/moments' ? 'bg-[#F0F9FC]  text-[#00A1D4]' : 'text-[#1C1B1F]'}`}>Shorts</p>
 			</button>
 
 			<button
-				className={`mb-3 hover:bg-gray-300 transition-all rounded-md px-2 py-1 text-gray-600 focus:bg-gray-300 ${activeItem === '/explore' ? 'bg-gray-300' : ''}`}
+				className={`group mb-[16px] hover:bg-[#F0F9FC] transition-all flex flex-row rounded-[8px] p-[12px] focus:bg-[#F0F9FC] ${activeItem === '/explore' ? 'bg-[#F0F9FC]' : ''}`}
 				title="Explore"
 				onClick={() => onClickItem('/')}>
-				<ArrowPathRoundedSquareIcon className="mx-auto h-7 w-7" />
+				<ArrowPathRoundedSquareIcon className={`h-[20px] w-[20px] group-hover:text-[#00A1D4] ${activeItem === '/explore' ? 'bg-[#F0F9FC]  text-[#00A1D4]' : 'text-[#1C1B1F]'}`} />
+				<p className={`group-hover:text-[#00A1D4] font-[14px] ml-1 ${activeItem === '/explore' ? 'bg-[#F0F9FC]  text-[#00A1D4]' : 'text-[#1C1B1F]'}`}>Subscriptions</p>
 			</button>
 
 			<button
-				className={`mb-3 hover:bg-gray-300 transition-all rounded-md px-2 py-1 text-gray-600 focus:bg-gray-300 ${activeItem === '/trending' ? 'bg-gray-300' : ''}`}
+				className={`group mb-[16px] hover:bg-[#F0F9FC] transition-all flex flex-row rounded-[8px] p-[12px] focus:bg-[#F0F9FC] ${activeItem === '/trending' ? 'bg-[#F0F9FC]' : ''}`}
 				title="Trending"
 				onClick={() => onClickItem('/')}>
-				<FireIcon className="mx-auto h-7 w-7" />
+				<FireIcon className={`h-[20px] w-[20px] group-hover:text-[#00A1D4] ${activeItem === '/trending' ? 'bg-[#F0F9FC]  text-[#00A1D4]' : 'text-[#1C1B1F]'}`} />
+				<p className={`group-hover:text-[#00A1D4] font-[14px] ml-1 ${activeItem === '/trending' ? 'bg-[#F0F9FC]  text-[#00A1D4]' : 'text-[#1C1B1F]'}`}>Trending</p>
 			</button>
 
 			{authUser && (
 				<button
-					className={`mb-3 hover:bg-gray-300 transition-all rounded-md px-2 py-1 text-gray-600 focus:bg-gray-300 ${activeItem === '/upload' ? 'bg-gray-300' : ''}`}
+					className={`group mb-[16px] hover:bg-[#F0F9FC] transition-all flex flex-row rounded-[8px] p-[12px] focus:bg-[#F0F9FC] ${activeItem === '/upload' ? 'bg-[#F0F9FC]' : ''}`}
 					title="Upload"
 					onClick={() => onClickItem('/upload')}>
-					<ArrowUpTrayIcon className="mx-auto h-7 w-7" />
+					<ArrowUpTrayIcon className={`h-[20px] w-[20px] group-hover:text-[#00A1D4] ${activeItem === '/upload' ? 'bg-[#F0F9FC]  text-[#00A1D4]' : 'text-[#1C1B1F]'}`} />
 				</button>
 			)}
 		</div>

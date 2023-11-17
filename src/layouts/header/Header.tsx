@@ -105,13 +105,13 @@ const Header = () => {
 	)
 
 	return (
-		<header className={`${isSticky ? 'fixed' : 'relative'} bg-white top-0 left-0 right-0 z-10 px-2 py-3 lg:px-5 shadow leading-[30px] max-h-[72px]`}>
-			<div className="flex items-center flex-wrap m-1 justify-left justify-between">
+		<header className={`${isSticky ? 'fixed' : 'relative'} bg-white top-0 left-0 right-0 z-10 px-[28px] py-[12px] shadow leading-[30px] max-h-[80px]`}>
+			<div className="flex items-center flex-wrap justify-left justify-between">
 
 				<div className="flex flex-wrap">
 					<Link href="/" className="flex rounded-md">
 						<img
-							className="flex w-[150px] md:w-[250px] cursor-pointer"
+							className="flex w-[155px] h-[56px] cursor-pointer"
 							src="/logo.svg"
 							alt="dtube"
 							onClick={() => router.push('/')}

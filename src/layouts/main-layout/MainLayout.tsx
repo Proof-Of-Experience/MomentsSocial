@@ -156,10 +156,10 @@ const MainLayout = ({ title, isLoading, mainWrapClass, children }: MainLayoutPro
         <ToastContainer />
 
         <div className='flex font-inter'>
-          <div className='w-[80px] bg-gray-50 h-sidebar shadow-md'>
+          <div className='w-[223px] pl-[28px] ] border-[#D7D7D7] border-r-[1px] bg-white h-sidebar shadow-md'>
             <LeftSidebar />
           </div>
-          <div className='w-[calc(100%_-_72px)]'>
+          <div className='w-[calc(100%_-_223px)] ml-[16px]'>
             <LoadingSpinner fullHeight isLoading={isLoading} />
             <div className={`${mainWrapClass ? mainWrapClass : ''}`}>
               {children}

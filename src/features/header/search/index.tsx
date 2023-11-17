@@ -21,13 +21,19 @@ const Search = ({ searchResult, loadedQuery, selected, onChangeSelect, onChangeS
         <Combobox value={selected} onChange={onChangeSelect}>
             <div className="relative">
                 <Combobox.Input
-                    className="flex rounded-md border border-gray-300 p-4 h-10 w-50 md:w-64 text-[14px] lg:w-96 outline-none placeholder-gray-500"
-                    placeholder="Search video or author or tag...."
+                    className="flex rounded-md bg-[#F2F7F8] rounded-[24px] py-[4px] pl-[17px]  h-[48px] w-[600px] md:w-64 text-[16px] lg:w-96 outline-none placeholder-[#909090]"
+                    placeholder="Search"
                     displayValue={(person: any) => person.Username}
                     onChange={onChangeSearch}
                 />
-                <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-                    <MagnifyingGlassIcon className="h-4 text-gray-600" />
+                <Combobox.Button className="absolute inset-y-0 right-0 flex items-center ">
+                    {/* <MagnifyingGlassIcon className="h-4 text-gray-600" /> */}
+                    <img
+                        className="flex w-[20px] md:w-[20px] mr-[14px] cursor-pointer"
+                        src="/home/search.svg"
+                        alt="dtube"
+                        onClick={() => router.push('/')}
+                    />
                 </Combobox.Button>
 
                 <Transition

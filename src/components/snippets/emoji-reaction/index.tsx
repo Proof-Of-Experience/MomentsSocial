@@ -68,14 +68,14 @@ const EmojiReaction = memo(({ onReactionClick, postHashHex }: any) => {
 
   return (
     <div
-      className="flex items-center text-lg font-semibold text-gray-700"
+      className="flex items-center  text-lg font-semibold text-gray-700"
       onMouseEnter={handleButtonHover}
       onMouseLeave={handleButtonMouseLeave}>
-      {selectedReaction ? selectedReaction : '👍'}
-      <span className="ml-1">{totalReaction?.Total}</span>
+      <span className='w-[26px] h-[25px]'>{selectedReaction ? selectedReaction : '👍'}</span>
+      <span className="ml-1 text-[#7B7788] leading-trim text-capitalize font-inter text-base font-normal leading-normal">{totalReaction?.Total} {totalReaction?.Total > 1 ? 'reactions' : 'reaction'}</span>
 
       {isReactionHovered && (
-        <div className={`absolute bottom-7 left-0 bg-white rounded-3xl border-2 shadow px-3`}>
+        <div className={`absolute bottom-7 left-0 bg-white font-[16px] text-[#1C1B1F] rounded-3xl border-2 shadow px-3`}>
           <div
             className="relative inline-flex items-center"
           >

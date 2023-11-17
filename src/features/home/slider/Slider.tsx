@@ -61,25 +61,25 @@ const MomentsSlider = ({ momentsData, isLoading, loadMoreMoments, onClickMoment 
 
     return (
         <>
-            <div className="flex justify-between items-center mr-10 mb-3">
-                <h2 className='flex'>
+            <div className="flex flex-row justify-between gap-4 mr-10 mb-[16px] mt-[24px]">
+                <h2 className='flex flex-row items-center'>
                     <img
                         className="mr-2"
                         src="/moments.svg"
                         alt="No data"
                     />
-                    <span className="font-semibold text-xl text-[#1C1B1F]">Moments</span>
+                    <span className="text-[#1C1B1F] leading-trim capitalize font-inter text-lg font-semibold">Shorts</span>
                 </h2>
 
                 {
                     momentsData.length > 4 && (
-                        <div>
+                        <div className="flex flex-row items-center">
                             <button
-                                className="mr-4"
+                                className="mr-4 rounded-[28px] border border-solid border-gray-300 bg-white flex p-2 items-center gap-2"
                                 onClick={() => slider?.current?.slickPrev()}>
                                 <ChevronLeftIcon className="h-5 w-5" />
                             </button>
-                            <button
+                            <button className="rounded-[28px] border border-solid border-gray-300 bg-white flex p-2 items-center gap-2"
                                 onClick={() => {
                                     slider?.current?.slickNext();
                                     loadMoreMoments();
@@ -97,7 +97,7 @@ const MomentsSlider = ({ momentsData, isLoading, loadMoreMoments, onClickMoment 
                         return (
                             <Moment
                                 key={item.PostHashHex}
-                                className="mr-6"
+                                className="mr-[27px]"
                                 item={item}
                                 isLoading={isLoading}
                                 onClick={() => onClickMoment(item)}
@@ -107,10 +107,6 @@ const MomentsSlider = ({ momentsData, isLoading, loadMoreMoments, onClickMoment 
                 }
             </Slider>
 
-            {
-                momentsData.length > 0 &&
-                <hr className="border-t-2 my-10" />
-            }
         </>
     );
 }
