@@ -68,7 +68,7 @@ const MomentsSlider = ({ momentsData, isLoading, loadMoreMoments, onClickMoment 
                         src="/moments.svg"
                         alt="No data"
                     />
-                    <span className="text-[#1C1B1F] leading-trim capitalize font-inter text-lg font-semibold">Shorts</span>
+                    <span className="text-[#1C1B1F] leading-trim capitalize font-inter text-lg font-semibold">Moments</span>
                 </h2>
 
                 {

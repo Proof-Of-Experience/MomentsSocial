@@ -49,7 +49,7 @@ const LeftSidebar = () => {
 				title="Moments"
 				onClick={() => onClickItem('/moments')}>
 				<BoltIcon className={`h-[20px] w-[20px] group-hover:text-[#00A1D4] ${activeItem === '/moments' ? 'bg-[#F0F9FC]  text-[#00A1D4]' : 'text-[#1C1B1F]'}`} />
-				<p className={`group-hover:text-[#00A1D4] font-[14px] ml-1 ${activeItem === '/moments' ? 'bg-[#F0F9FC]  text-[#00A1D4]' : 'text-[#1C1B1F]'}`}>Shorts</p>
+				<p className={`group-hover:text-[#00A1D4] font-[14px] ml-1 ${activeItem === '/moments' ? 'bg-[#F0F9FC]  text-[#00A1D4]' : 'text-[#1C1B1F]'}`}>Moments</p>
 			</button>
 
 			<button
@@ -74,6 +74,7 @@ const LeftSidebar = () => {
 					title="Upload"
 					onClick={() => onClickItem('/upload')}>
 					<ArrowUpTrayIcon className={`h-[20px] w-[20px] group-hover:text-[#00A1D4] ${activeItem === '/upload' ? 'bg-[#F0F9FC]  text-[#00A1D4]' : 'text-[#1C1B1F]'}`} />
+					<p className={`group-hover:text-[#00A1D4] font-[14px] ml-1 ${activeItem === '/upload' ? 'bg-[#F0F9FC]  text-[#00A1D4]' : 'text-[#1C1B1F]'}`}>Upload</p>
 				</button>
 			)}
 		</div>

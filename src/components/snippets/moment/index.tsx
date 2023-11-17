@@ -30,13 +30,13 @@ const Moment = memo(({ className, onClick, item, isLoading }: MomentProps) => {
                 <p className="text-[#7E7E7E] leading-trim text-capitalize font-inter text-base font-normal leading-normal">12K reaction</p>
               </div>
 
-              {/* <div className='flex justify-between'>
-                <p>{item?.GiftCount}</p>
-                <EmojiReaction
+              <div className='flex justify-between'>
+                {/* <p>{item?.GiftCount}</p> */}
+                {/* <EmojiReaction
                   onReactionClick={() => { }}
                   postHashHex={item?.PostHashHex}
-                />
-              </div> */}
+                /> */}
+              </div>
             </div>
           </Fragment>
         </div>

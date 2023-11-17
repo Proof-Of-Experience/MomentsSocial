@@ -110,9 +110,15 @@ const Header = () => {
 
 				<div className="flex flex-wrap">
 					<Link href="/" className="flex rounded-md">
-						<img
+						{/* <img
 							className="flex w-[155px] h-[56px] cursor-pointer"
 							src="/logo.svg"
+							alt="dtube"
+							onClick={() => router.push('/')}
+						/> */}
+						<img
+							className="flex w-[150px] md:w-[250px] cursor-pointer"
+							src="/logo-old.svg"
 							alt="dtube"
 							onClick={() => router.push('/')}
 						/>
