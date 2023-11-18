@@ -1,7 +1,6 @@
 import {
   fetchHashtags,
   fetchUserHashtags,
-  getPreferenceUpdateTime,
   setPreferenceUpdateTime,
   updateUserHashtags,
 } from "@/services/tag/tag";
@@ -12,26 +11,28 @@ import Select, { ValueType } from "react-select";
 interface ProfilePreferencesProps {
   userId: string;
 }
+type HashTagOption = ValueType<{ value: string; label: string }>;
+type HashtagEntity = { _id: string; name: string };
 
 enum ButtonText {
-    DEFAULT = "Save Preferences",
-    SAVING = "Saving Preferences",
-    SUCESSFULLY_SAVED = "Successfully Saved Preferences",
-    FAILED_TO_SAVE = "Could Not Saved Preferences",
+  DEFAULT = "Save Preferences",
+  SAVING = "Saving Preferences",
+  SUCESSFULLY_SAVED = "Successfully Saved Preferences",
+  FAILED_TO_SAVE = "Could Not Saved Preferences",
 }
 
 const ProfilePreferences = memo(({ userId }: ProfilePreferencesProps) => {
   const router = useRouter();
-  const [existingHashTags, setExistingHashtags] = useState<string[]>([]);
-  const [selectedOptions, setSelectedOptions] = useState<
-    ValueType<{ value: string; label: string }>
-  >([]);
+  const [existingHashTags, setExistingHashtags] = useState<HashTagOption[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<HashTagOption[]>([]);
+
   const [fetchingAllHashtags, setFetchingAllHastags] = useState<boolean>(false);
   const [fetchingUserHashtags, setFetchingUserHastags] =
     useState<boolean>(false);
   const [updatingUserHashtags, setUpdatingUserHashtags] =
     useState<boolean>(false);
-    const [savePreferenceButtonText, setSavePreferenceButtonText] = useState<string>(ButtonText.DEFAULT)
+  const [savePreferenceButtonText, setSavePreferenceButtonText] =
+    useState<string>(ButtonText.DEFAULT);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -39,31 +40,35 @@ const ProfilePreferences = memo(({ userId }: ProfilePreferencesProps) => {
     // First we get all the user's selected hashtags
     setFetchingUserHastags(true);
     fetchUserHashtags(userId)
-      .then((res) => updateUserPreferenceState(res as string[]))
+      .then((res) => {
+        updateUserPreferenceState(res as HashtagEntity[]);
+      })
       .finally(() => setFetchingUserHastags(false));
 
     // then we get all the hashtags in the db
     setFetchingAllHastags(true);
     fetchHashtags()
-      .then((res) => setExistingHashtags(res.map((item: any) => item.hashtag)))
-      .catch((err) => console.log("error", err))
+      .then((res) => {
+        setExistingHashtags(
+          res.map((entity: HashtagEntity) => toHashtagOption(entity))
+        );
+      })
       .finally(() => setFetchingAllHastags(false));
   }, [router.isReady]);
 
-  const handleChange = (
-    selectedOptions: ValueType<{ value: string; label: string }>
-  ) => {
+  const handleChange = (selectedOptions: HashTagOption) => {
     setSelectedOptions(selectedOptions);
   };
 
-  const updateUserPreferenceState = (preferences: string[]) => {
-    let userExistingPreference: ValueType<{
-      value: string;
-      label: string;
-    }>[] = [];
+  const toHashtagOption = (entity: HashtagEntity): HashTagOption => {
+    return { value: entity._id, label: entity.name };
+  };
 
-    preferences.forEach((tag: string) => {
-      userExistingPreference.push({ value: tag, label: tag });
+  const updateUserPreferenceState = (preferences: HashtagEntity[]) => {
+    let userExistingPreference: HashTagOption[] = [];
+
+    preferences.forEach((entity: HashtagEntity) => {
+      userExistingPreference.push(toHashtagOption(entity));
     });
 
     setSelectedOptions(userExistingPreference);
@@ -73,7 +78,9 @@ const ProfilePreferences = memo(({ userId }: ProfilePreferencesProps) => {
     if (!selectedOptions) {
       return;
     }
-    const selectedValues = selectedOptions.map((option: any) => option.value);
+    const selectedValues = selectedOptions.map(
+      (option: HashTagOption) => option.value
+    );
 
     setUpdatingUserHashtags(true);
     setSavePreferenceButtonText(ButtonText.SAVING);
@@ -81,20 +88,16 @@ const ProfilePreferences = memo(({ userId }: ProfilePreferencesProps) => {
       .then((res) => {
         updateUserPreferenceState(res.preferences);
         setSavePreferenceButtonText(ButtonText.SUCESSFULLY_SAVED);
-        setPreferenceUpdateTime(userId)
-
-        setTimeout(() => {
-            console.log('xxxx', getPreferenceUpdateTime(userId))
-        }, 2000 )
+        setPreferenceUpdateTime(userId);
       })
-      .catch((err) => {
+      .catch(() => {
         setSavePreferenceButtonText(ButtonText.FAILED_TO_SAVE);
       })
       .finally(() => {
         setUpdatingUserHashtags(false);
         setTimeout(() => {
-            setSavePreferenceButtonText(ButtonText.DEFAULT);
-        }, 2000)
+          setSavePreferenceButtonText(ButtonText.DEFAULT);
+        }, 2000);
       });
   };
 
@@ -105,10 +108,7 @@ const ProfilePreferences = memo(({ userId }: ProfilePreferencesProps) => {
           <label>Select your preferences:</label>
           <Select
             isMulti
-            options={existingHashTags.map((tag) => ({
-              value: tag,
-              label: tag,
-            }))}
+            options={existingHashTags}
             value={selectedOptions}
             onChange={handleChange}
           />

@@ -287,14 +287,14 @@ const Tags: React.FC<TagsProps> = ({ onClick, tagParam, tagSearch, onChangeTagSe
 
             {
               tags.map((item: any, index: number) => {
-                const tagName = item.hashtag.substring(1);
+                const tagName = '#' + item.name;
 
                 return (
                   <button
                     key={`tag-${index}`}
                     className={`${tagParam == tagName ? 'bg-gray-600 text-white' : 'bg-gray-200 text-black'} py-1 px-5 rounded-md mr-4 focus:bg-gray-600 focus:text-white`}
                     title={tagName}
-                    onClick={() => onClick(item.hashtag)}>
+                    onClick={() => onClick(item.name)}>
                     {capitalizeFirstLetter(tagName)}
                   </button>
                 )
