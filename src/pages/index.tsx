@@ -1,6 +1,6 @@
 import MainLayout from '@/layouts/main-layout'
 import VideoLayoutContext, { VideoLayoutProvider } from '@/contexts/VideosContext';
-import Layout from '@/features/home/layout';
+// import Layout from '@/features/home/layout';
 import Tags from '@/features/home/tags';
 import { NextPage } from 'next';
 import { useContext, useEffect, useRef, useState } from 'react';
@@ -248,7 +248,7 @@ const Home: NextPage = () => {
 
 			<VideoLayoutProvider>
 
-				<div className={`flex justify-between items-center ${videoData.length > 0 ? 'mb-4' : 'mb-4'}`}>
+				<div className={` ${videoData.length > 0 ? 'mb-[56px] mt-[40px]' : 'mb-[56px] mt-[40px]'}`}>
 					<Tags
 						tagParam={tagParam}
 						onClick={onClickTag}
@@ -256,9 +256,7 @@ const Home: NextPage = () => {
 						onChangeTagSearch={e => setCurrentTag(e.target.value)}
 						onPressTagSearch={onPressTagSearch}
 					/>
-					<div className='ml-3'>
-						<Layout />
-					</div>
+					
 				</div >
 
 				{displayPreference && (
