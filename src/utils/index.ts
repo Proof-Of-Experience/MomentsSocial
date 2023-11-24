@@ -1,19 +1,19 @@
 const formatUSDMemo: any = {};
 const nanosPerUSDExchangeRate = 1e9;
 const formatUSDFunc = (num: number, decimal: number): string => {
-  if (formatUSDMemo[num] && formatUSDMemo[num][decimal]) {
-    return formatUSDMemo[num][decimal];
-  }
+	if (formatUSDMemo[num] && formatUSDMemo[num][decimal]) {
+		return formatUSDMemo[num][decimal];
+	}
 
-  formatUSDMemo[num] = formatUSDMemo[num] || {};
+	formatUSDMemo[num] = formatUSDMemo[num] || {};
 
-  formatUSDMemo[num][decimal] = Number(num).toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: decimal,
-    maximumFractionDigits: decimal,
-  });
-  return formatUSDMemo[num][decimal];
+	formatUSDMemo[num][decimal] = Number(num).toLocaleString('en-US', {
+		style: 'currency',
+		currency: 'USD',
+		minimumFractionDigits: decimal,
+		maximumFractionDigits: decimal,
+	});
+	return formatUSDMemo[num][decimal];
 };
 
 /*
@@ -22,30 +22,26 @@ const formatUSDFunc = (num: number, decimal: number): string => {
  *   value: 12345, decimals: 1 => 12.3K
  *   value: 3492311, decimals: 2 => 3.49M
  * */
-const abbreviateNumber = (
-  value: number,
-  decimals: number,
-  formatUSD: boolean = false
-): string => {
-  let shortValue: any;
-  const suffixes = ["", "K", "M", "B", "T"];
-  const suffixNum = Math.floor((("" + value.toFixed(0)).length - 1) / 3);
-  if (suffixNum === 0) {
-    // if the number is less than 1000, we should only show at most 2 decimals places
-    decimals = Math.min(2, decimals);
-  }
-  shortValue = (value / Math.pow(1000, suffixNum)).toFixed(decimals);
-  if (formatUSD) {
-    shortValue = formatUSDFunc(shortValue, decimals);
-  }
-  return shortValue + suffixes[suffixNum];
+const abbreviateNumber = (value: number, decimals: number, formatUSD: boolean = false): string => {
+	let shortValue: any;
+	const suffixes = ['', 'K', 'M', 'B', 'T'];
+	const suffixNum = Math.floor((('' + value.toFixed(0)).length - 1) / 3);
+	if (suffixNum === 0) {
+		// if the number is less than 1000, we should only show at most 2 decimals places
+		decimals = Math.min(2, decimals);
+	}
+	shortValue = (value / Math.pow(1000, suffixNum)).toFixed(decimals);
+	if (formatUSD) {
+		shortValue = formatUSDFunc(shortValue, decimals);
+	}
+	return shortValue + suffixes[suffixNum];
 };
 
 const nanosToUSDNumber = (nanos: number): number => {
-  if (!nanos || !nanosPerUSDExchangeRate) {
-    return 0;
-  }
-  return nanos / nanosPerUSDExchangeRate;
+	if (!nanos || !nanosPerUSDExchangeRate) {
+		return 0;
+	}
+	return nanos / nanosPerUSDExchangeRate;
 };
 
 // export const creatorCoinNanosToUSDNaive = (creatorCoinNanos: number, coinPriceDeSoNanos: number, abbreviate: boolean = false): string => {
@@ -54,135 +50,121 @@ const nanosToUSDNumber = (nanos: number): number => {
 // }
 
 export const creatorCoinNanosToUSDNaive = (
-  creatorCoinNanos: any,
-  coinPriceDeSoNanos: any,
-  abbreviate: boolean = false
+	creatorCoinNanos: any,
+	coinPriceDeSoNanos: any,
+	abbreviate: boolean = false
 ): string => {
-  const usdValue = nanosToUSDNumber(
-    (creatorCoinNanos / 1e9) * coinPriceDeSoNanos
-  );
-  return abbreviate
-    ? abbreviateNumber(usdValue, 2, true)
-    : formatUSD(usdValue, 2);
+	const usdValue = nanosToUSDNumber((creatorCoinNanos / 1e9) * coinPriceDeSoNanos);
+	return abbreviate ? abbreviateNumber(usdValue, 2, true) : formatUSD(usdValue, 2);
 };
 
 const formatUSD = (num: number, decimal: number): string => {
-  if (formatUSDMemo[num] && formatUSDMemo[num][decimal]) {
-    return formatUSDMemo[num][decimal];
-  }
+	if (formatUSDMemo[num] && formatUSDMemo[num][decimal]) {
+		return formatUSDMemo[num][decimal];
+	}
 
-  formatUSDMemo[num] = formatUSDMemo[num] || {};
+	formatUSDMemo[num] = formatUSDMemo[num] || {};
 
-  formatUSDMemo[num][decimal] = Number(num).toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: decimal,
-    maximumFractionDigits: decimal,
-  });
-  return formatUSDMemo[num][decimal];
+	formatUSDMemo[num][decimal] = Number(num).toLocaleString('en-US', {
+		style: 'currency',
+		currency: 'USD',
+		minimumFractionDigits: decimal,
+		maximumFractionDigits: decimal,
+	});
+	return formatUSDMemo[num][decimal];
 };
 
 export const nanosToUSD = (nanos: number, decimal?: number): string => {
-  if (!nanos || isNaN(nanos)) {
-    return "$0.00";
-  }
+	if (!nanos || isNaN(nanos)) {
+		return '$0.00';
+	}
 
-  if (decimal == null) {
-    decimal = 4;
-  }
-  return formatUSD(nanosToUSDNumber(nanos), decimal);
+	if (decimal == null) {
+		decimal = 4;
+	}
+	return formatUSD(nanosToUSDNumber(nanos), decimal);
 };
 
 export const parseStringInnerHtml = (str: string) => {
-  return str.replace(/\n/g, "<br />");
+	return str.replace(/\n/g, '<br />');
 };
 
 export const desoPrice = (str: number) => {
-  return str / 100;
+	return str / 100;
 };
 
 const CREATOR_COIN_RESERVE_RATIO = 0.3333333;
 const CREATOR_COIN_TRADE_FEED_BASIS_POINTS = 1;
 
 export const desoNanosYouWouldGetIfYouSold = (
-  creatorCoinAmountNano: number,
-  coinEntry: any
+	creatorCoinAmountNano: number,
+	coinEntry: any
 ): number => {
-  if (
-    !creatorCoinAmountNano ||
-    !coinEntry?.DeSoLockedNanos ||
-    !coinEntry?.CoinsInCirculationNanos
-  ) {
-    return 0;
-  }
-  // This is the formula:
-  // - B0 * (1 - (1 - dS / S0)^(1/RR))
-  // - where:
-  //     dS = bigDeltaCreatorCoin,
-  //     B0 = bigCurrentDeSoLocked
-  //     S0 = bigCurrentCreatorCoinSupply
-  //     RR = params.CreatorCoinReserveRatio
-  const desoLockedNanos = coinEntry?.DeSoLockedNanos;
-  const currentCreatorCoinSupply = coinEntry?.CoinsInCirculationNanos;
-  const desoBeforeFeesNanos =
-    desoLockedNanos *
-    (1 -
-      Math.pow(
-        1 - creatorCoinAmountNano / currentCreatorCoinSupply,
-        1 / CREATOR_COIN_RESERVE_RATIO
-      ));
+	if (
+		!creatorCoinAmountNano ||
+		!coinEntry?.DeSoLockedNanos ||
+		!coinEntry?.CoinsInCirculationNanos
+	) {
+		return 0;
+	}
+	// This is the formula:
+	// - B0 * (1 - (1 - dS / S0)^(1/RR))
+	// - where:
+	//     dS = bigDeltaCreatorCoin,
+	//     B0 = bigCurrentDeSoLocked
+	//     S0 = bigCurrentCreatorCoinSupply
+	//     RR = params.CreatorCoinReserveRatio
+	const desoLockedNanos = coinEntry?.DeSoLockedNanos;
+	const currentCreatorCoinSupply = coinEntry?.CoinsInCirculationNanos;
+	const desoBeforeFeesNanos =
+		desoLockedNanos *
+		(1 -
+			Math.pow(
+				1 - creatorCoinAmountNano / currentCreatorCoinSupply,
+				1 / CREATOR_COIN_RESERVE_RATIO
+			));
 
-  return (
-    (desoBeforeFeesNanos * (100 * 100 - CREATOR_COIN_TRADE_FEED_BASIS_POINTS)) /
-    (100 * 100)
-  );
+	return (desoBeforeFeesNanos * (100 * 100 - CREATOR_COIN_TRADE_FEED_BASIS_POINTS)) / (100 * 100);
 };
 
 export const usdYouWouldGetIfYouSoldDisplay = (
-  creatorCoinAmountNano: number,
-  coinEntry: any,
-  abbreviate: boolean = true
+	creatorCoinAmountNano: number,
+	coinEntry: any,
+	abbreviate: boolean = true
 ): string => {
-  if (creatorCoinAmountNano == 0) return "$0";
-  const usdValue = nanosToUSDNumber(
-    desoNanosYouWouldGetIfYouSold(creatorCoinAmountNano, coinEntry)
-  );
-  return abbreviate
-    ? abbreviateNumber(usdValue, 2, true)
-    : formatUSD(usdValue, 2);
+	if (creatorCoinAmountNano == 0) return '$0';
+	const usdValue = nanosToUSDNumber(
+		desoNanosYouWouldGetIfYouSold(creatorCoinAmountNano, coinEntry)
+	);
+	return abbreviate ? abbreviateNumber(usdValue, 2, true) : formatUSD(usdValue, 2);
 };
 
 export const mergeVideoData = (prevVideoData: any[], newVideoData: any[]) => {
-  const existingPostHashes = new Set(
-    prevVideoData.map((video: any) => video.PostHashHex)
-  );
-  const uniqueNewData = newVideoData.filter(
-    (item: any) => !existingPostHashes.has(item.PostHashHex)
-  );
+	const existingPostHashes = new Set(prevVideoData.map((video: any) => video.PostHashHex));
+	const uniqueNewData = newVideoData.filter(
+		(item: any) => !existingPostHashes.has(item.PostHashHex)
+	);
 
-  return [...prevVideoData, ...uniqueNewData];
+	return [...prevVideoData, ...uniqueNewData];
 };
 
 export const capitalizeFirstLetter = (string: string) => {
-  return string?.charAt(0).toUpperCase() + string?.slice(1);
+	return string?.charAt(0).toUpperCase() + string?.slice(1);
 };
 
-export const debounce = <F extends (...args: any[]) => void>(
-  func: F,
-  delay: number
-) => {
-  let timeoutId: NodeJS.Timeout;
-  return function (this: ThisParameterType<F>, ...args: Parameters<F>) {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => func.apply(this, args), delay);
-  };
+export const debounce = <F extends (...args: any[]) => void>(func: F, delay: number) => {
+	let timeoutId: NodeJS.Timeout;
+	return function (this: ThisParameterType<F>, ...args: Parameters<F>) {
+		clearTimeout(timeoutId);
+		// eslint-disable-next-line no-invalid-this
+		timeoutId = setTimeout(() => func.apply(this, args), delay);
+	};
 };
 
+export const getMomentShareUrl = (postId: string) => {
+	return process.env.NEXT_PUBLIC_MOMENTS_DOMAIN_URL + '/moment/' + postId;
+};
 
-export const getMomentShareUrl = (postId : string) => {
-  return process.env.NEXT_PUBLIC_MOMENTS_DOMAIN_URL + '/moment/' + postId
-}
-
-export const getVideoShareUrl = (postId : string) => {
-  return process.env.NEXT_PUBLIC_MOMENTS_DOMAIN_URL + '/video/' + postId
-}
+export const getVideoShareUrl = (postId: string) => {
+	return process.env.NEXT_PUBLIC_MOMENTS_DOMAIN_URL + '/video/' + postId;
+};

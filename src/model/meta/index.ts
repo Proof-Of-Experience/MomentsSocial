@@ -1,5 +1,3 @@
-
 export interface MetaDataProps {
-    title?: string
-  }
-  
+	title?: string;
+}

@@ -1,6 +1,6 @@
 export interface VideoItemProps {
-    item: any,
-    onReactionClick?: () => void;
+	item: any;
+	onReactionClick?: () => void;
 	[rest: string]: any;
-    desoResponse?: boolean
+	desoResponse?: boolean;
 }

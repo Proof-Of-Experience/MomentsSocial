@@ -1,4 +1,4 @@
-const baseURL = process.env.NEXT_PUBLIC_BASE_URL
+const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export interface ApiDataType {
 	method: 'get' | 'post' | 'put' | 'patch' | 'delete' | 'PATCH';
@@ -22,7 +22,6 @@ export interface ApiDataType {
 	-----------------------------------------------------------------------------
 */
 export const apiService = async (apiData: ApiDataType, callback: any) => {
-
 	try {
 		const res = await fetch(`${apiData.customUrl ?? baseURL}${apiData.url}`, {
 			method: apiData.method,
@@ -30,10 +29,10 @@ export const apiService = async (apiData: ApiDataType, callback: any) => {
 				...apiData.headers,
 				'Content-Type': 'application/json',
 			},
-			...apiData.data && { body: JSON.stringify(apiData.data) },
+			...(apiData.data && { body: JSON.stringify(apiData.data) }),
 		});
 
-		const data = await res.json()
+		const data = await res.json();
 
 		callback(data, null);
 	} catch (error: any) {
@@ -47,4 +46,53 @@ export const apiService = async (apiData: ApiDataType, callback: any) => {
 
 		callback(null, error);
 	}
+};
+
+export interface _RequestParams {
+	method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+	path: string;
+	body?: Record<string, any>; // Allow any JSON-serializable object as the body
+	headers?: Record<string, string>; // Key-value pairs where both keys and values are strings
+}
+
+export interface RequestParams {
+	path: string;
+	body?: Record<string, any>; // Allow any JSON-serializable object as the body
+	headers?: Record<string, string>; // Key-value pairs where both keys and values are strings
+}
+
+const BASE_API_URL = process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL;
+
+export const __fetch = async <T>(params: _RequestParams): Promise<T> => {
+	const url = `${BASE_API_URL}/${params.path}`;
+
+	const options = {
+		method: params.method,
+		headers: {
+			...params.headers,
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(params.body),
+	};
+
+	// eslint-disable-next-line no-async-promise-executor
+	return new Promise(async (resolve, reject) => {
+		try {
+			const res = await fetch(url, options);
+			const data = await res.json();
+
+			resolve(data as T);
+		} catch (error: any) {
+			reject(error);
+		}
+	});
+};
+
+export const __get = async <T>(p: RequestParams): Promise<T> => {
+	const params: _RequestParams = {
+		...p,
+		method: 'GET',
+	};
+
+	return __fetch<T>(params);
 };

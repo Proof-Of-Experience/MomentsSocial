@@ -1,4 +1,4 @@
 export interface UploadCardProps {
-  icon?: any,
-  [x: string]: any;
+	icon?: any;
+	[x: string]: any;
 }

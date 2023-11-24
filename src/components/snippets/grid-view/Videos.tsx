@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const GridViewVideo = () => {
-  return (
-    <div>GridViewVideo</div>
-  )
-}
+	return <div>GridViewVideo</div>;
+};
 
-export default GridViewVideo
+export default GridViewVideo;

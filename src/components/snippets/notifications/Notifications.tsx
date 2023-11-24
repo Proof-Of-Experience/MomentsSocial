@@ -1,28 +1,25 @@
 const notificationList = [
-    {
-        id: 1,
-        title: 'Lorem Ipsum'
-    },
-    {
-        id: 2,
-        title: 'Lorem Ipsum'
-    },
-]
+	{
+		id: 1,
+		title: 'Lorem Ipsum',
+	},
+	{
+		id: 2,
+		title: 'Lorem Ipsum',
+	},
+];
 
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 const Notifications = ({ notifications }: any) => {
+	return (
+		<div className="bg-white shadow px-5 py-4 w-[300px]">
+			<h3 className="font-semibold">Notifications</h3>
 
-    return (
-        <div className="bg-white shadow px-5 py-4 w-[300px]">
-            <h3 className="font-semibold">Notifications</h3>
+			{notificationList.map((notification: any, index: number) => (
+				<div key={index}>{notification.title}</div>
+			))}
+		</div>
+	);
+};
 
-            {
-                notificationList.map((notification: any, index: number) => 
-                    <div key={index}>{notification.title}</div>
-                )
-            }
-        </div>
-    )
-}
-
-export default Notifications
+export default Notifications;

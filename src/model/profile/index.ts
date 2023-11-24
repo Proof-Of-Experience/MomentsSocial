@@ -1,10 +1,10 @@
 export interface SearchProfileProps {
-    UsernamePrefix?: string
+	UsernamePrefix?: string;
 }
 
 export interface EditProfileProps {
-	userName: string,
-	description: string,
-	updatedPhoto: string,
-	reward: any,
+	userName: string;
+	description: string;
+	updatedPhoto: string;
+	reward: any;
 }

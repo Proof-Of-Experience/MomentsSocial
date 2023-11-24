@@ -1,6 +1,5 @@
-import { FeedParamProps } from "@/model/feed";
-import { ApiDataType, apiService } from "@/utils/request";
-
+import { FeedParamProps } from '@/model/feed';
+import { ApiDataType, apiService } from '@/utils/request';
 
 export const getFeedData = async (data: FeedParamProps) => {
 	let result: any = [];
@@ -9,8 +8,8 @@ export const getFeedData = async (data: FeedParamProps) => {
 		ResponseLimit: 100,
 		SeenPosts: [],
 		SortByNew: false,
-		Tag: data?.Tag
-	}
+		Tag: data?.Tag,
+	};
 	const apiData: ApiDataType = {
 		method: 'post',
 		url: '/api/v0/get-hot-feed',
@@ -18,8 +17,8 @@ export const getFeedData = async (data: FeedParamProps) => {
 	};
 
 	await apiService(apiData, (res: any, err: any) => {
-		if (err) return err.response
-		if (res) result = res
+		if (err) return err.response;
+		if (res) result = res;
 	});
 
 	return result;

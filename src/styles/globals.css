@@ -1,53 +1,51 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Code+Pro:wght@400;500&display=swap');
 
 * {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
 }
 
 html,
 body {
-  max-width: 100vw;
-  overflow-x: hidden;
-  font-family: 'Inter', sans-serif;
+	max-width: 100vw;
+	overflow-x: hidden;
+	font-family: 'Inter', sans-serif;
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
+	color: inherit;
+	text-decoration: none;
 }
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
 /* Other CSS */
 .ck-content {
-  height: 200px;
+	height: 200px;
 }
 
 .slider {
-  margin:0 20px;
-  overflow:"hidden";
-  padding:2rem 0;
+	margin: 0 20px;
+	overflow: 'hidden';
+	padding: 2rem 0;
 }
 
 .slider img {
-  width: 100%;
-  border-radius:10px;
+	width: 100%;
+	border-radius: 10px;
 }
 
 .react-multi-carousel-list {
-padding: 0rem 0 2rem 0;
+	padding: 0rem 0 2rem 0;
 }
 
-.custom-dot-list-style button{
-border: none;
-background: rgb(255, 68, 68);
+.custom-dot-list-style button {
+	border: none;
+	background: rgb(255, 68, 68);
 }
-.react-multi-carousel-dot.react-multi-carousel-dot--active button{
-background: rgb(255, 68, 68) !important;
+.react-multi-carousel-dot.react-multi-carousel-dot--active button {
+	background: rgb(255, 68, 68) !important;
 }

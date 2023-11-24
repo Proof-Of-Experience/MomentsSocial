@@ -1,0 +1,11 @@
+**/.git
+**/.svn
+**/.hg
+**/node_modules/*
+.next
+build
+yarn.lock
+package-lock.json
+public/font
+public/images
+cache/

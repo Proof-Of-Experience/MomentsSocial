@@ -1,4 +1,3 @@
-
 export interface FeedParamProps {
-	Tag?: string
+	Tag?: string;
 }

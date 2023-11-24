@@ -10,170 +10,189 @@ import Moment from '@/components/snippets/moment';
 import MomentSkeleton from '@/components/skeletons/moment';
 
 type Post = {
-  PostHashHex: string;
-  // ... other properties of a post
+	PostHashHex: string;
+	// ... other properties of a post
 };
 
 const Moments: NextPage = () => {
-  const router = useRouter();
-  const tagParam = router.query.tag as string;
-  const { gridView }: any = useContext(VideoLayoutContext)
-  const loadMoreRef = useRef(null);
+	const router = useRouter();
+	const tagParam = router.query.tag as string;
+	const { gridView }: any = useContext(VideoLayoutContext);
+	const loadMoreRef = useRef(null);
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
-  const [momentsData, setMomentsData] = useState<Post[]>([]);
-  const [currentTag, setCurrentTag] = useState<string>('');
-  const [paginationInfo, setPaginationInfo] = useState({
-    isPaginating: false,
-    currentPage: 1,
-    totalPages: Infinity,
-  });
+	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+	const [momentsData, setMomentsData] = useState<Post[]>([]);
+	const [currentTag, setCurrentTag] = useState<string>('');
+	const [paginationInfo, setPaginationInfo] = useState({
+		isPaginating: false,
+		currentPage: 1,
+		totalPages: Infinity,
+	});
 
-  const fetchMoments = async (page: number) => {
-    if (page > paginationInfo.totalPages || paginationInfo.isPaginating) {
-      return;
-    }
+	const fetchMoments = async (page: number) => {
+		if (page > paginationInfo.totalPages || paginationInfo.isPaginating) {
+			return;
+		}
 
-    setPaginationInfo(prev => ({ ...prev, isPaginating: true }));
-    
-    try {
-      let apiUrl = `/api/posts?page=${page}&limit=8&moment=true`;
-      if (tagParam) {
-        const tagWithHash = tagParam.startsWith('#') ? tagParam : `#${tagParam}`;
-        apiUrl += `&hashtag=${encodeURIComponent(tagWithHash)}`;
-      }
+		setPaginationInfo((prev) => ({ ...prev, isPaginating: true }));
 
-      const apiData: ApiDataType = {
-        method: 'get',
-        url: apiUrl,
-        customUrl: process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL,
-      };
+		try {
+			let apiUrl = `/api/posts?page=${page}&limit=8&moment=true`;
+			if (tagParam) {
+				const tagWithHash = tagParam.startsWith('#') ? tagParam : `#${tagParam}`;
+				apiUrl += `&hashtag=${encodeURIComponent(tagWithHash)}`;
+			}
 
-      await apiService(apiData, (res: any, err: any) => {
-        if (err) return err.response;
+			const apiData: ApiDataType = {
+				method: 'get',
+				url: apiUrl,
+				customUrl: process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL,
+			};
 
-        if (res?.totalPages && paginationInfo.totalPages !== res.totalPages) {
-          setPaginationInfo(prev => ({ ...prev, totalPages: res.totalPages }));
-        }
+			await apiService(apiData, (res: any, err: any) => {
+				if (err) return err.response;
 
-        if (res?.posts.length > 0) {
-          const uniquePosts = res.posts.filter((post: Post) =>
-            !momentsData.some(existingPost => existingPost.PostHashHex === post.PostHashHex)
-          );
+				if (res?.totalPages && paginationInfo.totalPages !== res.totalPages) {
+					setPaginationInfo((prev) => ({ ...prev, totalPages: res.totalPages }));
+				}
 
-          setMomentsData(prevData => {
-            const mergedData = [...prevData, ...uniquePosts];
-            return Array.from(new Set(mergedData.map(post => post.PostHashHex)))
-              .map(hash => mergedData.find(post => post.PostHashHex === hash));
-          });
-          setPaginationInfo(prev => ({ ...prev, currentPage: page }));
-        }
+				if (res?.posts.length > 0) {
+					const uniquePosts = res.posts.filter(
+						(post: Post) =>
+							!momentsData.some(
+								(existingPost) => existingPost.PostHashHex === post.PostHashHex
+							)
+					);
 
-        if (!initialLoadComplete) {
-          setInitialLoadComplete(true);
-        }
+					setMomentsData((prevData) => {
+						const mergedData = [...prevData, ...uniquePosts];
+						return Array.from(new Set(mergedData.map((post) => post.PostHashHex))).map(
+							(hash) => mergedData.find((post) => post.PostHashHex === hash)
+						);
+					});
+					setPaginationInfo((prev) => ({ ...prev, currentPage: page }));
+				}
 
-        setPaginationInfo(prev => ({ ...prev, isPaginating: false }));
-      });
-    } catch (error: any) {
-      console.error('error', error.response);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+				if (!initialLoadComplete) {
+					setInitialLoadComplete(true);
+				}
 
-  useEffect(() => {
-    if (!router.isReady) return;
-    fetchMoments(paginationInfo.currentPage);
-  }, [tagParam, initialLoadComplete, router.isReady]);
+				setPaginationInfo((prev) => ({ ...prev, isPaginating: false }));
+			});
+		} catch (error: any) {
+			console.error('error', error.response);
+		} finally {
+			setIsLoading(false);
+		}
+	};
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && !paginationInfo.isPaginating) {
-        fetchMoments(paginationInfo.currentPage + 1);
-      }
-    }, {
-      threshold: 1.0
-    });
+	useEffect(() => {
+		if (!router.isReady) return;
+		fetchMoments(paginationInfo.currentPage);
+	}, [tagParam, initialLoadComplete, router.isReady]);
 
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
-    }
+	useEffect(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (entries[0].isIntersecting && !paginationInfo.isPaginating) {
+					fetchMoments(paginationInfo.currentPage + 1);
+				}
+			},
+			{
+				threshold: 1.0,
+			}
+		);
 
-    return () => {
-      if (loadMoreRef.current) {
-        observer.unobserve(loadMoreRef.current);
-      }
-    };
-  }, [loadMoreRef.current, paginationInfo.isPaginating]);
+		if (loadMoreRef.current) {
+			observer.observe(loadMoreRef.current);
+		}
 
-  const handleTagClick = (value: string) => {
-    setIsLoading(true);
-    setMomentsData([]);
-    setPaginationInfo({ isPaginating: false, currentPage: 1, totalPages: Infinity });
+		return () => {
+			if (loadMoreRef.current) {
+				observer.unobserve(loadMoreRef.current);
+			}
+		};
+	}, [loadMoreRef.current, paginationInfo.isPaginating]);
 
-    const newRoute = value === 'all' 
-      ? '/'
-      : {
-          pathname: router.pathname,
-          query: { ...router.query, tag: value },
-        };
+	const handleTagClick = (value: string) => {
+		setIsLoading(true);
+		setMomentsData([]);
+		setPaginationInfo({ isPaginating: false, currentPage: 1, totalPages: Infinity });
 
-    router.replace(newRoute, undefined, { shallow: true });
-  };
+		const newRoute =
+			value === 'all'
+				? '/'
+				: {
+						pathname: router.pathname,
+						query: { ...router.query, tag: value },
+				  };
 
-  const showGridCol = () => gridView === 'grid' ? 'grid-cols-4' : 'grid-cols-2';
+		router.replace(newRoute, undefined, { shallow: true });
+	};
 
-  const renderMomentItems = () => {
-    if (isLoading) {
-      return Array(8).fill(null).map((_, idx) => (
-        <div key={`skeleton-${idx}`} className="overflow-hidden">
-          <MomentSkeleton />
-        </div>
-      ));
-    }
+	const showGridCol = () => (gridView === 'grid' ? 'grid-cols-4' : 'grid-cols-2');
 
-    return momentsData.map((item: Post) => (
-      <div key={item.PostHashHex} className="overflow-hidden">
-        <Moment
-          className="mr-6"
-          item={item}
-          isLoading={isLoading}
-          onClick={item => {
-            setIsLoading(true);
-            const queryParams = tagParam ? { Tag: tagParam } : {};
-            router.push({
-              pathname: `moment/${item?.PostHashHex}`,
-              query: queryParams,
-            });
-          }}
-        />
-      </div>
-    ));
-  };
+	const renderMomentItems = () => {
+		if (isLoading) {
+			return Array(8)
+				.fill(null)
+				.map((_, idx) => (
+					<div
+						key={`skeleton-${idx}`}
+						className="overflow-hidden"
+					>
+						<MomentSkeleton />
+					</div>
+				));
+		}
 
-  return (
-    <MainLayout title='Moments' mainWrapClass='p-5'>
-      <VideoLayoutProvider>
-        <div className={`flex justify-between items-center mb-4`}>
-          <Tags
-            tagParam={tagParam}
-            onClick={handleTagClick}
-            tagSearch={currentTag}
-            onChangeTagSearch={e => setCurrentTag(e.target.value)}
-            onPressTagSearch={() => handleTagClick(currentTag)}
-          />
-          <Layout />
-        </div>
+		return momentsData.map((item: Post) => (
+			<div
+				key={item.PostHashHex}
+				className="overflow-hidden"
+			>
+				<Moment
+					className="mr-6"
+					item={item}
+					isLoading={isLoading}
+					onClick={(item) => {
+						setIsLoading(true);
+						const queryParams = tagParam ? { Tag: tagParam } : {};
+						router.push({
+							pathname: `moment/${item?.PostHashHex}`,
+							query: queryParams,
+						});
+					}}
+				/>
+			</div>
+		));
+	};
 
-        <div className={`grid ${showGridCol()} gap-x-5 gap-y-10`}>
-          {renderMomentItems()}
-          <div ref={loadMoreRef}></div>
-        </div>
-      </VideoLayoutProvider>
-    </MainLayout>
-  );
-}
+	return (
+		<MainLayout
+			title="Moments"
+			mainWrapClass="p-5"
+		>
+			<VideoLayoutProvider>
+				<div className={`flex justify-between items-center mb-4`}>
+					<Tags
+						tagParam={tagParam}
+						onClick={handleTagClick}
+						tagSearch={currentTag}
+						onChangeTagSearch={(e) => setCurrentTag(e.target.value)}
+						onPressTagSearch={() => handleTagClick(currentTag)}
+					/>
+					<Layout />
+				</div>
+
+				<div className={`grid ${showGridCol()} gap-x-5 gap-y-10`}>
+					{renderMomentItems()}
+					<div ref={loadMoreRef}></div>
+				</div>
+			</VideoLayoutProvider>
+		</MainLayout>
+	);
+};
 
 export default Moments;

@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const ListViewVideo = () => {
-  return (
-    <div>ListViewVideo</div>
-  )
-}
+	return <div>ListViewVideo</div>;
+};
 
-export default ListViewVideo
+export default ListViewVideo;

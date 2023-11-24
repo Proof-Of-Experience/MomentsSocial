@@ -1,110 +1,108 @@
-import { selectAuthUser } from '@/slices/authSlice'
-import React, { ChangeEvent, Fragment, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { ArrowUpTrayIcon, CheckBadgeIcon, PencilIcon } from '@heroicons/react/20/solid'
-import { EditProfileProps } from '@/model/profile'
-import { toast } from 'react-toastify'
-import { Dialog, Tab, Transition } from '@headlessui/react'
-import { PrimaryInput } from '@/components/core/input/Input'
-import { PrimaryTextArea } from '@/components/core/textarea/Textarea'
-import { desoPrice, nanosToUSD } from '@/utils'
-import SingleFollow from '@/features/profile/single-follow'
+import { selectAuthUser } from '@/slices/authSlice';
+import React, { ChangeEvent, Fragment, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { ArrowUpTrayIcon, CheckBadgeIcon, PencilIcon } from '@heroicons/react/20/solid';
+import { EditProfileProps } from '@/model/profile';
+import { toast } from 'react-toastify';
+import { Dialog, Tab, Transition } from '@headlessui/react';
+import { PrimaryInput } from '@/components/core/input/Input';
+import { PrimaryTextArea } from '@/components/core/textarea/Textarea';
+import { desoPrice, nanosToUSD } from '@/utils';
+import SingleFollow from '@/features/profile/single-follow';
 
 const Info = ({ userDetails, username, setActiveTab }: any) => {
-	const authUser = useSelector(selectAuthUser)
-	const [exchangeData, setExchangeData] = useState<any>({})
-	const [showEditModal, setShowEditModal] = useState<boolean>(false)
-	const [followerData, setFollowerData] = useState<any>({})
-	const [followingData, setFollowingData] = useState<any>({})
-	const [followModal, setFollowModal] = useState<boolean>(false)
-	const [followActiveTab, setfollowActiveTab] = useState<number>(0)
+	const authUser = useSelector(selectAuthUser);
+	const [exchangeData, setExchangeData] = useState<any>({});
+	const [showEditModal, setShowEditModal] = useState<boolean>(false);
+	const [followerData, setFollowerData] = useState<any>({});
+	const [followingData, setFollowingData] = useState<any>({});
+	const [followModal, setFollowModal] = useState<boolean>(false);
+	const [followActiveTab, setfollowActiveTab] = useState<number>(0);
 	const [editProfileData, setEditProfileData] = useState<EditProfileProps>({
 		userName: userDetails?.Profile?.Username,
 		description: userDetails?.Profile?.Description,
 		updatedPhoto: '',
-		reward: (userDetails?.Profile?.CoinEntry?.CreatorBasisPoints) / 100,
-	})
-	
+		reward: userDetails?.Profile?.CoinEntry?.CreatorBasisPoints / 100,
+	});
 
 	useEffect(() => {
-		fetchExchangeRate()
-	}, [])
+		fetchExchangeRate();
+	}, []);
 
 	useEffect(() => {
 		if (username) {
-			fetchFollowInfo()
+			fetchFollowInfo();
 		}
-	}, [username])
+	}, [username]);
 
 	const fetchFollowInfo = async () => {
-
-		const { getFollowersForUser } = await import('deso-protocol')
+		const { getFollowersForUser } = await import('deso-protocol');
 
 		const followParams = {
 			PublicKeyBase58Check: userDetails?.Profile?.PublicKeyBase58Check,
 			Username: username,
 			LastPublicKeyBase58Check: '',
 			NumToFetch: 50,
-		}
+		};
 
 		const followerParams = {
 			...followParams,
 			GetEntriesFollowingUsername: true,
-		}
+		};
 
 		const followingParams = {
 			...followParams,
 			GetEntriesFollowingUsername: false,
-		}
+		};
 
-		const followers = await getFollowersForUser(followerParams)
-		setFollowerData(followers)
-		const following = await getFollowersForUser(followingParams)
-		setFollowingData(following)
-	}
+		const followers = await getFollowersForUser(followerParams);
+		setFollowerData(followers);
+		const following = await getFollowersForUser(followingParams);
+		setFollowingData(following);
+	};
 
 	const fetchExchangeRate = async () => {
-		const { getExchangeRates } = await import('deso-protocol')
+		const { getExchangeRates } = await import('deso-protocol');
 
-		const response = await getExchangeRates()
-		setExchangeData(response)
-	}
+		const response = await getExchangeRates();
+		setExchangeData(response);
+	};
 
 	const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-		const file: any = event.target.files?.[0]
+		const file: any = event.target.files?.[0];
 		if (file) {
-			const { uploadImage, identity } = await import('deso-protocol')
-			const JWT = await identity.jwt()
+			const { uploadImage, identity } = await import('deso-protocol');
+			const JWT = await identity.jwt();
 			const params = {
 				UserPublicKeyBase58Check: userDetails?.Profile?.PublicKeyBase58Check,
 				JWT,
-				file
-			}
-			const response = await uploadImage(params)
-			setEditProfileData(prevState => ({
+				file,
+			};
+			const response = await uploadImage(params);
+			setEditProfileData((prevState) => ({
 				...prevState,
-				updatedPhoto: response?.ImageURL
-			}))
+				updatedPhoto: response?.ImageURL,
+			}));
 		}
-	}
+	};
 
 	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = e.target
-		setEditProfileData(prevState => ({
+		const { name, value } = e.target;
+		setEditProfileData((prevState) => ({
 			...prevState,
-			[name]: value
-		}))
-	}
+			[name]: value,
+		}));
+	};
 
 	const updateProfileInfo = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
+		e.preventDefault();
 
 		try {
-			const { identity, updateProfile, } = await import('deso-protocol')
+			const { identity, updateProfile } = await import('deso-protocol');
 
 			const profileParams = {
 				ExtraData: {
-					LargeProfilePicURL: userDetails?.Profile?.ExtraData?.LargeProfilePicURL
+					LargeProfilePicURL: userDetails?.Profile?.ExtraData?.LargeProfilePicURL,
 				},
 				IsHidden: false,
 				NewStakeMultipleBasisPoints: 12500,
@@ -114,22 +112,22 @@ const Info = ({ userDetails, username, setActiveTab }: any) => {
 				NewUsername: editProfileData.userName,
 				ProfilePublicKeyBase58Check: userDetails?.Profile?.PublicKeyBase58Check,
 				UpdaterPublicKeyBase58Check: userDetails?.Profile?.PublicKeyBase58Check,
-			}
+			};
 
-			const profileResponse: any = await updateProfile(profileParams)
+			const profileResponse: any = await updateProfile(profileParams);
 
-			const result = await identity.submitTx(profileResponse?.TransactionHex)
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+			const result = await identity.submitTx(profileResponse?.TransactionHex);
 
-			setShowEditModal(false)
-			toast.success('Profile updated successfully')
+			setShowEditModal(false);
+			toast.success('Profile updated successfully');
 		} catch (error: any) {
-			toast.error(error?.message || 'Something went wrong!')
+			toast.error(error?.message || 'Something went wrong!');
 		}
-	}
+	};
 
 	const onClickFollow = async () => {
-
-		const { updateFollowingStatus, } = await import('deso-protocol')
+		const { updateFollowingStatus } = await import('deso-protocol');
 
 		try {
 			const params = {
@@ -137,25 +135,35 @@ const Info = ({ userDetails, username, setActiveTab }: any) => {
 				FollowerPublicKeyBase58Check: authUser?.Profile?.PublicKeyBase58Check,
 				IsUnfollow: false,
 				MinFeeRateNanosPerKB: 0,
-			}
+			};
 
-			const response = await updateFollowingStatus(params)
-
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+			const response = await updateFollowingStatus(params);
 		} catch (error: any) {
-			toast.error(error?.message || 'Something went wrong!')
+			toast.error(error?.message || 'Something went wrong!');
 		}
-	}
+	};
 
 	return (
 		<div className="flex flex-wrap justify-center">
 			<div className="w-full lg:w-4/12 px-4 lg:order-1">
 				<div className="flex py-4 lg:pt-4 pt-8">
-					<div className="mr-4 p-3 text-center cursor-pointer" onClick={() => setActiveTab(0)}>
-						<span className="text-xl font-semibold block uppercase tracking-wide text-blueGray-600">22</span>
+					<div
+						className="mr-4 p-3 text-center cursor-pointer"
+						onClick={() => setActiveTab(0)}
+					>
+						<span className="text-xl font-semibold block uppercase tracking-wide text-blueGray-600">
+							22
+						</span>
 						<span className="text-sm text-blueGray-400">Videos</span>
 					</div>
-					<div className="mr-4 p-3 text-center cursor-pointer" onClick={() => setActiveTab(1)}>
-						<span className="text-xl font-semibold block uppercase tracking-wide text-blueGray-600">10</span>
+					<div
+						className="mr-4 p-3 text-center cursor-pointer"
+						onClick={() => setActiveTab(1)}
+					>
+						<span className="text-xl font-semibold block uppercase tracking-wide text-blueGray-600">
+							10
+						</span>
 						<span className="text-sm text-blueGray-400">Moments</span>
 					</div>
 				</div>
@@ -163,84 +171,108 @@ const Info = ({ userDetails, username, setActiveTab }: any) => {
 
 			<div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
 				<div className="relative -mt-[60px] text-center">
-					<img alt="..."
+					<img
+						alt="..."
 						src={userDetails?.Avatar}
-						className=" shadow-xl rounded-full h-[120px] w-[120px] align-middle border-none mx-auto" />
+						className=" shadow-xl rounded-full h-[120px] w-[120px] align-middle border-none mx-auto"
+					/>
 
 					<h3 className="flex justify-center items-center text-2xl font-semibold text-center mt-3">
 						<span>{userDetails?.Profile?.Username}</span>
-						{userDetails.Profile?.IsVerified && <CheckBadgeIcon className="ml-1 w-5 h-5 text-blue-500" />}
+						{userDetails.Profile?.IsVerified && (
+							<CheckBadgeIcon className="ml-1 w-5 h-5 text-blue-500" />
+						)}
 					</h3>
 
 					<div className="flex justify-center">
 						<button
 							className="mr-3 font-medium text-sm cursor-pointer"
 							onClick={() => {
-								setfollowActiveTab(0)
-								setFollowModal(true)
-							}}>
-							<span className="font-semibold">{followerData?.NumFollowers} </span>Followers
+								setfollowActiveTab(0);
+								setFollowModal(true);
+							}}
+						>
+							<span className="font-semibold">{followerData?.NumFollowers} </span>
+							Followers
 						</button>
 						<button
 							className="mr-3 font-medium text-sm cursor-pointer"
 							onClick={() => {
-								setfollowActiveTab(1)
-								setFollowModal(true)
-							}}>
-							<span className="font-semibold">{followingData?.NumFollowers} </span>Following
+								setfollowActiveTab(1);
+								setFollowModal(true);
+							}}
+						>
+							<span className="font-semibold">{followingData?.NumFollowers} </span>
+							Following
 						</button>
 						<p className="mr-3 font-medium text-sm">
-							<span className="font-semibold">{((userDetails?.Profile?.CoinEntry?.CreatorBasisPoints) / 100) || 0}% </span>FR
+							<span className="font-semibold">
+								{userDetails?.Profile?.CoinEntry?.CreatorBasisPoints / 100 || 0}%{' '}
+							</span>
+							FR
 						</p>
 					</div>
 				</div>
 			</div>
 
 			<div className="flex justify-end items-center lg:text-right lg:order-3 lg:self-center lg:w-4/12 px-4">
-				{
-					authUser?.ProfileEntryResponse?.Username === username ?
+				{authUser?.ProfileEntryResponse?.Username === username ? (
+					<div>
+						<div className="flex">
+							<button
+								className="flex items-center border-2 px-4 py-1 text-sm rounded-md mr-3"
+								onClick={() => setShowEditModal(true)}
+							>
+								<PencilIcon className="w-4 h-4" />
+								<span className="ml-3">Edit</span>
+							</button>
 
-						<div>
-							<div className="flex">
-								<button
-									className="flex items-center border-2 px-4 py-1 text-sm rounded-md mr-3"
-									onClick={() => setShowEditModal(true)}>
-									<PencilIcon className="w-4 h-4" />
-									<span className="ml-3">Edit</span>
-								</button>
-
-								<a
-									target="_blank"
-									href={`https://wallet.deso.com/?user=${username}&tab=activity`}
-									className="f bg-blue-500 text-white px-4 py-1 text-sm rounded-md">
-									<span className="ml-3">View Activity</span>
-								</a>
-							</div>
-
-							<div className="text-right mt-3">
-								<p>
-									<span>DESO Price</span>
-									<span className="font-semibold"> ≈ {desoPrice(exchangeData?.USDCentsPerDeSoCoinbase)}</span>
-								</p>
-								<p>
-									<span>Your DESO </span>
-									<span className="font-semibold">
-										{nanosToUSD(authUser?.Profile?.DESOBalanceNanos, 2)}
-									</span>
-								</p>
-							</div>
+							<a
+								target="_blank"
+								href={`https://wallet.deso.com/?user=${username}&tab=activity`}
+								className="f bg-blue-500 text-white px-4 py-1 text-sm rounded-md"
+							>
+								<span className="ml-3">View Activity</span>
+							</a>
 						</div>
-						:
-						<button
-							className="bg-blue-500 active:bg-blue-600 text-white font-semibold hover:shadow-md shadow text-sm px-4 py-3 rounded outline-none ease-linear transition-all duration-150"
-							onClick={onClickFollow}>
-							Follow
-						</button>
-				}
+
+						<div className="text-right mt-3">
+							<p>
+								<span>DESO Price</span>
+								<span className="font-semibold">
+									{' '}
+									≈ {desoPrice(exchangeData?.USDCentsPerDeSoCoinbase)}
+								</span>
+							</p>
+							<p>
+								<span>Your DESO </span>
+								<span className="font-semibold">
+									{nanosToUSD(authUser?.Profile?.DESOBalanceNanos, 2)}
+								</span>
+							</p>
+						</div>
+					</div>
+				) : (
+					<button
+						className="bg-blue-500 active:bg-blue-600 text-white font-semibold hover:shadow-md shadow text-sm px-4 py-3 rounded outline-none ease-linear transition-all duration-150"
+						onClick={onClickFollow}
+					>
+						Follow
+					</button>
+				)}
 			</div>
 
-			<Transition appear show={showEditModal} as={Fragment}>
-				<Dialog as="div" className="relative z-10" onClose={() => setShowEditModal(true)} onClick={() => setShowEditModal(false)}>
+			<Transition
+				appear
+				show={showEditModal}
+				as={Fragment}
+			>
+				<Dialog
+					as="div"
+					className="relative z-10"
+					onClose={() => setShowEditModal(true)}
+					onClick={() => setShowEditModal(false)}
+				>
 					<Transition.Child
 						as={Fragment}
 						enter="ease-out duration-300"
@@ -265,7 +297,6 @@ const Info = ({ userDetails, username, setActiveTab }: any) => {
 								leaveTo="opacity-0 scale-95"
 							>
 								<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white px-6 py-8 my-5 text-left align-middle shadow-xl transition-all relative z-50">
-
 									<form onSubmit={updateProfileInfo}>
 										<Dialog.Title
 											as="h3"
@@ -275,9 +306,15 @@ const Info = ({ userDetails, username, setActiveTab }: any) => {
 										</Dialog.Title>
 
 										<div className="mt-2 flex flex-col justify-center items-start">
-											<img alt="..."
-												src={editProfileData.updatedPhoto ? editProfileData.updatedPhoto : userDetails?.Avatar}
-												className=" shadow-xl rounded-full h-[120px] w-[120px] align-middle border-none mx-auto" />
+											<img
+												alt="..."
+												src={
+													editProfileData.updatedPhoto
+														? editProfileData.updatedPhoto
+														: userDetails?.Avatar
+												}
+												className=" shadow-xl rounded-full h-[120px] w-[120px] align-middle border-none mx-auto"
+											/>
 
 											<div className="text-center flex justify-center w-full">
 												<input
@@ -289,7 +326,8 @@ const Info = ({ userDetails, username, setActiveTab }: any) => {
 												/>
 												<label
 													htmlFor="fileInput"
-													className="flex items-center justify-center mx-auto mt-3 bg-blue-300 px-5 py-2 text-black rounded-md cursor-pointer" >
+													className="flex items-center justify-center mx-auto mt-3 bg-blue-300 px-5 py-2 text-black rounded-md cursor-pointer"
+												>
 													<ArrowUpTrayIcon className="w-4 h-4" />
 													<span className="ml-2">Upload Photo</span>
 												</label>
@@ -305,7 +343,8 @@ const Info = ({ userDetails, username, setActiveTab }: any) => {
 												className="w-full mb-4"
 												placeholder="Write username"
 												value={editProfileData.userName}
-												onChange={handleInputChange} />
+												onChange={handleInputChange}
+											/>
 
 											<PrimaryTextArea
 												id="description"
@@ -314,7 +353,8 @@ const Info = ({ userDetails, username, setActiveTab }: any) => {
 												className="w-full mb-4 min-h-[100px]"
 												placeholder="Write description"
 												value={editProfileData.description}
-												onChange={handleInputChange} />
+												onChange={handleInputChange}
+											/>
 
 											<PrimaryInput
 												required
@@ -324,7 +364,8 @@ const Info = ({ userDetails, username, setActiveTab }: any) => {
 												className="w-full mb-4"
 												placeholder="Write reward percentage"
 												value={editProfileData.reward}
-												onChange={handleInputChange} />
+												onChange={handleInputChange}
+											/>
 										</div>
 
 										<div className="mt-10 text-center">
@@ -350,8 +391,17 @@ const Info = ({ userDetails, username, setActiveTab }: any) => {
 				</Dialog>
 			</Transition>
 
-			<Transition appear show={followModal} as={Fragment}>
-				<Dialog as="div" className="relative z-10" onClose={() => setFollowModal(true)} onClick={() => setFollowModal(false)}>
+			<Transition
+				appear
+				show={followModal}
+				as={Fragment}
+			>
+				<Dialog
+					as="div"
+					className="relative z-10"
+					onClose={() => setFollowModal(true)}
+					onClick={() => setFollowModal(false)}
+				>
 					<Transition.Child
 						as={Fragment}
 						enter="ease-out duration-300"
@@ -376,37 +426,70 @@ const Info = ({ userDetails, username, setActiveTab }: any) => {
 								leaveTo="opacity-0 scale-95"
 							>
 								<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white px-6 py-8 my-5 text-left align-middle shadow-xl transition-all relative z-50">
-
-									<Tab.Group key={followActiveTab} defaultIndex={followActiveTab} onChange={setfollowActiveTab}>
+									<Tab.Group
+										key={followActiveTab}
+										defaultIndex={followActiveTab}
+										onChange={setfollowActiveTab}
+									>
 										<Tab.List className="border-b px-10">
 											<Tab as={Fragment}>
-												{({ selected }) =>
+												{({ selected }) => (
 													<button
-														className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`}>
+														className={`${
+															selected
+																? 'text-[#4267F7] border-b-4 border-[#4267F7]'
+																: 'text-black'
+														} mr-5 py-2 px-5 font-medium focus-visible:outline-none`}
+													>
 														Followers
 													</button>
-												}
+												)}
 											</Tab>
 											<Tab as={Fragment}>
-												{({ selected }) =>
+												{({ selected }) => (
 													<button
-														className={`${selected ? 'text-[#4267F7] border-b-4 border-[#4267F7]' : 'text-black'} mr-5 py-2 px-5 font-medium focus-visible:outline-none`}>
+														className={`${
+															selected
+																? 'text-[#4267F7] border-b-4 border-[#4267F7]'
+																: 'text-black'
+														} mr-5 py-2 px-5 font-medium focus-visible:outline-none`}
+													>
 														Following
 													</button>
-												}
+												)}
 											</Tab>
 										</Tab.List>
 
 										<Tab.Panels className="mt-2">
 											<Tab.Panel>
-												{followerData?.PublicKeyToProfileEntry && Object.keys(followerData?.PublicKeyToProfileEntry).map((key, index) => (
-													<SingleFollow key={index} username={username} followData={followerData?.PublicKeyToProfileEntry[key]} />
-												))}
+												{followerData?.PublicKeyToProfileEntry &&
+													Object.keys(
+														followerData?.PublicKeyToProfileEntry
+													).map((key, index) => (
+														<SingleFollow
+															key={index}
+															username={username}
+															followData={
+																followerData
+																	?.PublicKeyToProfileEntry[key]
+															}
+														/>
+													))}
 											</Tab.Panel>
 											<Tab.Panel>
-												{followingData?.PublicKeyToProfileEntry && Object.keys(followingData?.PublicKeyToProfileEntry).map((key, index) => (
-													<SingleFollow key={index} username={username} followData={followingData?.PublicKeyToProfileEntry[key]} />
-												))}
+												{followingData?.PublicKeyToProfileEntry &&
+													Object.keys(
+														followingData?.PublicKeyToProfileEntry
+													).map((key, index) => (
+														<SingleFollow
+															key={index}
+															username={username}
+															followData={
+																followingData
+																	?.PublicKeyToProfileEntry[key]
+															}
+														/>
+													))}
 											</Tab.Panel>
 										</Tab.Panels>
 									</Tab.Group>
@@ -417,7 +500,7 @@ const Info = ({ userDetails, username, setActiveTab }: any) => {
 				</Dialog>
 			</Transition>
 		</div>
-	)
-}
+	);
+};
 
-export default Info
+export default Info;

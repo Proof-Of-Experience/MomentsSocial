@@ -1,6 +1,6 @@
 export interface MomentProps {
-  onClick?: (item: any) => void,
-  item: any,
-  className?: string
-  isLoading?: boolean
+	onClick?: (item: any) => void;
+	item: any;
+	className?: string;
+	isLoading?: boolean;
 }
