@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { getSearchProfileData } from '@/pages/api/profile';
 import AuthButtons from '@/features/header/auth-buttons';
@@ -9,18 +9,17 @@ import { selectAuthUser } from '@/slices/authSlice';
 import OutsideClickHandler from 'react-outside-click-handler';
 import Notifications from '@/components/snippets/notifications';
 import { useRouter } from 'next/router';
-import { Bars3Icon } from '@heroicons/react/20/solid';
+import { Bars3Icon, MagnifyingGlassIcon } from '@heroicons/react/20/solid';
+import { useSidebar } from '@/utils/hooks';
 
-interface IHeaderProps {
-	setCollapseSidebar: (prev: boolean) => void;
-	collapseSidebar: boolean;
-}
-
-const Header = (props: IHeaderProps) => {
-	const { setCollapseSidebar, collapseSidebar } = props;
-
+const Header = () => {
 	const router = useRouter();
 	const authUser = useSelector(selectAuthUser);
+	const { collapseSidebar, setCollapseSidebar, windowSize } = useSidebar();
+	const { width: windowWidth } = windowSize;
+	const isSmallDevice = windowWidth <= 575;
+	const searchInputRef = useRef<HTMLInputElement>(null);
+
 	const [selected, setSelected] = useState<any>([]);
 	const [searchResult, setSearchResult] = useState<any>([]);
 	const [query, setQuery] = useState<string>('');
@@ -28,6 +27,7 @@ const Header = (props: IHeaderProps) => {
 	const [notificationCount, setNotificationCount] = useState<number>(0);
 	const [notificationData, setNotificationData] = useState<any>([]);
 	const [showNotification, setShowNotification] = useState<boolean>(false);
+	const [showSearchBar, setShowSearchBar] = useState(!isSmallDevice ? true : false);
 
 	useEffect(() => {
 		if (authUser) {
@@ -105,11 +105,11 @@ const Header = (props: IHeaderProps) => {
 	);
 
 	return (
-		<header className="fixed bg-white top-0 left-0 right-0 z-10 px-7 py-4 border-b border-[#D7D7D7] leading-[30px] h-20">
-			<div className="flex items-center flex-wrap justify-left justify-between">
+		<header className="fixed flex items-center bg-white top-0 left-0 right-0 z-10 px-7 py-2 border-b border-[#D7D7D7] leading-[30px] h-20 w-full">
+			<div className="flex items-center flex-wrap justify-left justify-between w-full">
 				<div className="flex flex-wrap items-center justify-center">
 					<div
-						className="hover:bg-gray-100 rounded-full p-2 mr-3 cursor-pointer transition-all"
+						className="hover:bg-gray-100 rounded-full p-2 mr-3 -ml-3 cursor-pointer transition-all"
 						onClick={() => setCollapseSidebar(!collapseSidebar)}
 					>
 						<Bars3Icon className="h-7 w-7" />
@@ -118,33 +118,37 @@ const Header = (props: IHeaderProps) => {
 						href="/"
 						className="flex rounded-md"
 					>
-						{/* <img
-							className="flex w-[155px] h-[56px] cursor-pointer"
-							src="/logo.svg"
-							alt="dtube"
-							onClick={() => router.push('/')}
-						/> */}
 						{/* eslint-disable-next-line @next/next/no-img-element */}
 						<img
-							className="flex w-[150px] md:w-[250px] cursor-pointer"
-							src="/logo-old.svg"
+							className="flex h-10 lg:h-14 cursor-pointer"
+							src={windowWidth >= 1024 ? '/logo-moment.svg' : '/logo-mobile.svg'}
 							alt="dtube"
 							onClick={() => router.push('/')}
 						/>
 					</Link>
 				</div>
-
-				<Search
-					loadedQuery={loadedQuery}
-					searchResult={searchResult}
-					selected={selected}
-					onChangeSelect={setSelected}
-					onChangeSearch={onChangeSearch}
-					query={query}
-					setQuery={setQuery}
-				/>
+				{(showSearchBar || !isSmallDevice) && (
+					<Search
+						loadedQuery={loadedQuery}
+						searchResult={searchResult}
+						selected={selected}
+						onChangeSelect={setSelected}
+						onChangeSearch={onChangeSearch}
+						query={query}
+						setQuery={setQuery}
+						inputRef={searchInputRef}
+					/>
+				)}
 
 				<div className="flex items-center">
+					{isSmallDevice && (
+						<span
+							className="flex lg:hidden items-center justify-center w-11 h-11 hover:bg-gray-100 rounded-full p-2 cursor-pointer transition-all"
+							onClick={() => setShowSearchBar(!showSearchBar)}
+						>
+							<MagnifyingGlassIcon className="h-7 w-7" />
+						</span>
+					)}
 					{authUser && (
 						<div className="relative mr-4">
 							{notificationCount > 0 && (

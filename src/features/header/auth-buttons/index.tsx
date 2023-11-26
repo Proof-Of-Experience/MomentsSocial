@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { PrimaryButton } from '@/components/core/button';
 import { selectAuthUser, setAuthUser } from '@/slices/authSlice';
 import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon, UserCircleIcon } from '@heroicons/react/20/solid';
+import {
+	ArrowRightOnRectangleIcon,
+	UserPlusIcon,
+	ChevronDownIcon,
+	UserCircleIcon,
+} from '@heroicons/react/20/solid';
 import { useRouter } from 'next/router';
 import { ApiDataType, apiService } from '@/utils/request';
 
@@ -174,15 +179,26 @@ const AuthButtons = () => {
 				</Menu>
 			) : (
 				<div className="flex items-center">
-					<PrimaryButton
-						text="Login"
+					<span
 						onClick={onClickLogin}
-					/>
+						className="bg-transparent hover:bg-gray-100 hover:lg:bg-transparent lg:text-blue-500  hover:text-blue-400 hover:underline font-inter font-semibold rounded-full lg:rounded-none cursor-pointer transition-all"
+					>
+						<span className="hidden lg:inline">Login</span>
+						<span className="flex lg:hidden items-center justify-center w-11 h-11 p-2">
+							<ArrowRightOnRectangleIcon className="h-7 w-7" />
+						</span>
+					</span>
 					<PrimaryButton
 						text="Signup"
-						className="ml-3"
+						className="hidden lg:inline px-5 ml-5"
 						onClick={onClickSignUp}
 					/>
+					<span
+						className="flex lg:hidden items-center justify-center w-11 h-11 hover:bg-gray-100 rounded-full p-2 -mr-2 cursor-pointer transition-all"
+						onClick={onClickSignUp}
+					>
+						<UserPlusIcon className="h-7 w-7" />
+					</span>
 				</div>
 			)}
 		</div>

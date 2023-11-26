@@ -9,11 +9,24 @@ import {
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import { selectAuthUser } from '@/slices/authSlice';
+import { useSidebar } from '@/utils/hooks';
+import { cn } from '@/utils';
 
-const LeftSidebar = ({ collapseSidebar }: { collapseSidebar: boolean }) => {
+const LeftSidebar = () => {
 	const router = useRouter();
 	const authUser = useSelector(selectAuthUser);
+	const { collapseSidebar, windowSize } = useSidebar();
+	const { width: windowWidth } = windowSize;
+
 	const [activeItem, setActiveItem] = useState('/');
+
+	console.log('windowWidth', windowWidth);
+
+	// useEffect(() => {
+	// 	if (windowWidth <= 991) {
+	// 		setCollapseSidebar(true);
+	// 	}
+	// }, [windowWidth]);
 
 	useEffect(() => {
 		setActiveItem(router.pathname);
@@ -105,9 +118,17 @@ const LeftSidebar = ({ collapseSidebar }: { collapseSidebar: boolean }) => {
 
 	return (
 		<div
-			className={`fixed ${
-				collapseSidebar ? 'w-[110px]' : 'w-[261px]'
-			} px-4 pt-4 border-r border-[#D7D7D7] flex flex-col bg-white h-full`}
+			// className={`fixed ${
+			// 	collapseSidebar ? 'w-[110px]' : 'w-[261px]'
+			// } px-4 pt-4 border-r border-[#D7D7D7] flex flex-col bg-white h-full`}
+			className={cn(
+				'fixed pt-4 border-r border-[#D7D7D7] flex flex-col bg-white h-full z-10',
+				{
+					'px-7 md:px-4 w-[261px] md:w-[110px] -left-[261px] md:left-0 transition-all':
+						collapseSidebar,
+					'px-7 left-0 w-[261px]': !collapseSidebar,
+				}
+			)}
 		>
 			<>
 				{menuItems?.length > 0 &&

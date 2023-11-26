@@ -9,18 +9,21 @@ import Header from '../header';
 import { LeftSidebar } from '../sidebar';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSidebar } from '@/utils/hooks';
+import { cn } from '@/utils';
 
 const MainLayout = ({ title, isLoading, mainWrapClass, children }: MainLayoutProps) => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	const dispatch = useDispatch();
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	const authUser = useSelector(selectAuthUser);
+	const { collapseSidebar } = useSidebar();
+
 	const [userState, setUserState] = useState({
 		currentUser: null,
 		alternateUsers: null,
 		isLoading: true,
 	});
-	const [collapseSidebar, setCollapseSidebar] = useState<boolean>(false);
 
 	const configDeso = async () => {
 		const { configure } = await import('deso-protocol');
@@ -148,30 +151,35 @@ const MainLayout = ({ title, isLoading, mainWrapClass, children }: MainLayoutPro
 		<>
 			<MetaData title={title} />
 			<>
-				<Header
-					collapseSidebar={collapseSidebar}
-					setCollapseSidebar={setCollapseSidebar}
-				/>
+				<Header />
 				<ToastContainer />
 
 				<div className="flex font-inter mt-20">
 					<div
-						className={`${
-							collapseSidebar ? 'w-[110px]' : 'w-[261px]'
-						} bg-white h-sidebar`}
+						// className={`${
+						// 	collapseSidebar ? 'w-[110px]' : 'w-[261px]'
+						// } bg-white h-sidebar`}
+						className={cn('bg-white h-sidebar', {
+							'w-[261px] md:w-[110px] transition-all': collapseSidebar,
+							'w-[261px]': !collapseSidebar,
+						})}
 					>
-						<LeftSidebar collapseSidebar={collapseSidebar} />
+						<LeftSidebar />
 					</div>
 					<div
-						className={`${
-							collapseSidebar ? 'w-[calc(100%_-_110px)]' : 'w-[calc(100%_-_261px)]'
-						} ml-[16px]`}
+						// className={`${
+						// 	collapseSidebar ? 'w-[calc(100%_-_110px)]' : 'w-[calc(100%_-_261px)]'
+						// } ml-[16px]`}
+						className={cn('ml-0 md:ml-[16px] transition-all', {
+							'w-full md:w-[calc(100%_-_110px)]': collapseSidebar,
+							'w-full md:w-[calc(100%_-_261px)]': !collapseSidebar,
+						})}
 					>
 						<LoadingSpinner
 							fullHeight
 							isLoading={isLoading}
 						/>
-						<div className={`${mainWrapClass ? mainWrapClass : ''}`}>{children}</div>
+						<div className={`${mainWrapClass ? mainWrapClass : 'p-7'}`}>{children}</div>
 					</div>
 				</div>
 			</>

@@ -4,12 +4,14 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { ApiDataType, apiService } from '@/utils/request';
 import { useRouter } from 'next/router';
-import { capitalizeFirstLetter } from '@/utils';
+import { capitalizeFirstLetter, cn } from '@/utils';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 import TagSkeleton from '@/components/skeletons/tag';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import Slider from 'react-slick';
-import Layout from '../layout';
+import { useWindowSize } from '@/utils/hooks';
+import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/20/solid';
+// import Layout from '../layout';
 
 interface TagsProps {
 	onClick: (value: string) => void;
@@ -27,9 +29,14 @@ const Tags: React.FC<TagsProps> = ({
 	onPressTagSearch,
 }) => {
 	const router = useRouter();
+	const { width: windowWidth } = useWindowSize();
+	const isSmallDevice = windowWidth <= 991;
+
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [tags, setTags] = useState<any>([]);
+	const [showSearchTag, setShowSearchTag] = useState<boolean>(!isSmallDevice ? true : false);
+	// const [currentSlide, setCurrentSlide] = useState(0);
 
 	const slider: any = useRef(null);
 
@@ -74,15 +81,17 @@ const Tags: React.FC<TagsProps> = ({
 		fetchTags();
 	}, [router.isReady]);
 
-	const momentSliderSettings = {
+	const momentTagSliderSettings = {
 		dots: false,
 		infinite: true,
 		loop: false,
 		arrows: false,
 		speed: 500,
+		swipeToSlide: true,
 		slidesToShow: dynamicSlidesToShow,
 		slidesToScroll: 3,
 		variableWidth: true,
+		// afterChange: (current: any) => setCurrentSlide(current),
 		responsive: [
 			{
 				breakpoint: 1200,
@@ -101,82 +110,83 @@ const Tags: React.FC<TagsProps> = ({
 			{
 				breakpoint: 700,
 				settings: {
-					slidesToShow: 2,
+					slidesToShow: 4,
 					slidesToScroll: 1,
 				},
 			},
 			{
 				breakpoint: 575,
 				settings: {
-					slidesToShow: 1,
+					slidesToShow: 3,
 				},
 			},
 		],
 	};
 
 	return (
-		<>
-			<div className="flex flex-row items-center justify-between gap-4 mr-10 mb-[16px] mt-[24px]">
-				<div className="flex justify-between items-center border rounded-md px-3 max-w-[280px] mr-3">
-					<span className="mr-1">#</span>
+		<div className="flex flex-row items-center">
+			{tags.length > 11 && (
+				<button
+					className="hidden min-[575px]:flex mr-[10px] rounded-full border border-[#E4E4E4] bg-white p-[10px] items-center gap-2"
+					onClick={() => slider?.current?.slickPrev()}
+					// disabled={currentSlide === 0}
+				>
+					<ChevronLeftIcon className="h-5 w-5 text-[#1C1B1F]" />
+				</button>
+			)}
+			{isSmallDevice && (
+				<label
+					htmlFor="search-tag"
+					className="mr-[10px] rounded-full border border-[#E4E4E4] bg-white flex p-[10px] items-center gap-2"
+					onClick={() => setShowSearchTag(!showSearchTag)}
+				>
+					{!showSearchTag ? (
+						<MagnifyingGlassIcon className="h-5 w-5 text-[#1C1B1F]" />
+					) : (
+						<XMarkIcon className="h-5 w-5 text-[#1C1B1F]" />
+					)}
+				</label>
+			)}
+			{(showSearchTag || !isSmallDevice) && (
+				<div className="flex items-center border rounded-md px-3 w-[172px] mr-3">
+					<span className="mr-1 text-sm text-[#7B7788] font-medium">#</span>
 					<input
 						type="text"
 						placeholder="Search Hashtags"
-						className="w-[170px] h-[32px] text-md focus:outline-none border-[gray] rounded-[5px] p-[5px] border-[1px] mr-4"
+						id="search-tag"
+						className="w-[115px] h-[32px] text-sm focus:outline-none leading-none p-[5px]"
 						value={tagSearch}
 						onChange={onChangeTagSearch}
 					/>
 					{tagSearch && (
 						<ArrowRightIcon
-							className="ml-2 w-4 h-4 text-blue-500 cursor-pointer"
+							className="ml-0.5 w-4 h-4 text-blue-500 cursor-pointer"
 							role="button"
 							onClick={onPressTagSearch}
 						/>
 					)}
 				</div>
-				{/* {
-          tags.length > 4 && (
-            <div className="flex flex-row items-start">
-              <button
-                className="mr-4 rounded-[28px] border border-solid border-gray-300 bg-white flex p-2 items-center gap-2"
-                onClick={() => slider?.current?.slickPrev()}>
-                <ChevronLeftIcon className="h-5 w-5" />
-              </button>
-              <button className="rounded-[28px] border border-solid border-gray-300 bg-white flex p-2 items-center gap-2"
-                onClick={() => {
-                  slider?.current?.slickNext()
-                }}>
-                <ChevronRightIcon className="h-5 w-5" />
-              </button>
-              <div className='ml-3'>
-                <Layout />
-              </div>
-            </div>
-          )
-
-        } */}
-			</div>
-
-			<div className="flex flex-row items-center justify-between">
-				{tags.length > 11 && (
-					<button
-						className="m-4 rounded-[28px] border border-solid border-gray-300 bg-white flex p-2 items-center gap-2"
-						onClick={() => slider?.current?.slickPrev()}
-					>
-						<ChevronLeftIcon className="h-5 w-5" />
-					</button>
-				)}
-				<div className="w-[75%]">
+			)}
+			<div
+				className={cn('max-w-[calc(100%_-_284px)] overflow-hidden h-[41px]', {
+					'max-w-[calc(100%_-_284px)]': showSearchTag || !isSmallDevice,
+					'max-w-[calc(100%_-_54px)] min-[575px]:max-w-[calc(100%_-_162px)] ':
+						!showSearchTag && isSmallDevice,
+					'max-w-[calc(100%_-_234px)] min-[575px]:max-w-[calc(100%_-_342px)]':
+						showSearchTag && isSmallDevice,
+				})}
+			>
+				<div className="">
 					<Slider
 						ref={slider}
-						{...momentSliderSettings}
+						{...momentTagSliderSettings}
 					>
 						<button
 							className={`${
 								!tagParam
 									? ' border-b-[1px] border-[#00A1D4] text-[#00A1D4]'
 									: 'text-[#7B7788]'
-							} p-4 leading-trim font-inter font-[16px] text-base`}
+							} px-3 py-2 leading-trim font-inter text-base`}
 							title="All"
 							// disabled={!tagParam}
 							onClick={() => onClick('all')}
@@ -191,7 +201,7 @@ const Tags: React.FC<TagsProps> = ({
 										tagParam == item.hashtag
 											? 'border-b-[1px] border-[#00A1D4] text-[#00A1D4]'
 											: 'text-[#7B7788]'
-									} p-4 leading-trim font-inter font-[16px] text-base`}
+									} px-3 py-2 leading-trim font-inter text-base`}
 									title={item.name}
 									onClick={() => onClick(item.name)}
 								>
@@ -201,24 +211,22 @@ const Tags: React.FC<TagsProps> = ({
 						})}
 					</Slider>
 				</div>
-
-				{tags.length > 11 && (
-					<div className="flex items-center justify-center">
-						<button
-							className="rounded-[28px] border border-solid border-gray-300 bg-white flex p-2 items-center gap-2"
-							onClick={() => {
-								slider?.current?.slickNext();
-							}}
-						>
-							<ChevronRightIcon className="h-5 w-5" />
-						</button>
-						<div className="ml-3">
-							<Layout />
-						</div>
-					</div>
-				)}
 			</div>
-		</>
+			{tags.length > 11 && (
+				<button
+					className="hidden min-[575px]:flex ml-[10px] rounded-full border border-[#E4E4E4] bg-white p-[10px] items-center gap-2"
+					onClick={() => {
+						slider?.current?.slickNext();
+					}}
+					// disabled={currentSlide === tags.length - 2}
+				>
+					<ChevronRightIcon className="h-5 w-5 text-[#1C1B1F]" />
+				</button>
+			)}
+			{/* <div className="ml-3">
+                <Layout />
+            </div> */}
+		</div>
 	);
 };
 

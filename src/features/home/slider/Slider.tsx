@@ -4,6 +4,7 @@ import Slider from 'react-slick';
 import Moment from '@/components/snippets/moment';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { useMemo, useRef } from 'react';
+import { getMomentSliderSettings } from './sliderSettings';
 
 const MomentsSlider = ({ momentsData, isLoading, loadMoreMoments, onClickMoment }: any) => {
 	const slider: any = useRef(null);
@@ -20,48 +21,11 @@ const MomentsSlider = ({ momentsData, isLoading, loadMoreMoments, onClickMoment 
 		}
 	}, [momentsData]);
 
-	const momentSliderSettings = {
-		dots: false,
-		infinite: true,
-		loop: false,
-		arrows: false,
-		speed: 500,
-		slidesToShow: dynamicSlidesToShow,
-		slidesToScroll: 3,
-		responsive: [
-			{
-				breakpoint: 1200,
-				settings: {
-					slidesToShow: 5,
-					slidesToScroll: 3,
-				},
-			},
-			{
-				breakpoint: 991,
-				settings: {
-					slidesToShow: 3,
-					slidesToScroll: 2,
-				},
-			},
-			{
-				breakpoint: 700,
-				settings: {
-					slidesToShow: 2,
-					slidesToScroll: 1,
-				},
-			},
-			{
-				breakpoint: 575,
-				settings: {
-					slidesToShow: 1,
-				},
-			},
-		],
-	};
+	const momentSliderSettings = getMomentSliderSettings(dynamicSlidesToShow);
 
 	return (
 		<>
-			<div className="flex flex-row justify-between gap-4 mr-10 mb-[16px] mt-[24px]">
+			<div className="flex flex-row justify-between gap-4 mr-0 mb-[16px] mt-[24px]">
 				<h2 className="flex flex-row items-center">
 					<img
 						className="mr-2"

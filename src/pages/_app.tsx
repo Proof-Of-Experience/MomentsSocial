@@ -3,6 +3,7 @@ import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import { Provider } from 'react-redux';
 import { LivepeerConfig, createReactClient, studioProvider } from '@livepeer/react';
+import { SidebarProvider } from '@/utils/contexts/sidebarContext';
 
 export default function App({ Component, ...rest }: AppProps) {
 	const { store, props } = wrapper.useWrappedStore(rest);
@@ -17,7 +18,9 @@ export default function App({ Component, ...rest }: AppProps) {
 	return (
 		<Provider store={store}>
 			<LivepeerConfig client={livepeerClient}>
-				<Component {...pageProps} />
+				<SidebarProvider>
+					<Component {...pageProps} />
+				</SidebarProvider>
 			</LivepeerConfig>
 		</Provider>
 	);

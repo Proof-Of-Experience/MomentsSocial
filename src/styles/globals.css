@@ -22,6 +22,11 @@ a {
 @tailwind components;
 @tailwind utilities;
 
+/* Slick Slider Override CSS */
+.slick-list {
+	margin-right: -27px !important;
+}
+
 /* Other CSS */
 .ck-content {
 	height: 200px;

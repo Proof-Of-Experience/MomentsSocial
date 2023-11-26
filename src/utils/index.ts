@@ -1,3 +1,6 @@
+import clsx, { ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
 const formatUSDMemo: any = {};
 const nanosPerUSDExchangeRate = 1e9;
 const formatUSDFunc = (num: number, decimal: number): string => {
@@ -167,4 +170,8 @@ export const getMomentShareUrl = (postId: string) => {
 
 export const getVideoShareUrl = (postId: string) => {
 	return process.env.NEXT_PUBLIC_MOMENTS_DOMAIN_URL + '/video/' + postId;
+};
+
+export const cn = (...classNames: ClassValue[]) => {
+	return twMerge(clsx(classNames));
 };

@@ -152,12 +152,12 @@ const Home: NextPage = () => {
 			// display preference
 			setDisplayPreference(true);
 		}
-	}, [tagParam, initialLoadComplete, router.isReady, fetchVideos, videoCurrentPage, authUser]);
+	}, [tagParam, initialLoadComplete, router.isReady, videoCurrentPage, authUser]);
 
 	useEffect(() => {
 		if (!router.isReady) return;
 		fetchMoments(momentsCurrentPage);
-	}, [tagParam, router.isReady, momentsCurrentPage, fetchMoments]);
+	}, [tagParam, router.isReady, momentsCurrentPage]);
 
 	useEffect(() => {
 		const observer = new IntersectionObserver(
@@ -234,6 +234,7 @@ const Home: NextPage = () => {
 		}
 	};
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	const renderVideoItems = () => {
 		if (isLoading) {
 			// Display skeletons when video is not loaded
@@ -265,12 +266,12 @@ const Home: NextPage = () => {
 	return (
 		<MainLayout
 			title="Home"
-			mainWrapClass="p-5"
+			mainWrapClass="p-7"
 		>
 			<VideoLayoutProvider>
 				<div
-					className={` ${
-						videoData.length > 0 ? 'mb-[56px] mt-[40px]' : 'mb-[56px] mt-[40px]'
+					className={`${
+						videoData.length > 0 ? 'pb-6 mb-6 border-b border-[#E8E8E8]' : ''
 					}`}
 				>
 					<Tags
@@ -305,7 +306,7 @@ const Home: NextPage = () => {
 				</h2>
 
 				<div className={`grid ${showGridCol()} gap-x-5 gap-y-10`}>
-					{renderVideoItems()}
+					{/* {renderVideoItems()} */}
 
 					{/* Loader and Intersection Observer trigger */}
 					{isLoading && <LoaderBottom />}

@@ -60,7 +60,7 @@ const VideoItem = memo(({ desoResponse, item, onReactionClick, ...rest }: VideoI
 				/>
 				<div>
 					<div className="m-h-p[96px]">
-						<p className="text-[#1C1B1F] dark:text-white leading-6 font-inter font-medium text-lg line-clamp-2">
+						<p className="text-[#1C1B1F] leading-6 font-inter font-medium text-lg line-clamp-2">
 							{item?.Body}
 						</p>
 						<p className="text-[#7B7788] leading-trim capitalize font-inter text-base font-normal mt-[12px]">
