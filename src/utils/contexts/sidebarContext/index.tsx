@@ -1,5 +1,5 @@
 import { useWindowSize } from '@/utils/hooks';
-import { Dispatch, SetStateAction, createContext, useState, ReactNode } from 'react';
+import { Dispatch, SetStateAction, createContext, useState, ReactNode, useEffect } from 'react';
 
 export interface ISidebarContextProps {
 	collapseSidebar: boolean;
@@ -13,9 +13,14 @@ interface ISidebarProviderProps {
 }
 
 export const SidebarProvider = ({ children }: ISidebarProviderProps) => {
-	const { width: windowWidth } = useWindowSize();
-	const initCollapse = windowWidth <= 991 ? true : false;
-	const [collapseSidebar, setCollapseSidebar] = useState<boolean>(initCollapse);
+	const { isSmallDevice } = useWindowSize();
+	const [collapseSidebar, setCollapseSidebar] = useState<boolean>(false);
+
+	useEffect(() => {
+		setCollapseSidebar(isSmallDevice ? true : false);
+	}, [isSmallDevice]);
+
+	console.log('collapseSidebar', collapseSidebar);
 
 	return (
 		<SidebarContext.Provider

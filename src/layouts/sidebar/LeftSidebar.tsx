@@ -15,15 +15,15 @@ import { cn } from '@/utils';
 const LeftSidebar = () => {
 	const router = useRouter();
 	const authUser = useSelector(selectAuthUser);
-	const { collapseSidebar, windowSize } = useSidebar();
+	const { collapseSidebar, setCollapseSidebar, windowSize } = useSidebar();
 	const { width: windowWidth } = windowSize;
 
 	const [activeItem, setActiveItem] = useState('/');
 
-	console.log('windowWidth', windowWidth);
+	// console.log('windowWidth', windowWidth);
 
 	// useEffect(() => {
-	// 	if (windowWidth <= 991) {
+	// 	if (windowWidth < 1024) {
 	// 		setCollapseSidebar(true);
 	// 	}
 	// }, [windowWidth]);
@@ -32,9 +32,13 @@ const LeftSidebar = () => {
 		setActiveItem(router.pathname);
 	}, [router.pathname]);
 
-	const onClickItem = (url: string) => {
+	const onClickItem = async (url: string) => {
 		setActiveItem(url);
-		router.push(url);
+		await router.push(url);
+		// DOCU:: Onclick menu item collapsing sidebar on mobile
+		if (windowWidth < 1024) {
+			setCollapseSidebar(true);
+		}
 	};
 
 	const menuItems = [
@@ -118,14 +122,10 @@ const LeftSidebar = () => {
 
 	return (
 		<div
-			// className={`fixed ${
-			// 	collapseSidebar ? 'w-[110px]' : 'w-[261px]'
-			// } px-4 pt-4 border-r border-[#D7D7D7] flex flex-col bg-white h-full`}
 			className={cn(
-				'fixed pt-4 border-r border-[#D7D7D7] flex flex-col bg-white h-full z-10',
+				'fixed lg:left-0 pt-4 border-r border-[#D7D7D7] flex flex-col bg-white h-full  ease-in-out duration-500 transition-all z-10',
 				{
-					'px-7 md:px-4 w-[261px] md:w-[110px] -left-[261px] md:left-0 transition-all':
-						collapseSidebar,
+					'px-7 lg:px-4 w-[261px] lg:w-[110px] -left-[261px]': collapseSidebar,
 					'px-7 left-0 w-[261px]': !collapseSidebar,
 				}
 			)}
@@ -137,27 +137,30 @@ const LeftSidebar = () => {
 							return (
 								<button
 									key={index}
-									className={`group mb-[16px] hover:bg-[#F0F9FC] hover:text-[#00A1D4] transition-all flex items-center ${
-										collapseSidebar ? 'flex-col' : 'flex-row'
-									} rounded-[8px] p-[12px] focus:bg-[#F0F9FC] ${
-										activeItem === item?.url
-											? 'bg-[#F0F9FC] text-[#00A1D4]'
-											: 'text-[#1C1B1F]'
-									}`}
+									className={cn(
+										'group mb-[16px] hover:bg-[#F0F9FC] hover:text-[#00A1D4] rounded-lg active:rounded-lg p-[12px] focus:bg-[#F0F9FC] ease-in-out duration-500 transition-all flex items-center',
+										{
+											'flex-row lg:flex-col': collapseSidebar,
+											'flex-row': !collapseSidebar,
+											'bg-[#F0F9FC] text-[#00A1D4]': activeItem === item?.url,
+											'text-[#1C1B1F]': activeItem !== item?.url,
+										}
+									)}
 									title={item?.title}
 									onClick={item?.onclick}
 								>
 									{item?.icon}
 									<span
-										className={`group-hover:text-[#00A1D4] ${
-											collapseSidebar
-												? 'ml-0 mt-1.5 text-[10px]'
-												: 'ml-2 text-[14px]'
-										} ${
-											activeItem === item?.url
-												? 'bg-[#F0F9FC]  text-[#00A1D4]'
-												: 'text-[#1C1B1F]'
-										}`}
+										className={cn(
+											'group-hover:text-[#00A1D4] ease-in-out duration-500 transition-all',
+											{
+												'ml-0 mt-1.5 text-[10px]': collapseSidebar,
+												'ml-2 text-[14px]': !collapseSidebar,
+												'bg-[#F0F9FC]  text-[#00A1D4]':
+													activeItem === item?.url,
+												'text-[#1C1B1F]': activeItem !== item?.url,
+											}
+										)}
 									>
 										{item?.label}
 									</span>

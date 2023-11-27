@@ -16,8 +16,7 @@ const Header = () => {
 	const router = useRouter();
 	const authUser = useSelector(selectAuthUser);
 	const { collapseSidebar, setCollapseSidebar, windowSize } = useSidebar();
-	const { width: windowWidth } = windowSize;
-	const isSmallDevice = windowWidth <= 575;
+	const { width: windowWidth, isSmallDevice } = windowSize;
 	const searchInputRef = useRef<HTMLInputElement>(null);
 
 	const [selected, setSelected] = useState<any>([]);
@@ -27,7 +26,11 @@ const Header = () => {
 	const [notificationCount, setNotificationCount] = useState<number>(0);
 	const [notificationData, setNotificationData] = useState<any>([]);
 	const [showNotification, setShowNotification] = useState<boolean>(false);
-	const [showSearchBar, setShowSearchBar] = useState(!isSmallDevice ? true : false);
+	const [showSearchBar, setShowSearchBar] = useState(true);
+
+	useEffect(() => {
+		setShowSearchBar(!isSmallDevice ? true : false);
+	}, [isSmallDevice]);
 
 	useEffect(() => {
 		if (authUser) {
@@ -141,14 +144,12 @@ const Header = () => {
 				)}
 
 				<div className="flex items-center">
-					{isSmallDevice && (
-						<span
-							className="flex lg:hidden items-center justify-center w-11 h-11 hover:bg-gray-100 rounded-full p-2 cursor-pointer transition-all"
-							onClick={() => setShowSearchBar(!showSearchBar)}
-						>
-							<MagnifyingGlassIcon className="h-7 w-7" />
-						</span>
-					)}
+					<span
+						className="flex sm:hidden items-center justify-center w-11 h-11 hover:bg-gray-100 rounded-full p-2 cursor-pointer transition-all"
+						onClick={() => setShowSearchBar(!showSearchBar)}
+					>
+						<MagnifyingGlassIcon className="h-7 w-7" />
+					</span>
 					{authUser && (
 						<div className="relative mr-4">
 							{notificationCount > 0 && (

@@ -17,8 +17,10 @@ const MainLayout = ({ title, isLoading, mainWrapClass, children }: MainLayoutPro
 	const dispatch = useDispatch();
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	const authUser = useSelector(selectAuthUser);
-	const { collapseSidebar } = useSidebar();
+	const { collapseSidebar, windowSize } = useSidebar();
+	const { width: windowWidth, isSmallDevice } = windowSize;
 
+	console.log('windowWidth', windowWidth);
 	const [userState, setUserState] = useState({
 		currentUser: null,
 		alternateUsers: null,
@@ -156,24 +158,24 @@ const MainLayout = ({ title, isLoading, mainWrapClass, children }: MainLayoutPro
 
 				<div className="flex font-inter mt-20">
 					<div
-						// className={`${
-						// 	collapseSidebar ? 'w-[110px]' : 'w-[261px]'
-						// } bg-white h-sidebar`}
-						className={cn('bg-white h-sidebar', {
-							'w-[261px] md:w-[110px] transition-all': collapseSidebar,
-							'w-[261px]': !collapseSidebar,
-						})}
+						className={cn(
+							'w-[261px] bg-white h-sidebar ease-in-out duration-500 transition-all',
+							{
+								'lg:w-[110px]': !isSmallDevice && collapseSidebar,
+								'w-[261px]': !isSmallDevice && !collapseSidebar,
+							}
+						)}
 					>
 						<LeftSidebar />
 					</div>
 					<div
-						// className={`${
-						// 	collapseSidebar ? 'w-[calc(100%_-_110px)]' : 'w-[calc(100%_-_261px)]'
-						// } ml-[16px]`}
-						className={cn('ml-0 md:ml-[16px] transition-all', {
-							'w-full md:w-[calc(100%_-_110px)]': collapseSidebar,
-							'w-full md:w-[calc(100%_-_261px)]': !collapseSidebar,
-						})}
+						className={cn(
+							'w-full ml-0 lg:ml-[16px] ease-in-out duration-500 transition-all',
+							{
+								'lg:w-[calc(100%_-_110px)]': !isSmallDevice && collapseSidebar,
+								'lg:w-[calc(100%_-_261px)]': !isSmallDevice && !collapseSidebar,
+							}
+						)}
 					>
 						<LoadingSpinner
 							fullHeight

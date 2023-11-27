@@ -29,14 +29,17 @@ const Tags: React.FC<TagsProps> = ({
 	onPressTagSearch,
 }) => {
 	const router = useRouter();
-	const { width: windowWidth } = useWindowSize();
-	const isSmallDevice = windowWidth <= 991;
+	const { isSmallDevice } = useWindowSize();
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [tags, setTags] = useState<any>([]);
-	const [showSearchTag, setShowSearchTag] = useState<boolean>(!isSmallDevice ? true : false);
+	const [showSearchTag, setShowSearchTag] = useState<boolean>(true);
 	// const [currentSlide, setCurrentSlide] = useState(0);
+
+	useEffect(() => {
+		setShowSearchTag(!isSmallDevice ? true : false);
+	}, [isSmallDevice]);
 
 	const slider: any = useRef(null);
 

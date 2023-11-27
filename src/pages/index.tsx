@@ -306,7 +306,7 @@ const Home: NextPage = () => {
 				</h2>
 
 				<div className={`grid ${showGridCol()} gap-x-5 gap-y-10`}>
-					{/* {renderVideoItems()} */}
+					{renderVideoItems()}
 
 					{/* Loader and Intersection Observer trigger */}
 					{isLoading && <LoaderBottom />}
