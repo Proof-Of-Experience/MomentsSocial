@@ -286,26 +286,27 @@ const Home: NextPage = () => {
 				{displayPreference && authUserId && <ProfilePreferences userId={authUserId} />}
 
 				{momentsData.length > 0 && (
-					<MomentsSlider
-						momentsData={momentsData}
-						loadMoreMoments={loadMoreMoments}
-						onClickMoment={(item: any) => {
-							setIsLoading(true);
-							const queryParams = tagParam ? { Tag: tagParam } : {};
-
-							router.push({
-								pathname: `moment/${item?.PostHashHex}`,
-								query: queryParams,
-							});
-						}}
-					/>
+					<div className="mb-12">
+						<MomentsSlider
+							momentsData={momentsData}
+							loadMoreMoments={loadMoreMoments}
+							onClickMoment={(item: any) => {
+								setIsLoading(true);
+								const queryParams = tagParam ? { Tag: tagParam } : {};
+								router.push({
+									pathname: `moment/${item?.PostHashHex}`,
+									query: queryParams,
+								});
+							}}
+						/>
+					</div>
 				)}
 
-				<h2 className="text-[#1C1B1F] leading-trim capitalize font-inter text-lg font-semibold mb-[32px]">
+				<h2 className="text-[#1C1B1F] leading-none capitalize font-inter text-xl font-semibold mb-8">
 					Explore
 				</h2>
 
-				<div className={`grid ${showGridCol()} gap-x-5 gap-y-10`}>
+				<div className={`grid ${showGridCol()} gap-x-7 gap-y-12`}>
 					{renderVideoItems()}
 
 					{/* Loader and Intersection Observer trigger */}

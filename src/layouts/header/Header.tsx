@@ -11,6 +11,7 @@ import Notifications from '@/components/snippets/notifications';
 import { useRouter } from 'next/router';
 import { Bars3Icon, MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import { useSidebar } from '@/utils/hooks';
+import { MomentNotification, getUserNotifications } from '@/services/notification';
 
 const Header = () => {
 	const router = useRouter();
@@ -24,7 +25,7 @@ const Header = () => {
 	const [query, setQuery] = useState<string>('');
 	const [loadedQuery, setLoadedQuery] = useState<boolean>(false);
 	const [notificationCount, setNotificationCount] = useState<number>(0);
-	const [notificationData, setNotificationData] = useState<any>([]);
+	const [notificationData, setNotificationData] = useState<MomentNotification[]>([]);
 	const [showNotification, setShowNotification] = useState<boolean>(false);
 	const [showSearchBar, setShowSearchBar] = useState(true);
 
@@ -71,15 +72,8 @@ const Header = () => {
 	};
 
 	const fetchNotifications = async () => {
-		const { getNotifications } = await import('deso-protocol');
-		const params = {
-			FetchStartIndex: -1,
-			FilteredOutNotificationCategories: {},
-			NumToFetch: 50,
-			PublicKeyBase58Check: authUser?.PublicKeyBase58Check,
-		};
-		const response: any = await getNotifications(params);
-		setNotificationData(response);
+		const notifications = await getUserNotifications(authUser?.PublicKeyBase58Check)
+		setNotificationData(notifications);
 	};
 
 	const onClickNotification = async () => {
@@ -167,9 +161,7 @@ const Header = () => {
 									}}
 								>
 									<div className="absolute right-2 top-[56px]">
-										<Notifications
-											notifications={notificationData?.Notifications}
-										/>
+										<Notifications notifications={notificationData} />
 									</div>
 								</OutsideClickHandler>
 							)}

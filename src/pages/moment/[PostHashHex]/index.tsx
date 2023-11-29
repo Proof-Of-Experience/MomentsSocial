@@ -14,14 +14,21 @@ import { ApiDataType, apiService } from '@/utils/request';
 import MakeComment from '@/components/snippets/comments/makeComment';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 import { fakeComments, getNFakeComments } from '@/data/comments';
+import LikeIcon from '@/components/icons/like';
+import { useMomentReaction } from '@/utils/hooks';
+import CommentIcon from '@/components/icons/comment';
+import ShareIcon from '@/components/icons/share';
+import ThreeDotMenuIcon from '@/components/icons/three-dot-menu';
+import SendTipButton, { SendTipButtonUI } from '@/components/snippets/tip/SendTipButton';
+import { DiamonLevel } from '@/services/tip';
 
 const MomentDetailsPage = () => {
-	const [activeVideoIndex, setActiveVideoIndex] = useState(0);
 	const router = useRouter();
-
 	const { PostHashHex, Tag }: any = router.query;
-	const authUser = useSelector(selectAuthUser);
 
+	const authUser = useSelector(selectAuthUser);
+	const { totalReaction } = useMomentReaction(PostHashHex);
+	const [activeVideoIndex, setActiveVideoIndex] = useState(0);
 	const [hasLoaded, setHasLoaded] = useState<boolean>(true);
 	const [videoData, setVideoData] = useState<any>([]);
 	const wheelDivRef = useRef<HTMLDivElement>(null);
@@ -237,65 +244,133 @@ const MomentDetailsPage = () => {
 	return (
 		<MainLayout>
 			<div
-				className="h-[calc(100vh_-_72px)] flex flex-col items-center justify-center bg-[#ddd]"
+				className="flex flex-col items-center justify-center"
 				ref={wheelDivRef}
 			>
 				{hasLoaded ? (
 					<LoadingSpinner isLoading={hasLoaded} />
 				) : (
 					videoData.length > 0 &&
-					videoData.map((video: any, index: number) => (
-						<div
-							key={index}
-							className={`${activeVideoIndex !== index ? 'hidden' : ''}`}
-							style={{ marginLeft: '30%', marginRight: '30%', width: '40%' }}
-						>
-							<div>
-								<h1 className="text-4xl font-semibold mb-4">
-									{video?.ProfileEntryResponse?.Username}
-								</h1>
-								<iframe
-									width="100%"
-									height="500"
-									src={
-										video.VideoURLs[0] ??
-										'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-									}
-									allowFullScreen
-								></iframe>
-								<div className="px-2 pb-3 mt-2">
-									<EmojiReaction
-										onReactionClick={() => {}}
-										postHashHex={video?.PostHashHex}
-									/>
+					videoData.map((video: any, index: number) => {
+						console.log('video item', video);
+						// console.log('video.VideoURLs[0]====', video.VideoURLs[0]);
+						return (
+							<div
+								key={index}
+								className={`${activeVideoIndex !== index ? 'hidden' : ''}`}
+								// style={{ marginLeft: '30%', marginRight: '30%', width: '40%' }}
+							>
+								<div className="relative">
+									<div className="relative max-w-full w-[435px] h-[calc(100vh-140px)] bg-[#babac3] rounded-2xl group">
+										<iframe
+											className="absolute top-0 left-0 w-full h-full object-cover rounded-2xl"
+											// width="100%"
+											// height="500"
+											src={
+												`${video?.VideoURLs[0]}&loop=1` ??
+												'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+											}
+											allow="accelerometer; autoplay; clipboard-write; picture-in-picture;"
+											allowFullScreen
+										></iframe>
+										<div className="absolute bottom-0 left-0 group-hover:hidden p-5">
+											<h1 className="text-white text-sm font-medium line-clamp-1">
+												{video?.ProfileEntryResponse?.Username ||
+													video?.Username}
+											</h1>
+											<p className="mt-3 text-white text-sm font-normal line-clamp-2 ">
+												{video?.Body}
+											</p>
+										</div>
+									</div>
+									<div className="absolute -right-[67px] bottom-0 w-14">
+										<div className="flex flex-col items-center justify-center text-center mb-6 last:mb-0">
+											<LikeIcon
+												className="cursor-pointer"
+												onClick={() => console.log('On Clicked Like')}
+											/>
+											<span className="text-[#939393] text-[10px] font-normal leading-none mt-[6px]">
+												{totalReaction || 'No Reaction'}
+											</span>
+										</div>
+										<div className="flex flex-col items-center justify-center text-center mb-6 last:mb-0">
+											<CommentIcon
+												className="cursor-pointer"
+												onClick={() => console.log('On Clicked Comment')}
+											/>
+											<span className="text-[#939393] text-[10px] font-normal leading-none mt-[6px]">
+												{video?.Comments?.length || 'No Comment'}
+											</span>
+										</div>
+										<div className="flex flex-col items-center justify-center text-center mb-6 last:mb-0">
+											<ShareIcon
+												className="cursor-pointer"
+												onClick={() => console.log('On Clicked Share')}
+											/>
+											<span className="text-[#939393] text-[10px] font-normal leading-none mt-[6px]">
+												{'Share'}
+											</span>
+										</div>
+
+										{authUser && (
+											<div className="flex flex-col items-center justify-center text-center mb-6 last:mb-0">
+												<SendTipButton
+													userId={authUser?.PublicKeyBase58Check}
+													postId={video.PostHashHex}
+													receiverId={video.PosterPublicKeyBase58Check}
+													diamonLevel={DiamonLevel.ONE}
+													ui={SendTipButtonUI.ICON}
+												/>
+											</div>
+										)}
+
+										<div className="flex flex-col items-center justify-center text-center mb-6 last:mb-0">
+											<ThreeDotMenuIcon
+												className="cursor-pointer"
+												onClick={() => console.log('On Clicked Menu')}
+											/>
+										</div>
+									</div>
 								</div>
-								<p className="mt-4 max-h-[74px] overflow-y-auto">{video.Body}</p>
-							</div>
 
-							<SocialShare
-								url={getMomentShareUrl(video?.PostHashHex)}
-								title={video?.Body}
-							></SocialShare>
-
-							{authUser && (
-								<MakeComment
-									postId={video.PostHashHex}
-									userId={authUser?.PublicKeyBase58Check}
-								></MakeComment>
-							)}
-
-							<div>
-								{videoComments(video.Comments).map(
-									(comment: any, commentIndex: number) => (
-										<Comment
-											comment={comment}
-											key={commentIndex}
+								{/* TODO:: Following code are hidden temporarily from dom */}
+								<div className="hidden">
+									<div className="px-2 pb-3 mt-2">
+										<EmojiReaction
+											onReactionClick={() => {}}
+											postHashHex={video?.PostHashHex}
 										/>
-									)
-								)}
+									</div>
+									<p className="mt-4 max-h-[74px] overflow-y-auto">
+										{video.Body}
+									</p>
+
+									<SocialShare
+										url={getMomentShareUrl(video?.PostHashHex)}
+										title={video?.Body}
+									></SocialShare>
+
+									{authUser && (
+										<MakeComment
+											postId={video.PostHashHex}
+											userId={authUser?.PublicKeyBase58Check}
+										></MakeComment>
+									)}
+
+									<div>
+										{videoComments(video.Comments).map(
+											(comment: any, commentIndex: number) => (
+												<Comment
+													comment={comment}
+													key={commentIndex}
+												/>
+											)
+										)}
+									</div>
+								</div>
 							</div>
-						</div>
-					))
+						);
+					})
 				)}
 			</div>
 		</MainLayout>

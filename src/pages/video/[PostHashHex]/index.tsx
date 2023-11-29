@@ -12,6 +12,8 @@ import MakeComment from '@/components/snippets/comments/makeComment';
 import { selectAuthUser } from '@/slices/authSlice';
 import { useSelector } from 'react-redux';
 import { getNFakeComments } from '@/data/comments';
+import SendTipButton, { SendTipButtonUI } from '@/components/snippets/tip/SendTipButton';
+import { DiamonLevel } from '@/services/tip';
 
 const VideoDetailsPage = () => {
 	const router = useRouter();
@@ -168,6 +170,16 @@ const VideoDetailsPage = () => {
 									url={getVideoShareUrl(videoData?.PostHashHex)}
 									title={videoData?.Body}
 								></SocialShare>
+
+								{authUser && (
+									<SendTipButton
+										userId={authUser?.PublicKeyBase58Check}
+										postId={videoData.PostHashHex}
+										receiverId={videoData.PosterPublicKeyBase58Check}
+										diamonLevel={DiamonLevel.ONE}
+										ui={SendTipButtonUI.BUTTON}
+									/>
+								)}
 
 								{authUser && (
 									<MakeComment

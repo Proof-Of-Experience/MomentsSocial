@@ -1,22 +1,17 @@
-const notificationList = [
-	{
-		id: 1,
-		title: 'Lorem Ipsum',
-	},
-	{
-		id: 2,
-		title: 'Lorem Ipsum',
-	},
-];
+import { MomentNotification } from '@/services/notification';
+
+interface NotificationProps {
+	notifications: MomentNotification[];
+}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-const Notifications = ({ notifications }: any) => {
+const Notifications = ({ notifications }: NotificationProps) => {
 	return (
 		<div className="bg-white shadow px-5 py-4 w-[300px]">
 			<h3 className="font-semibold">Notifications</h3>
 
-			{notificationList.map((notification: any, index: number) => (
-				<div key={index}>{notification.title}</div>
+			{notifications.map((notification: MomentNotification, index: number) => (
+				<div key={index} dangerouslySetInnerHTML={{ __html: notification.render()}}></div>
 			))}
 		</div>
 	);

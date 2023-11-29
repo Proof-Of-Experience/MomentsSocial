@@ -18,9 +18,9 @@ const MainLayout = ({ title, isLoading, mainWrapClass, children }: MainLayoutPro
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	const authUser = useSelector(selectAuthUser);
 	const { collapseSidebar, windowSize } = useSidebar();
-	const { width: windowWidth, isSmallDevice } = windowSize;
+	const { isSmallDevice } = windowSize;
 
-	console.log('windowWidth', windowWidth);
+	// console.log('windowWidth', windowWidth);
 	const [userState, setUserState] = useState({
 		currentUser: null,
 		alternateUsers: null,

@@ -7,7 +7,7 @@ const Moment = memo(({ className, onClick, item, isLoading }: MomentProps) => {
 	return isLoading ? (
 		<MomentSkeleton />
 	) : (
-		<div className={`block cursor-pointer h-[448px] mb-[48px] ${className ? className : ''}`}>
+		<div className={`block cursor-pointer h-[474px] ${className ? className : ''}`}>
 			<Fragment>
 				<div className="flex flex-wrap">
 					<img
@@ -18,7 +18,7 @@ const Moment = memo(({ className, onClick, item, isLoading }: MomentProps) => {
 					/>
 				</div>
 
-				<div className="pb-3 mt-4">
+				<div className="mt-4">
 					<p className="text-[#1C1B1F] leading-6 font-inter font-medium text-lg line-clamp-2 h-[48px]">
 						{item?.Body}
 					</p>

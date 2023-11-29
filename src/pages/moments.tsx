@@ -1,6 +1,6 @@
 import MainLayout from '@/layouts/main-layout';
 import VideoLayoutContext, { VideoLayoutProvider } from '@/contexts/VideosContext';
-import Layout from '@/features/home/layout';
+// import Layout from '@/features/home/layout';
 import Tags from '@/features/home/tags';
 import { NextPage } from 'next';
 import { useContext, useEffect, useRef, useState } from 'react';
@@ -153,10 +153,9 @@ const Moments: NextPage = () => {
 				className="overflow-hidden"
 			>
 				<Moment
-					className="mr-6"
 					item={item}
 					isLoading={isLoading}
-					onClick={(item) => {
+					onClick={() => {
 						setIsLoading(true);
 						const queryParams = tagParam ? { Tag: tagParam } : {};
 						router.push({
@@ -175,7 +174,7 @@ const Moments: NextPage = () => {
 			mainWrapClass="p-5"
 		>
 			<VideoLayoutProvider>
-				<div className={`flex justify-between items-center mb-4`}>
+				<div className={`pb-6 mb-6 border-b border-[#E8E8E8]`}>
 					<Tags
 						tagParam={tagParam}
 						onClick={handleTagClick}
@@ -183,10 +182,10 @@ const Moments: NextPage = () => {
 						onChangeTagSearch={(e) => setCurrentTag(e.target.value)}
 						onPressTagSearch={() => handleTagClick(currentTag)}
 					/>
-					<Layout />
+					{/* <Layout /> */}
 				</div>
 
-				<div className={`grid ${showGridCol()} gap-x-5 gap-y-10`}>
+				<div className={`grid ${showGridCol()} gap-x-7 gap-y-12`}>
 					{renderMomentItems()}
 					<div ref={loadMoreRef}></div>
 				</div>
