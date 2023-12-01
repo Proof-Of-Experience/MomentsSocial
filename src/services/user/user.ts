@@ -12,3 +12,40 @@ export const getUserProfile = async (username: string) => {
 
 	return await getSingleProfile(params);
 };
+
+export const userLogin = async () => {
+	const { identity, getUsersStateless } = await import('deso-protocol');
+	const loggedInInfo: any = await identity.login();
+
+	getUserInfoFromUtils(loggedInInfo.publicKeyBase58Check);
+
+	const userParams = {
+		PublicKeysBase58Check: [loggedInInfo?.publicKeyBase58Check],
+		SkipForLeaderboard: true,
+	};
+	const userInfo: any = await getUsersStateless(userParams);
+
+	return { ...loggedInInfo, ...userInfo?.UserList[0] }
+};
+
+
+export const getUserInfoFromUtils = async (userId: number) => {
+	const apiUrl = `/api/user`;
+	const data = {
+		userId,
+	};
+	const apiData: ApiDataType = {
+		method: 'post',
+		data,
+		url: apiUrl,
+		customUrl: process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL,
+	};
+
+	try {
+		await apiService(apiData, (res: any, err: any) => {
+			if (err) return err.response;
+		});
+	} catch (error: any) {
+		console.error('error', error.response);
+	}
+};

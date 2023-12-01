@@ -13,9 +13,9 @@ import {
 	getPreferencePopupRandomInterval,
 	wasPreferenceSavedBeforeLastXMinutes,
 } from '@/services/tag/tag';
-import ProfilePreferences from '@/components/snippets/preferences/profilePreferences';
 import { useSelector } from 'react-redux';
 import { selectAuthUser } from '@/slices/authSlice';
+import AllPreferences from '@/components/snippets/preferences/AllPreferences';
 
 const Home: NextPage = () => {
 	const router = useRouter();
@@ -37,8 +37,6 @@ const Home: NextPage = () => {
 	const [momentsTotalPages, setMomentsTotalPages] = useState<number>(Infinity);
 	const [displayPreference, setDisplayPreference] = useState<boolean>(false);
 	const [authUserId, setAuthUserId] = useState<string | null>(null);
-
-	console.log('momentsData ->', momentsData);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const fetchVideos = async (page: number) => {
@@ -137,17 +135,13 @@ const Home: NextPage = () => {
 		fetchVideos(videoCurrentPage);
 
 		if (!authUser) {
+			setDisplayPreference(true) // we still show the list
 			return;
 		}
 		setAuthUserId(authUser.PublicKeyBase58Check);
 		// user is logged in
 
-		if (
-			wasPreferenceSavedBeforeLastXMinutes(
-				authUser.PublicKeyBase58Check,
-				getPreferencePopupRandomInterval()
-			)
-		) {
+		if (wasPreferenceSavedBeforeLastXMinutes(authUser.PublicKeyBase58Check,getPreferencePopupRandomInterval())) {
 			// the preference have been saved current time - randomInterval minutes at least
 			// display preference
 			setDisplayPreference(true);
@@ -283,8 +277,6 @@ const Home: NextPage = () => {
 					/>
 				</div>
 
-				{displayPreference && authUserId && <ProfilePreferences userId={authUserId} />}
-
 				{momentsData.length > 0 && (
 					<div className="mb-12">
 						<MomentsSlider
@@ -313,6 +305,9 @@ const Home: NextPage = () => {
 					{isLoading && <LoaderBottom />}
 					<div ref={loadMoreRef}></div>
 				</div>
+
+				{displayPreference && <AllPreferences userId={authUserId ? authUserId : null} />}
+
 			</VideoLayoutProvider>
 		</MainLayout>
 	);

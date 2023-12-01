@@ -65,9 +65,11 @@ const ProfilePreferences = memo(({ userId }: ProfilePreferencesProps) => {
 	const updateUserPreferenceState = (preferences: HashtagEntity[]) => {
 		const userExistingPreference: HashTagOption[] = [];
 
-		preferences.forEach((entity: HashtagEntity) => {
-			userExistingPreference.push(toHashtagOption(entity));
-		});
+		if(preferences && preferences.length > 0) {
+			preferences.forEach((entity: HashtagEntity) => {
+				userExistingPreference.push(toHashtagOption(entity));
+			});
+		}
 
 		setSelectedOptions(userExistingPreference);
 	};

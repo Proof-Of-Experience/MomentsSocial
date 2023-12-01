@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { getSearchProfileData } from '@/pages/api/profile';
 import AuthButtons from '@/features/header/auth-buttons';
 import Search from '@/features/header/search';
-import { BellIcon } from '@heroicons/react/24/outline';
 import { useSelector } from 'react-redux';
 import { selectAuthUser } from '@/slices/authSlice';
 import OutsideClickHandler from 'react-outside-click-handler';
@@ -12,6 +11,8 @@ import { useRouter } from 'next/router';
 import { Bars3Icon, MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import { useSidebar } from '@/utils/hooks';
 import { MomentNotification, getUserNotifications } from '@/services/notification';
+import NotificationIcon from '@/components/icons/notification';
+import { cn } from '@/utils';
 
 const Header = () => {
 	const router = useRouter();
@@ -72,7 +73,7 @@ const Header = () => {
 	};
 
 	const fetchNotifications = async () => {
-		const notifications = await getUserNotifications(authUser?.PublicKeyBase58Check)
+		const notifications = await getUserNotifications(authUser?.PublicKeyBase58Check);
 		setNotificationData(notifications);
 	};
 
@@ -84,22 +85,12 @@ const Header = () => {
 		const params = {
 			PublicKeyBase58Check: authUser?.PublicKeyBase58Check,
 			UnreadNotifications: 0,
-			LastSeenIndex: notificationData?.LastSeenIndex,
-			LastUnreadNotificationIndex: notificationData?.LastSeenIndex,
+			LastSeenIndex: notificationData[0]?.LastSeenIndex, // TODO:: Need To discuss
+			LastUnreadNotificationIndex: notificationData[0]?.LastSeenIndex, // TODO:: Need To discuss
 			JWT,
 		};
 		await setNotificationMetadata(params);
 	};
-
-	const CustomBellIcon = ({ onClick }: any) => (
-		<div onClick={onClick}>
-			<BellIcon
-				className="h-7 w-7"
-				aria-hidden="true"
-				role="button"
-			/>
-		</div>
-	);
 
 	return (
 		<header className="fixed flex items-center bg-white top-0 left-0 right-0 z-10 px-7 py-2 border-b border-[#D7D7D7] leading-[30px] h-20 w-full">
@@ -145,14 +136,21 @@ const Header = () => {
 						<MagnifyingGlassIcon className="h-7 w-7" />
 					</span>
 					{authUser && (
-						<div className="relative mr-4">
+						<div className="relative mr-7">
 							{notificationCount > 0 && (
 								<span className="absolute -top-2 bg-red-600 inline-block rounded-full w-4 mx-auto text-center leading-5 h-5 text-white z-10 text-xs">
 									{notificationCount}
 								</span>
 							)}
 
-							<CustomBellIcon onClick={onClickNotification} />
+							<NotificationIcon
+								className={cn(
+									'h-7 w-7 hover:text-[#00A1D4] cursor-pointer transition-all',
+									showNotification ? 'text-[#00A1D4]' : ''
+								)}
+								aria-hidden="true"
+								onClick={onClickNotification}
+							/>
 
 							{showNotification && (
 								<OutsideClickHandler
@@ -160,7 +158,7 @@ const Header = () => {
 										setShowNotification(false);
 									}}
 								>
-									<div className="absolute right-2 top-[56px]">
+									<div className="absolute -right-2 top-[42px]">
 										<Notifications notifications={notificationData} />
 									</div>
 								</OutsideClickHandler>

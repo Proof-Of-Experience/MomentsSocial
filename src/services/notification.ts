@@ -1,6 +1,7 @@
 import {
 	AffectedPublicKey,
 	PostEntryResponse,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	ProfileEntryResponse,
 	TransactionMetadataResponse,
 	getNotifications,
@@ -16,10 +17,42 @@ interface ConstructedTransaction {
 	transactorUsername: string;
 }
 
+export type TINoticationDataType = 'TRANSFER' | 'REACTION' | 'POST_MENTION' | 'POST_MESSAGE';
+
+export interface INoticationData extends Record<string, any> {
+	type: TINoticationDataType;
+	sender?: {
+		username?: string;
+	};
+	amount?: number;
+	amountCalc?: number;
+	isUnliked?: boolean;
+	message?: string;
+}
+
 export interface MomentNotification {
 	render(): string;
-	data: Record<string, any>;
+	data: INoticationData;
+	LastSeenIndex?: any;
 }
+
+const getProfileUsername = (
+	hashHex: string,
+	profiles: Record<string, Profile | null>
+): string | null => {
+	return profiles[hashHex]?.Username || null;
+};
+
+const getTransaction = (
+	notification: TransactionMetadataResponse,
+	profiles: Record<string, Profile | null>
+): ConstructedTransaction => {
+	const txnType = notification.Metadata.TxnType;
+	const transactorPublicKey = notification.Metadata.TransactorPublicKeyBase58Check;
+	const transactorUsername = profiles[transactorPublicKey]?.Username || 'Unknown User';
+
+	return { txnType, transactorPublicKey, transactorUsername };
+};
 
 const constructNotification = (
 	notification: TransactionMetadataResponse,
@@ -44,50 +77,28 @@ const constructNotification = (
 	return null;
 };
 
-const constructSubmitPostNotification = (
+const constructBasicTransfer = (
 	notification: TransactionMetadataResponse,
-	profiles: Record<string, Profile | null>,
-	posts: {
-		[key: string]: PostEntryResponse;
-	}
+	transactorUsername: string
 ): MomentNotification | null => {
-	if (notification.Metadata.SubmitPostTxindexMetadata === null) {
+	if (!notification.TxnOutputResponses || notification.TxnOutputResponses.length === 0) {
 		return null;
 	}
 
-	const postId = notification.Metadata.SubmitPostTxindexMetadata.PostHashBeingModifiedHex;
+	console.log('TxnOutputResponses Transfer:', notification.TxnOutputResponses);
 
-	let actor: string | null = null;
-
-	let isMention = false;
-
-	notification.Metadata.AffectedPublicKeys?.forEach((key: AffectedPublicKey) => {
-		if (key.Metadata === 'TransactorPublicKeyBase58Check') {
-			actor = getProfileUsername(key.PublicKeyBase58Check, profiles); // who made the comment
-		}
-
-		// @note : This is a hacky way of handling mentions.
-		if(isMention === false && key.Metadata === 'MentionedPublicKeyBase58Check') {
-			isMention = true
-		}
-	});
-
-	if (actor === null) {
-		return null;
-	}
-
-	if(isMention) {
-		return {
-			data: {},
-			render: () => `<strong>@${actor}</strong> mentioned you in a post.`,
-		};
-	}
-
-	const message = posts[postId].Body;
-
+	const amountNanos = notification.TxnOutputResponses[0].AmountNanos;
 	return {
-		data: {},
-		render: () => `<strong>@${actor}</strong> ${message}`,
+		data: {
+			type: 'TRANSFER',
+			sender: { username: transactorUsername },
+			amount: amountNanos,
+			amountCalc: amountNanos / 1e9,
+		},
+		render: () =>
+			`<strong>${transactorUsername}</strong> sent you ${amountNanos} $DESO! (~$${
+				amountNanos / 1e9
+			})`,
 	};
 };
 
@@ -117,42 +128,66 @@ const constructLikedNotification = (
 	const isUnlike = notification.Metadata?.LikeTxindexMetadata?.IsUnlike;
 
 	return {
-		data: {},
+		data: {
+			type: 'REACTION',
+			sender: { username: actor },
+			isUnliked: isUnlike,
+		},
 		render: () => `<strong>${actor}</strong> ${isUnlike ? 'unliked' : 'liked'} ${receiver}`,
 	};
 };
 
-const getProfileUsername = (
-	hashHex: string,
-	profiles: Record<string, Profile | null>
-): string | null => {
-	return profiles[hashHex]?.Username || null;
-};
-
-const getTransaction = (
+const constructSubmitPostNotification = (
 	notification: TransactionMetadataResponse,
-	profiles: Record<string, Profile | null>
-): ConstructedTransaction => {
-	const txnType = notification.Metadata.TxnType;
-	const transactorPublicKey = notification.Metadata.TransactorPublicKeyBase58Check;
-	const transactorUsername = profiles[transactorPublicKey]?.Username || 'Unknown User';
-
-	return { txnType, transactorPublicKey, transactorUsername };
-};
-
-const constructBasicTransfer = (
-	notification: TransactionMetadataResponse,
-	transactorUsername: string
+	profiles: Record<string, Profile | null>,
+	posts: {
+		[key: string]: PostEntryResponse;
+	}
 ): MomentNotification | null => {
-	if (!notification.TxnOutputResponses || notification.TxnOutputResponses.length === 0) {
+	if (notification.Metadata.SubmitPostTxindexMetadata === null) {
 		return null;
 	}
 
-	const amountNanos = notification.TxnOutputResponses[0].AmountNanos;
+	const postId = notification.Metadata.SubmitPostTxindexMetadata.PostHashBeingModifiedHex;
+
+	let actor: string | null = null;
+
+	let isMention = false;
+
+	notification.Metadata.AffectedPublicKeys?.forEach((key: AffectedPublicKey) => {
+		if (key.Metadata === 'TransactorPublicKeyBase58Check') {
+			actor = getProfileUsername(key.PublicKeyBase58Check, profiles); // who made the comment
+		}
+
+		// @note : This is a hacky way of handling mentions.
+		if (isMention === false && key.Metadata === 'MentionedPublicKeyBase58Check') {
+			isMention = true;
+		}
+	});
+
+	if (actor === null) {
+		return null;
+	}
+
+	if (isMention) {
+		return {
+			data: {
+				type: 'POST_MENTION',
+				sender: { username: actor },
+			},
+			render: () => `<strong>@${actor}</strong> mentioned you in a post.`,
+		};
+	}
+
+	const message = posts[postId].Body;
+
 	return {
-		data: {},
-		render: () =>
-			`<strong>${transactorUsername}</strong> sent you ${amountNanos} $DESO! (~$${amountNanos / 1e9})`,
+		data: {
+			type: 'POST_MESSAGE',
+			sender: { username: actor },
+			message: message,
+		},
+		render: () => `<strong>@${actor}</strong> ${message}`,
 	};
 };
 
@@ -167,9 +202,9 @@ export const getUserNotifications = async (
 		FetchStartIndex: fetchStartIndex,
 	};
 
-	let response = await getNotifications(params);
+	const response = await getNotifications(params);
 
-	let notifications: MomentNotification[] = [];
+	const notifications: MomentNotification[] = [];
 	const profiles = response.ProfilesByPublicKey;
 	const posts = response.PostsByHash;
 	// const lastSeenIndex = response.LastSeenIndex

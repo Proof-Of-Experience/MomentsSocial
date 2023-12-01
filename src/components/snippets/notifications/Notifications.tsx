@@ -1,4 +1,6 @@
 import { MomentNotification } from '@/services/notification';
+import { cn } from '@/utils';
+import NotificationItem from './Item';
 
 interface NotificationProps {
 	notifications: MomentNotification[];
@@ -6,13 +8,28 @@ interface NotificationProps {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 const Notifications = ({ notifications }: NotificationProps) => {
+	console.log('notifications: ---', notifications);
 	return (
-		<div className="bg-white shadow px-5 py-4 w-[300px]">
-			<h3 className="font-semibold">Notifications</h3>
-
-			{notifications.map((notification: MomentNotification, index: number) => (
-				<div key={index} dangerouslySetInnerHTML={{ __html: notification.render()}}></div>
-			))}
+		<div className="bg-white mt-[10px] py-4 w-[350px] origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transform opacity-100 scale-100">
+			<h3 className="font-semibold text-base mx-5 pb-3 mb-3 border-b border-b-slate-400">
+				Notifications
+			</h3>
+			<div
+				className={cn(
+					'px-5 min-h-[300px] max-h-[400px] overflow-y-scroll scrollbar-thin scrollbar-thumb-slate-300 ',
+					{
+						'flex items-center justify-center': notifications?.length <= 0,
+					}
+				)}
+			>
+				{notifications?.length === 0 && <p className="text-center">No notifications</p>}
+				{notifications.map((notification: MomentNotification, index: number) => (
+					<NotificationItem
+						key={index}
+						notification={notification}
+					/>
+				))}
+			</div>
 		</div>
 	);
 };

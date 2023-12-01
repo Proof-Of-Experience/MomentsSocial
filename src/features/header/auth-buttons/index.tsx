@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/20/solid';
 import { useRouter } from 'next/router';
 import { ApiDataType, apiService } from '@/utils/request';
+import { userLogin } from '@/services/user/user';
 
 const AuthButtons = () => {
 	const router = useRouter();
@@ -59,19 +60,9 @@ const AuthButtons = () => {
 	};
 
 	const onClickLogin = async () => {
-		const { identity, getUsersStateless } = await import('deso-protocol');
-		const loggedInInfo: any = await identity.login();
-		console.log('identity', identity);
-		console.log('loggedInInfo', loggedInInfo);
+		const user = await userLogin()
 
-		getUserInfoFromUtils(loggedInInfo.publicKeyBase58Check);
-
-		const userParams = {
-			PublicKeysBase58Check: [loggedInInfo?.publicKeyBase58Check],
-			SkipForLeaderboard: true,
-		};
-		const userInfo: any = await getUsersStateless(userParams);
-		dispatch(setAuthUser({ ...loggedInInfo, ...userInfo?.UserList[0] }));
+		dispatch(setAuthUser(user));
 	};
 
 	const onClickSignUp = async () => {
@@ -108,22 +99,22 @@ const AuthButtons = () => {
 					as="div"
 					className="relative inline-block text-left"
 				>
-					<Menu.Button className="flex w-full justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+					<Menu.Button className="relative flex w-full justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
 						{authUser?.PublicKeyBase58Check ? (
 							<img
 								src={`https://node.deso.org/api/v0/get-single-profile-picture/${authUser?.PublicKeyBase58Check}`}
-								className="w-10 h-10 rounded-full"
+								className="w-14 h-14 rounded-full border border-slate-200"
 								alt="Avatar"
 							/>
 						) : (
 							<UserCircleIcon
-								className="h-12 w-12"
+								className="h-12 w-12 text-[#00A1D4]"
 								aria-hidden="true"
 							/>
 						)}
 
 						<ChevronDownIcon
-							className="ml-2 -mr-1 h-5 w-5 text-blue-400 hover:text-blue-200"
+							className="absolute -right-2.5 bottom-0 ml-2 h-5 w-5 text-blue-400 hover:text-blue-200 bg-white rounded-full shadow"
 							aria-hidden="true"
 						/>
 					</Menu.Button>
