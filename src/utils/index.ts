@@ -175,3 +175,41 @@ export const getVideoShareUrl = (postId: string) => {
 export const cn = (...classNames: ClassValue[]) => {
 	return twMerge(clsx(classNames));
 };
+
+export const toCapitalize = (string: any) => {
+	if (!string) return '';
+	let str = string.toString();
+	str = string.split(' ');
+	const newStr = str.map(
+		(word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+	);
+	return newStr.join(' ');
+};
+
+/* Shorten number value (e.g. 10000 to 10K, 1500000 to 1.5M)*/
+export const numerify = (value: number): string | null => {
+	if (!value) return '0';
+
+	if (value < 1000) return value.toString();
+
+	const numValue: string = value.toString().replace(/[^0-9.]/g, '');
+	const num = Number(numValue);
+
+	const si: any = [
+		{ v: 1e3, s: 'K' },
+		{ v: 1e6, s: 'M' },
+		{ v: 1e9, s: 'B' },
+		{ v: 1e12, s: 'T' },
+		{ v: 1e15, s: 'P' },
+		{ v: 1e18, s: 'E' },
+	];
+
+	let index;
+
+	for (index = si.length - 1; index > 0; index--) {
+		if (num >= si[index].v) {
+			break;
+		}
+	}
+	return (num / si[index].v).toFixed(1).replace(/\.0+$|(\.[0-9]*[1-9])0+$/, '$1') + si[index].s;
+};

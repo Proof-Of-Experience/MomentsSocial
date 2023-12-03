@@ -1,20 +1,21 @@
+import { cn } from '@/utils';
 import React from 'react';
 
-interface INotificationIconProps {
+interface INotificationIconProps extends React.SVGProps<SVGSVGElement> {
 	className?: string;
 	onClick?: () => void;
 }
 function NotificationIcon(props: INotificationIconProps) {
-	const { className, onClick } = props;
+	const { className, onClick, ...rest } = props;
+
 	return (
 		<svg
-			// width="24"
-			// height="24"
+			xmlns="http://www.w3.org/2000/svg"
 			viewBox="0 0 24 24"
 			fill="currentColor"
-			xmlns="http://www.w3.org/2000/svg"
-			className={className}
+			className={cn('text-[#1C1B1F] w-6', className)}
 			onClick={onClick}
+			{...rest}
 		>
 			<mask
 				id="mask0_61_1321"

@@ -5,7 +5,7 @@ import { LoadingSpinner } from '@/components/core/loader';
 import { ApiDataType, apiService } from '@/utils/request';
 import Comment from '@/components/snippets/comments';
 import SocialShare from '@/components/snippets/social-share';
-import { getVideoShareUrl } from '@/utils';
+import { cn, getVideoShareUrl, numerify, toCapitalize } from '@/utils';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 import video from '@/components/skeletons/video';
 import MakeComment from '@/components/snippets/comments/makeComment';
@@ -14,6 +14,9 @@ import { useSelector } from 'react-redux';
 import { getNFakeComments } from '@/data/comments';
 import SendTipButton, { SendTipButtonUI } from '@/components/snippets/tip/SendTipButton';
 import { DiamonLevel } from '@/services/tip';
+import { CommentIcon, ReactIcon, ShareIcon } from '@/components/icons';
+import { useMomentReaction } from '@/utils/hooks';
+import TextDescription from '@/components/snippets/text-description';
 
 const VideoDetailsPage = () => {
 	const router = useRouter();
@@ -21,6 +24,7 @@ const VideoDetailsPage = () => {
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	const { PostHashHex, Tag }: any = router.query;
+	const { currentReaction, totalReaction } = useMomentReaction(PostHashHex);
 	const tagParam: any = router.query.tag;
 	const [hasLoaded, setHasLoaded] = useState<boolean>(true);
 	const [videoData, setVideoData] = useState<any>([]);
@@ -90,7 +94,7 @@ const VideoDetailsPage = () => {
 	const videoComments = (comments: any) => {
 		if (!comments) {
 			// return [];
-			return getNFakeComments(5);
+			return getNFakeComments(7);
 		}
 
 		return comments;
@@ -127,80 +131,161 @@ const VideoDetailsPage = () => {
 		));
 	};
 
+	console.log('videoData: ', videoData);
+
 	return (
 		<MainLayout title="Video Details">
-			<div>
+			<div className="min-h-[calc(100vh_-_72px)] grid grid-cols-3 gap-7">
 				{hasLoaded ? (
-					<div className="min-h-[calc(100vh_-_72px)] grid grid-cols-3 p-5 gap-5 bg-[#ddd]">
-						<LoadingSpinner isLoading={hasLoaded} />
-					</div>
+					<LoadingSpinner isLoading={hasLoaded} />
 				) : (
-					<div className="min-h-[calc(100vh_-_72px)] grid grid-cols-3 p-5 gap-5 bg-[#ddd]">
+					<>
+						{/* 1. Post Videos and Details Section ------------------- */}
 						<div className="col-span-2">
-							<div className="">
-								<h1 className="text-4xl font-semibold mb-4">
-									{videoData?.ProfileEntryResponse?.Username}
-								</h1>
+							<div className="flex flex-col gap-y-6">
+								{/* 1.1. Video Player ------------------- */}
 								<iframe
 									width="100%"
-									height="500"
+									height="483"
+									className="rounded-2xl bg-gradient-to-br from-gray-300 via-transparent to-[#BABABA]"
 									src={
-										videoData.VideoURLs[0] ??
+										`${videoData?.VideoURLs[0]}&loop=1` ??
 										'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
 									}
 									allowFullScreen
 								></iframe>
 
-								<p className="mt-4 max-h-[74px] overflow-y-auto">
-									{videoData.Body}
-								</p>
-
-								<div>
-									{videoData.Comments !== null &&
-										videoData.Comments.map(
-											(comment: any, commentIndex: number) => (
-												<Comment
-													comment={comment}
-													key={commentIndex}
-												/>
-											)
-										)}
+								{/* 1.2. Post title and reactions ------------------- */}
+								<div className="flex flex-col items-start gap-y-4">
+									<h2 className="text-[#1C1B1F] text-xl line-clamp-1">
+										{toCapitalize(videoData?.Body)}
+									</h2>
+									<div className="flex items-center justify-start">
+										<span className="flex items-center justify-start gap-x-2">
+											{currentReaction && (
+												<span className="">{currentReaction}</span>
+											)}
+											<span className="text-base text-[#7B7788]">
+												{totalReaction > 1
+													? `${numerify(totalReaction)} reactions`
+													: 'No reaction'}
+											</span>
+										</span>
+									</div>
 								</div>
-								<SocialShare
-									url={getVideoShareUrl(videoData?.PostHashHex)}
-									title={videoData?.Body}
-								></SocialShare>
 
-								{authUser && (
-									<SendTipButton
-										userId={authUser?.PublicKeyBase58Check}
-										postId={videoData.PostHashHex}
-										receiverId={videoData.PosterPublicKeyBase58Check}
-										diamonLevel={DiamonLevel.ONE}
-										ui={SendTipButtonUI.BUTTON}
-									/>
-								)}
-
-								{authUser && (
-									<MakeComment
-										postId={videoData.PostHashHex}
-										userId={authUser?.PublicKeyBase58Check}
-									></MakeComment>
-								)}
-
-								<div>
-									{videoComments(videoData.Comments).map(
-										(comment: any, commentIndex: number) => (
-											<Comment
-												comment={comment}
-												key={commentIndex}
+								{/* 1.3. User Info and Actions ------------------- */}
+								<div className="flex items-center justify-between flex-wrap gap-y-4 gap-x-7 flex-1">
+									<div className="flex items-center justify-start gap-x-4">
+										<img
+											className="w-12 h-12 object-cover rounded-full bg-gradient-to-br from-slate-200 to-slate-100 border border-slate-100"
+											src={`https://diamondapp.com/api/v0/get-single-profile-picture/${videoData?.ProfileEntryResponse?.PublicKeyBase58Check}?fallback=https://diamondapp.com/assets/img/default-profile-pic.png`}
+											alt={
+												videoData?.ProfileEntryResponse?.Username ||
+												'username'
+											}
+										/>
+										<h1 className="text-2xl text-[#1C1B1F] font-medium">
+											{videoData?.ProfileEntryResponse?.Username}
+										</h1>
+									</div>
+									<div className="flex items-center justify-start gap-x-4">
+										<button
+											className="px-3 pl-2 py-1 flex items-center gap-x-2 bg-[#EBFAFF] hover:bg-[#00A1D4] rounded-2xl cursor-pointer group transition-all"
+											onClick={() => console.log('on Clicked React Icon')}
+										>
+											<ReactIcon className="group-hover:text-white transition-all" />
+											<span className="text-sm text-[#47474A] group-hover:text-white transition-all">
+												React
+											</span>
+										</button>
+										<button
+											className="px-3 pl-2 py-1 flex items-center gap-x-2 bg-[#EBFAFF] hover:bg-[#00A1D4] rounded-2xl cursor-pointer group transition-all"
+											onClick={() => console.log('on Clicked Comment Icon')}
+										>
+											<CommentIcon className="group-hover:text-white transition-all" />
+											<span className="text-sm text-[#47474A] group-hover:text-white transition-all">
+												Comment
+											</span>
+										</button>
+										<button
+											className="px-3 pl-2 py-1 flex items-center gap-x-2 bg-[#EBFAFF] hover:bg-[#00A1D4] rounded-2xl cursor-pointer group transition-all"
+											onClick={() => console.log('on Clicked Share Icon')}
+										>
+											<ShareIcon className="group-hover:text-white transition-all" />
+											<span className="text-sm text-[#47474A] group-hover:text-white transition-all">
+												Share
+											</span>
+										</button>
+										{authUser && (
+											<SendTipButton
+												userId={authUser?.PublicKeyBase58Check}
+												postId={videoData.PostHashHex}
+												receiverId={videoData.PosterPublicKeyBase58Check}
+												diamonLevel={DiamonLevel.ONE}
+												ui={SendTipButtonUI.BUTTON}
 											/>
-										)
-									)}
+										)}
+									</div>
+								</div>
+
+								{/* 1.4. Post Description ------------------- */}
+								{videoData?.Body && (
+									<div className="">
+										<TextDescription description={videoData?.Body} />
+									</div>
+								)}
+
+								{/* 1.5. Post Comments ------------------- */}
+								<div className="py-6 rounded-lg w-full border border-[#EBEBEB]">
+									<div className="flex flex-col w-full gap-y-6">
+										<div className="px-6 flex items-center gap-x-2">
+											<CommentIcon className="w-5" />
+											<span className="flex items-center text-[#7B7788] text-base font-normal justify-start gap-x-2">
+												<span className="text-base">
+													{videoData?.CommentCount > 1
+														? `${numerify(
+																videoData?.CommentCount
+														  )} Comments`
+														: 'No comment'}
+												</span>
+											</span>
+										</div>
+
+										<div className="px-6 border-b border-[#EBEBEB] pb-3 mb-3">
+											<MakeComment
+												postId={videoData.PostHashHex}
+												userId={authUser?.PublicKeyBase58Check}
+											></MakeComment>
+										</div>
+
+										<div className="px-6 flex flex-col w-full gap-y-6 min-h-[300px] max-h-[475px] overflow-y-scroll scrollbar-thin scrollbar-thumb-slate-300">
+											{videoComments(videoData?.Comments).map(
+												(comment: any, commentIndex: number) => (
+													<Comment
+														comment={comment}
+														key={commentIndex}
+													/>
+												)
+											)}
+										</div>
+									</div>
+									<div className="hidden">
+										{videoData.Comments !== null &&
+											videoData.Comments.map(
+												(comment: any, commentIndex: number) => (
+													<Comment
+														comment={comment}
+														key={commentIndex}
+													/>
+												)
+											)}
+									</div>
 								</div>
 							</div>
 
-							<div className="mt-4 flex space-x-2">
+							{/* TODO:: Check, discuss and If necessary remove ------------------- */}
+							<div className={cn('mt-4 flex space-x-2', 'hidden')}>
 								<div className="likes-count flex space-x-2">
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -258,6 +343,8 @@ const VideoDetailsPage = () => {
 								</div>
 							</div>
 						</div>
+
+						{/* 2. More Videos Section ------------------- */}
 						<div className="col-span-1 mt-12">
 							{relatedVideos.length > 0 && !isRelatedVideosLoading ? (
 								<div className="flex flex-col">
@@ -268,7 +355,13 @@ const VideoDetailsPage = () => {
 								<LoadingSpinner isLoading={isRelatedVideosLoading} />
 							)}
 						</div>
-					</div>
+
+						{/* Socail Share Section ------------------- */}
+						<SocialShare
+							url={getVideoShareUrl(videoData?.PostHashHex)}
+							title={videoData?.Body}
+						></SocialShare>
+					</>
 				)}
 			</div>
 		</MainLayout>

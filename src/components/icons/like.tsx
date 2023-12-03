@@ -1,71 +1,42 @@
+import { cn } from '@/utils';
 import React from 'react';
 
-interface ILikeIconProps {
-	color?: string;
-	bgColor?: string;
-	borderColor?: string;
-	size?: number;
+interface ILikeIconProps extends React.SVGProps<SVGSVGElement> {
 	className?: string;
 	onClick?: () => void;
 }
 
 const LikeIcon = (props: ILikeIconProps) => {
-	const {
-		color = '#1C1B1F',
-		// bgColor = 'white',
-		// borderColor = '#D7D7D7',
-		size = 40,
-		className,
-		onClick,
-	} = props;
+	const { className, onClick, ...rest } = props;
 
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
-			width={size}
-			height={size}
-			viewBox={`0 0 ${size} ${size}`}
-			fill="none"
-			className={className}
+			viewBox="0 0 24 24"
+			fill="currentColor"
+			className={cn('text-[#1C1B1F] w-6', className)}
 			onClick={onClick}
+			{...rest}
 		>
-			<rect
-				x="0.5"
-				y="0.5"
-				width="39"
-				height="39"
-				rx="19.5"
-				fill="white"
-			/>
-			<rect
-				x="0.5"
-				y="0.5"
-				width="39"
-				height="39"
-				rx="19.5"
-				stroke="#D7D7D7"
-			/>
 			<mask
-				id="mask0_110_1453"
+				id="mask0_273_960"
 				style={{ maskType: 'alpha' }}
 				maskUnits="userSpaceOnUse"
-				x="8"
-				y="8"
+				x="0"
+				y="0"
 				width="24"
 				height="24"
 			>
 				<rect
-					x="8"
-					y="8"
 					width="24"
 					height="24"
 					fill="#D9D9D9"
 				/>
 			</mask>
-			<g mask="url(#mask0_110_1453)">
+			<g mask="url(#mask0_273_960)">
 				<path
-					d="M29 16C29.5333 16 30 16.2 30.4 16.6C30.8 17 31 17.4667 31 18V20C31 20.1167 30.9833 20.2417 30.95 20.375C30.9167 20.5083 30.8833 20.6333 30.85 20.75L27.85 27.8C27.7 28.1333 27.45 28.4167 27.1 28.65C26.75 28.8833 26.3833 29 26 29H15V16L21 10.05C21.25 9.8 21.5458 9.65417 21.8875 9.6125C22.2292 9.57083 22.5583 9.63333 22.875 9.8C23.1917 9.96667 23.425 10.2 23.575 10.5C23.725 10.8 23.7583 11.1083 23.675 11.425L22.55 16H29ZM17 16.85V27H26L29 20V18H20L21.35 12.5L17 16.85ZM12 29C11.45 29 10.9792 28.8042 10.5875 28.4125C10.1958 28.0208 10 27.55 10 27V18C10 17.45 10.1958 16.9792 10.5875 16.5875C10.9792 16.1958 11.45 16 12 16H15V18H12V27H15V29H12Z"
-					fill={color}
+					d="M21 8.00001C21.5333 8.00001 22 8.20001 22.4 8.60001C22.8 9.00001 23 9.46667 23 10V12C23 12.1167 22.9833 12.2417 22.95 12.375C22.9167 12.5083 22.8833 12.6333 22.85 12.75L19.85 19.8C19.7 20.1333 19.45 20.4167 19.1 20.65C18.75 20.8833 18.3833 21 18 21H7V8.00001L13 2.05001C13.25 1.80001 13.5458 1.65417 13.8875 1.61251C14.2292 1.57084 14.5583 1.63334 14.875 1.80001C15.1917 1.96667 15.425 2.20001 15.575 2.50001C15.725 2.80001 15.7583 3.10834 15.675 3.42501L14.55 8.00001H21ZM9 8.85001V19H18L21 12V10H12L13.35 4.50001L9 8.85001ZM4 21C3.45 21 2.97917 20.8042 2.5875 20.4125C2.19583 20.0208 2 19.55 2 19V10C2 9.45001 2.19583 8.97917 2.5875 8.58751C2.97917 8.19584 3.45 8.00001 4 8.00001H7V10H4V19H7V21H4Z"
+					// fill="#1C1B1F"
 				/>
 			</g>
 		</svg>

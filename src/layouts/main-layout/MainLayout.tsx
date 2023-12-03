@@ -169,13 +169,10 @@ const MainLayout = ({ title, isLoading, mainWrapClass, children }: MainLayoutPro
 						<LeftSidebar />
 					</div>
 					<div
-						className={cn(
-							'w-full ml-0 lg:ml-[16px] ease-in-out duration-500 transition-all',
-							{
-								'lg:w-[calc(100%_-_110px)]': !isSmallDevice && collapseSidebar,
-								'lg:w-[calc(100%_-_261px)]': !isSmallDevice && !collapseSidebar,
-							}
-						)}
+						className={cn('w-full ease-in-out duration-500 transition-all', {
+							'lg:w-[calc(100%_-_110px)]': !isSmallDevice && collapseSidebar,
+							'lg:w-[calc(100%_-_261px)]': !isSmallDevice && !collapseSidebar,
+						})}
 					>
 						<LoadingSpinner
 							fullHeight

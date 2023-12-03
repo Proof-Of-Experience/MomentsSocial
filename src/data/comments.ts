@@ -4,7 +4,43 @@ export const fakeComments = () => {
 			PostHashHex: 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6',
 			PosterPublicKeyBase58Check: 'BC1YLgi66tdjAaVfYpmM447cxsve3TpvfXD9h8X6JMak7gbKABoEVaT',
 			ParentStakeID: 'd9e8f7c6b5a4a311a317d6b22a59cf3g3dc48514eec35827adaeeba07f4d50e',
-			Body: 'Exploring the potential of decentralized finance (DeFi) on DeSo. Any thoughts on its impact and future developments?',
+			Body: 'Exploring the potential of decentralized finance (DeFi) on DeSo. Any thoughts on its impact and future developments. The decentralized finance (DeFi) on DeSo. Any thoughts on its impact and future developments. The potential of decentralized finance (DeFi) on DeSo. Any thoughts on its impact and future developments. Decentralized finance (DeFi) on DeSo. Any thoughts on its impact and future developments?',
+			ImageURLs: null,
+			VideoURLs: null,
+			ProfileEntryResponse: {
+				PublicKeyBase58Check: 'BC1YLgi66tdjAaVfYpmM447cxsve3TpvfXD9h8X6JMak7gbKABoEVaT',
+				Username: 'cryptoExplorer',
+				Description:
+					"Passionate about blockchain and its transformative power. Let's discuss the future of finance!",
+				ExtraData: {
+					FeaturedImageURL:
+						'https://images.deso.org/7ed40194dba6ce264e505afa8f2f308825fa82309d3bfe3d71cb32af3d9a48fa.webp',
+				},
+			},
+		},
+		{
+			PostHashHex: 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6',
+			PosterPublicKeyBase58Check: 'BC1YLgi66tdjAaVfYpmM447cxsve3TpvfXD9h8X6JMak7gbKABoEVaT',
+			ParentStakeID: 'd9e8f7c6b5a4a311a317d6b22a59cf3g3dc48514eec35827adaeeba07f4d50e',
+			Body: 'Exploring the potential of decentralized finance (DeFi) on DeSo. Any thoughts on its impact and future developments. The decentralized finance (DeFi) on DeSo. Any thoughts on its impact and future developments. The potential of decentralized finance (DeFi) on DeSo. Any thoughts on its impact and future developments. Decentralized finance (DeFi) on DeSo. Any thoughts on its impact and future developments?',
+			ImageURLs: null,
+			VideoURLs: null,
+			ProfileEntryResponse: {
+				PublicKeyBase58Check: 'BC1YLgi66tdjAaVfYpmM447cxsve3TpvfXD9h8X6JMak7gbKABoEVaT',
+				Username: 'cryptoExplorer',
+				Description:
+					"Passionate about blockchain and its transformative power. Let's discuss the future of finance!",
+				ExtraData: {
+					FeaturedImageURL:
+						'https://images.deso.org/7ed40194dba6ce264e505afa8f2f308825fa82309d3bfe3d71cb32af3d9a48fa.webp',
+				},
+			},
+		},
+		{
+			PostHashHex: 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6',
+			PosterPublicKeyBase58Check: 'BC1YLgi66tdjAaVfYpmM447cxsve3TpvfXD9h8X6JMak7gbKABoEVaT',
+			ParentStakeID: 'd9e8f7c6b5a4a311a317d6b22a59cf3g3dc48514eec35827adaeeba07f4d50e',
+			Body: 'Exploring the potential of decentralized finance (DeFi) on DeSo. Any thoughts on its impact and future developments. The decentralized finance (DeFi) on DeSo. Any thoughts on its impact and future developments. The potential of decentralized finance (DeFi) on DeSo. Any thoughts on its impact and future developments. Decentralized finance (DeFi) on DeSo. Any thoughts on its impact and future developments?',
 			ImageURLs: null,
 			VideoURLs: null,
 			ProfileEntryResponse: {

@@ -19,6 +19,7 @@ interface ProfilePreferencesProps {
 type HashTagOption = ValueType<{ value: string; label: string }>;
 type HashtagEntity = { _id: string; name: string };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 enum ButtonText {
 	DEFAULT = 'Save Preferences',
 	SAVING = 'Saving Preferences',
@@ -96,7 +97,7 @@ const AllPreferences = ({ userId }: ProfilePreferencesProps) => {
 	};
 
 	const handleSavePreferences = async (option: HashTagOption, index: number) => {
-		let _userId = userId ?? ''
+		let _userId = userId ?? '';
 
 		if (!userId) {
 			try {
@@ -112,7 +113,7 @@ const AllPreferences = ({ userId }: ProfilePreferencesProps) => {
 
 		selectedOptions.push(option);
 
-		let map = new Set<string>();
+		const map = new Set<string>();
 
 		selectedOptions.forEach((option: HashTagOption) => {
 			if (!map.has(option.value)) {

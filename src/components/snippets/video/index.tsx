@@ -1,12 +1,21 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { VideoItemProps } from '@/model/video';
 import EmojiReaction from '../emoji-reaction';
 import { useRouter } from 'next/router';
 
 const VideoItem = memo(({ desoResponse, item, onReactionClick, ...rest }: VideoItemProps) => {
+	console.log('Video Item: ', item);
+	const [isVideoHovered, setIsVideoHovered] = useState<boolean>(false);
+	const [videoUrl, setVideoUrl] = useState<string>('');
 	const router = useRouter();
 
-	const sanitizeURL = (url: any) => {
+	useEffect(() => {
+		setVideoUrl(
+			sanitizeURL(desoResponse ? item?.VideoURLs[0] : item?.VideoURL, isVideoHovered, true)
+		);
+	}, [isVideoHovered, desoResponse, item?.VideoURL, item?.VideoURLs]);
+
+	const sanitizeURL = (url: any, isAutoPlay = false, isMuted = false) => {
 		let parsedUrl;
 		try {
 			parsedUrl = new URL(url);
@@ -14,45 +23,69 @@ const VideoItem = memo(({ desoResponse, item, onReactionClick, ...rest }: VideoI
 			// For YouTube
 			if (parsedUrl.hostname.includes('youtube.com')) {
 				const videoId = parsedUrl.searchParams.get('v');
-				return `https://www.youtube.com/embed/${videoId}?autoplay=0`;
+				return `https://www.youtube.com/embed/${videoId}?autoplay=${
+					isAutoPlay ? '1' : '0'
+				}&mute=${isMuted ? '1' : '0'}`;
 			}
 
 			// For lvpr.tv
 			if (parsedUrl.hostname.includes('lvpr.tv')) {
-				parsedUrl.searchParams.set('autoplay', '0');
+				if (!isVideoHovered) {
+					parsedUrl.searchParams.set('autoplay', isAutoPlay ? '1' : '0');
+					parsedUrl.searchParams.set('mute', isMuted ? '1' : '0');
+				}
 				return parsedUrl.toString();
 			}
-
 			return parsedUrl.toString();
 		} catch (error) {
 			console.error('Invalid URL:', url);
 			return '';
 		}
 	};
-
-	const videoUrl = sanitizeURL(desoResponse ? item?.VideoURLs[0] : item?.VideoURL);
+	// const videoUrl = sanitizeURL(desoResponse ? item?.VideoURLs[0] : item?.VideoURL);
+	const thumbnailUrl = `${process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL}${item?.screenshot}`;
 
 	console.log('videoUrl', videoUrl);
 
 	return (
 		<div
 			className="relative cursor-pointer"
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			onClick={(e: any) => {
+			onClick={() => {
 				router.push({
 					pathname: `video/${item?.PostHashHex}`,
 				});
 			}}
 		>
-			<div className="relative overflow-hidden w-full h-[205px]">
+			{/* // TODO:: Remove after testing new video player logic */}
+			{/* <div className="relative overflow-hidden w-full h-[205px] group">
 				<iframe
 					{...rest}
-					className="absolute top-0 left-0 right-0 bottom-0 w-full h-[205px] rounded-[8px] bg-gradient-to-br from-lightgray via-transparent to-#BABABA"
+					className="absolute top-0 left-0 right-0 bottom-0 w-full h-[205px] rounded-[8px] bg-gradient-to-br from-lightgray via-transparent to-#BABABA transition-opacity duration-500"
 					src={videoUrl}
-					title="YouTube video player"
+					title="Moment video player"
 					allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 					allowFullScreen
 				></iframe>
+			</div> */}
+			<div
+				className="relative overflow-hidden w-full h-[205px] rounded-lg bg-gradient-to-br from-gray-300 via-transparent to-[#BABABA] group"
+				onMouseOver={() => setIsVideoHovered(true)}
+				onMouseOut={() => setIsVideoHovered(false)}
+			>
+				<iframe
+					{...rest}
+					className="absolute top-0 left-0 right-0 bottom-0 w-full h-full rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+					src={videoUrl}
+					title="Moment video player"
+					allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+					allowFullScreen
+				></iframe>
+				<div className="absolute top-0 left-0 right-0 bottom-0 group-hover:-top-[55px] w-full h-full rounded-[8px] object-cover group-hover:opacity-0 transition-opacity duration-500"></div>
+				<img
+					src={thumbnailUrl}
+					alt="Video thumbnail"
+					className="absolute top-0 left-0 right-0 bottom-0 w-full h-full rounded-[8px] object-cover group-hover:opacity-0 group-hover:-z-10 transition-opacity duration-500"
+				/>
 			</div>
 			<div className="flex flex-row justify-start mt-4">
 				<img

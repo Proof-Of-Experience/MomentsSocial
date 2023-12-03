@@ -38,6 +38,7 @@ const AuthButtons = () => {
 		}
 	}, []);
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	const getUserInfoFromUtils = async (userId: number) => {
 		const apiUrl = `/api/user`;
 		const data = {
@@ -60,7 +61,7 @@ const AuthButtons = () => {
 	};
 
 	const onClickLogin = async () => {
-		const user = await userLogin()
+		const user = await userLogin();
 
 		dispatch(setAuthUser(user));
 	};

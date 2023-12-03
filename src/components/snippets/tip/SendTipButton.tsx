@@ -1,4 +1,6 @@
+import { DonateIcon } from '@/components/icons';
 import { DiamonLevel, sendTip } from '@/services/tip';
+import { cn } from '@/utils';
 import { CurrencyDollarIcon } from '@heroicons/react/24/outline';
 import { memo, useState } from 'react';
 
@@ -13,12 +15,16 @@ interface SendTipButtonProps {
 	receiverId: string;
 	diamonLevel: DiamonLevel;
 	ui: SendTipButtonUI;
+	buttonMiniClassName?: string;
+	buttonLgClassName?: string;
 }
 
-const SendTipButtonText = "Send tip";
-const SentText = "Sent !";
+const SendTipButtonText = 'Send tip';
+const SentText = 'Sent !';
 
-const SendTipButton = ({ userId, postId, receiverId, diamonLevel, ui }: SendTipButtonProps) => {
+const SendTipButton = (props: SendTipButtonProps) => {
+	const { userId, postId, receiverId, diamonLevel, ui, buttonMiniClassName, buttonLgClassName } =
+		props;
 	const [buttonText, setButtonText] = useState<string>(SendTipButtonText);
 
 	const handleClick = async () => {
@@ -37,7 +43,7 @@ const SendTipButton = ({ userId, postId, receiverId, diamonLevel, ui }: SendTipB
 		return (
 			<>
 				<CurrencyDollarIcon
-					className="cursor-pointer"
+					className={cn('cursor-pointer', buttonMiniClassName)}
 					onClick={handleClick}
 				/>
 				<span className="text-[#939393] text-[10px] font-normal leading-none mt-[6px]">
@@ -51,10 +57,15 @@ const SendTipButton = ({ userId, postId, receiverId, diamonLevel, ui }: SendTipB
 		<div>
 			<button
 				onClick={handleClick}
-				className="flex flex-row items-center text-sm px-4 py-2 rounded-md bg-blue-400 text-white my-2"
+				className={cn(
+					'px-3 pl-2 py-1 flex items-center gap-x-2 bg-[#EBFAFF] hover:bg-[#00A1D4] rounded-2xl cursor-pointer group transition-all',
+					buttonLgClassName
+				)}
 			>
-				<CurrencyDollarIcon className="w-4 h-4 mr-1" />
-				{buttonText}
+				<DonateIcon className="group-hover:text-white transition-all" />
+				<span className="text-sm text-[#47474A] group-hover:text-white transition-all">
+					{buttonText}
+				</span>
 			</button>
 		</div>
 	);
