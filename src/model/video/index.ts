@@ -3,4 +3,5 @@ export interface VideoItemProps {
 	onReactionClick?: () => void;
 	[rest: string]: any;
 	desoResponse?: boolean;
+	isHorizontal?: boolean;
 }

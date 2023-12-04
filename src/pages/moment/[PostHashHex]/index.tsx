@@ -8,7 +8,7 @@ import { selectAuthUser } from '@/slices/authSlice';
 import { useSelector } from 'react-redux';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 import { makeReaction } from '@/services/reaction/reaction';
-import Comment from '@/components/snippets/comments';
+import CommentItem from '@/components/snippets/comments/commentItem';
 import SocialShare from '@/components/snippets/social-share';
 import { ApiDataType, apiService } from '@/utils/request';
 import MakeComment from '@/components/snippets/comments/makeComment';
@@ -319,7 +319,7 @@ const MomentDetailsPage = () => {
 									<div>
 										{videoComments(video.Comments).map(
 											(comment: any, commentIndex: number) => (
-												<Comment
+												<CommentItem
 													comment={comment}
 													key={commentIndex}
 												/>

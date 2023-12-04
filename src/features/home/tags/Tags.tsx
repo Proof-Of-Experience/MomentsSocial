@@ -86,7 +86,7 @@ const Tags: React.FC<TagsProps> = ({
 
 	const momentTagSliderSettings = {
 		dots: false,
-		infinite: true,
+		infinite: false,
 		loop: false,
 		arrows: false,
 		speed: 500,
@@ -184,32 +184,38 @@ const Tags: React.FC<TagsProps> = ({
 						ref={slider}
 						{...momentTagSliderSettings}
 					>
-						<button
-							className={`${
-								!tagParam
-									? ' border-b-[1px] border-[#00A1D4] text-[#00A1D4]'
-									: 'text-[#7B7788]'
-							} px-3 py-2 leading-trim font-inter text-base`}
-							title="All"
-							// disabled={!tagParam}
-							onClick={() => onClick('all')}
-						>
-							All
-						</button>
+						<div className="mx-1.5">
+							<button
+								className={`${
+									!tagParam
+										? ' border-b-[1px] border-[#00A1D4] text-[#00A1D4]'
+										: 'text-[#7B7788]'
+								} px-3 py-2 leading-trim font-inter text-base`}
+								title="All"
+								// disabled={!tagParam}
+								onClick={() => onClick('all')}
+							>
+								All
+							</button>
+						</div>
 						{tags.map((item: any, index: number) => {
 							return (
-								<button
+								<div
+									className="mx-1.5"
 									key={`tag-${index}`}
-									className={`${
-										tagParam == item.hashtag
-											? 'border-b-[1px] border-[#00A1D4] text-[#00A1D4]'
-											: 'text-[#7B7788]'
-									} px-3 py-2 leading-trim font-inter text-base`}
-									title={item.name}
-									onClick={() => onClick(item.name)}
 								>
-									{'#' + capitalizeFirstLetter(item.name)}
-								</button>
+									<button
+										className={`${
+											tagParam == item.hashtag // TODO: condition will be double equal
+												? 'border-b-[1px] border-[#00A1D4] text-[#00A1D4]'
+												: 'text-[#7B7788]'
+										} px-3 py-2 leading-trim font-inter text-base`}
+										title={item.name}
+										onClick={() => onClick(item.name)}
+									>
+										{'#' + capitalizeFirstLetter(item.name)}
+									</button>
+								</div>
 							);
 						})}
 					</Slider>
