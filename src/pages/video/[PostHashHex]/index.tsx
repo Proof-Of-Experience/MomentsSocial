@@ -2,10 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import MainLayout from '@/layouts/main-layout';
 import { ApiDataType, apiService } from '@/utils/request';
-import SocialShare from '@/components/snippets/social-share';
-import { cn, getVideoShareUrl, numerify, toCapitalize } from '@/utils';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-import video from '@/components/skeletons/video';
+import { cn, numerify, toCapitalize } from '@/utils';
 import { selectAuthUser } from '@/slices/authSlice';
 import { useSelector } from 'react-redux';
 import { getNFakeComments } from '@/data/comments';
@@ -18,10 +15,14 @@ import CommentBox from '@/components/snippets/comments/commentBox';
 import RelatedVideoList from '@/components/snippets/video-details/relatedVideoList';
 import VideoPlayerSkeleton from '@/components/skeletons/video-details/videoPlayer';
 import RelatedVideosSkeleton from '@/components/skeletons/video-details/relatedVideos';
+import SocialSharePopup from '@/components/snippets/social-share-popup';
 
 const VideoDetailsPage = () => {
 	const router = useRouter();
 	const authUser = useSelector(selectAuthUser);
+
+	const videoUrl = process.env.NEXT_PUBLIC_MOMENTS_DOMAIN_URL + router.asPath;
+	console.log('videoUrl:', videoUrl);
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	const { PostHashHex, Tag }: any = router.query;
@@ -32,6 +33,7 @@ const VideoDetailsPage = () => {
 	const [videoTotalPages, setVideoTotalPages] = useState<number>(Infinity);
 	const [isRelatedVideosLoading, setIsRelatedVideosLoading] = useState<boolean>(false);
 	const [relatedVideos, setRelatedVideos] = useState<any>([]);
+	const [showShareModal, setShowShareModal] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (!router.isReady) return;
@@ -188,7 +190,7 @@ const VideoDetailsPage = () => {
 									</button>
 									<button
 										className="px-3 pl-2 py-1 flex items-center gap-x-2 bg-[#EBFAFF] hover:bg-[#00A1D4] rounded-2xl cursor-pointer group transition-all"
-										onClick={() => console.log('on Clicked Share Icon')}
+										onClick={() => setShowShareModal(true)}
 									>
 										<ShareIcon className="group-hover:text-white transition-all" />
 										<span className="text-sm text-[#47474A] group-hover:text-white transition-all">
@@ -301,10 +303,12 @@ const VideoDetailsPage = () => {
 				</div>
 
 				{/* Socail Share Section ------------------- */}
-				<SocialShare
-					url={getVideoShareUrl(videoData?.PostHashHex)}
-					title={videoData?.Body}
-				></SocialShare>
+				<SocialSharePopup
+					open={showShareModal}
+					onClose={() => setShowShareModal(false)}
+					videoData={videoData}
+					videoUrl={videoUrl}
+				/>
 			</div>
 		</MainLayout>
 	);

@@ -18,49 +18,50 @@ import {
 
 const SocialShare = memo(({ url, title }: any) => {
 	return (
-		<div className="flex items-center text-lg font-semibold text-gray-700">
+		<div className="flex items-center justify-center gap-3 flex-wrap">
 			<FacebookShareButton
 				url={url}
 				quote={title}
+				// className=""
 			>
 				<FacebookIcon
-					size={24}
+					size={56}
 					round
 				></FacebookIcon>
 			</FacebookShareButton>
 			<LinkedinShareButton url={url}>
 				<LinkedinIcon
-					size={24}
+					size={56}
 					round
 				></LinkedinIcon>
 			</LinkedinShareButton>
 			<EmailShareButton url={url}>
 				<EmailIcon
-					size={24}
+					size={56}
 					round
 				></EmailIcon>
 			</EmailShareButton>
 			<RedditShareButton url={url}>
 				<RedditIcon
-					size={24}
+					size={56}
 					round
 				></RedditIcon>
 			</RedditShareButton>
 			<TwitterShareButton url={url}>
 				<TwitterIcon
-					size={24}
+					size={56}
 					round
 				></TwitterIcon>
 			</TwitterShareButton>
 			<TelegramShareButton url={url}>
 				<TelegramIcon
-					size={24}
+					size={56}
 					round
 				></TelegramIcon>
 			</TelegramShareButton>
 			<WhatsappShareButton url={url}>
 				<WhatsappIcon
-					size={24}
+					size={56}
 					round
 				></WhatsappIcon>
 			</WhatsappShareButton>

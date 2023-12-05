@@ -198,26 +198,27 @@ const Tags: React.FC<TagsProps> = ({
 								All
 							</button>
 						</div>
-						{tags.map((item: any, index: number) => {
-							return (
-								<div
-									className="mx-1.5"
-									key={`tag-${index}`}
-								>
-									<button
-										className={`${
-											tagParam == item.hashtag // TODO: condition will be double equal
-												? 'border-b-[1px] border-[#00A1D4] text-[#00A1D4]'
-												: 'text-[#7B7788]'
-										} px-3 py-2 leading-trim font-inter text-base`}
-										title={item.name}
-										onClick={() => onClick(item.name)}
+						{tags?.lenght > 0 &&
+							tags.map((item: any, index: number) => {
+								return (
+									<div
+										className="mx-1.5"
+										key={`tag-${index}`}
 									>
-										{'#' + capitalizeFirstLetter(item.name)}
-									</button>
-								</div>
-							);
-						})}
+										<button
+											className={`${
+												tagParam == item?.name
+													? 'border-b-[1px] border-[#00A1D4] text-[#00A1D4]'
+													: 'text-[#7B7788]'
+											} px-3 py-2 leading-trim font-inter text-base`}
+											title={item?.name}
+											onClick={() => onClick(item?.name)}
+										>
+											{'#' + capitalizeFirstLetter(item?.name)}
+										</button>
+									</div>
+								);
+							})}
 					</Slider>
 				</div>
 			</div>

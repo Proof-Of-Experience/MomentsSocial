@@ -7,9 +7,11 @@ const Videos = ({ videoData = [], onReactionClick, videoLoaded, ...rest }: any) 
 	const { gridView }: any = useContext(VideoLayoutContext);
 	const SKELETON_COUNT = 5;
 
+	// console.log('videoData----', videoData);
+
 	const showGridCol = () => {
 		if (gridView === 'grid') {
-			return 'grid-cols-5';
+			return 'grid-cols-4';
 		} else {
 			return 'grid-cols-3';
 		}
@@ -40,6 +42,7 @@ const Videos = ({ videoData = [], onReactionClick, videoLoaded, ...rest }: any) 
 					{...rest}
 					item={item}
 					onReactionClick={() => onReactionClick(new Date())}
+					hideUserProfilePhoto={true}
 				/>
 			</div>
 		));
