@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import MainLayout from '@/layouts/main-layout';
 import { LoadingSpinner } from '@/components/core/loader';
-import { debounce, getMomentShareUrl, mergeVideoData } from '@/utils';
+import { cn, debounce, getMomentShareUrl, mergeVideoData } from '@/utils';
 import EmojiReaction from '@/components/snippets/emoji-reaction';
 import { selectAuthUser } from '@/slices/authSlice';
 import { useSelector } from 'react-redux';
@@ -14,14 +14,20 @@ import { ApiDataType, apiService } from '@/utils/request';
 import MakeComment from '@/components/snippets/comments/makeComment';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 import { fakeComments, getNFakeComments } from '@/data/comments';
-import { useMomentReaction } from '@/utils/hooks';
+import { useMomentReaction, useSidebar } from '@/utils/hooks';
 import MomentOptionTray from '@/components/snippets/moment-details/OptionTray';
+import CommentBox from '@/components/snippets/comments/commentBox';
+import { XMarkIcon } from '@heroicons/react/20/solid';
+import SocialSharePopup from '@/components/snippets/social-share-popup';
 
 const MomentDetailsPage = () => {
 	const router = useRouter();
 	const { PostHashHex, Tag }: any = router.query;
+	const videoUrl = process.env.NEXT_PUBLIC_MOMENTS_DOMAIN_URL + router.asPath;
+	// console.log('videoUrl:', videoUrl);
 
 	const authUser = useSelector(selectAuthUser);
+	const { setCollapseSidebar } = useSidebar();
 	const {
 		// currentReaction,
 		totalReaction,
@@ -29,8 +35,11 @@ const MomentDetailsPage = () => {
 	const [activeVideoIndex, setActiveVideoIndex] = useState(0);
 	const [hasLoaded, setHasLoaded] = useState<boolean>(true);
 	const [videoData, setVideoData] = useState<any>([]);
+	const [currentPage, setCurrentPage] = useState<number>(1);
+	const [showCommentSideBox, setShowCommentSideBox] = useState<boolean>(false);
+	const [showShareModal, setShowShareModal] = useState<boolean>(false);
+
 	const wheelDivRef = useRef<HTMLDivElement>(null);
-	let [currentPage, setCurrentPage] = useState<number>(1);
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	const react = async () => {
@@ -86,6 +95,10 @@ const MomentDetailsPage = () => {
 	};
 
 	useEffect(() => {
+		setCollapseSidebar(true);
+	}, []);
+
+	useEffect(() => {
 		if (!router.isReady) return;
 		fetchSingleProfile();
 		if (Tag) {
@@ -128,7 +141,7 @@ const MomentDetailsPage = () => {
 			const videoId = videoData?.length > 0 && videoData[newIndex].PostHashHex;
 
 			if (newIndex + 5 >= videoData.length) {
-				setCurrentPage(currentPage++);
+				setCurrentPage((prev) => prev++);
 				fetchMoments(currentPage);
 			}
 
@@ -194,7 +207,7 @@ const MomentDetailsPage = () => {
 		} catch (error: any) {
 			console.error('error', error.response);
 		} finally {
-			setCurrentPage(currentPage++);
+			setCurrentPage((prev) => prev++);
 		}
 	};
 
@@ -253,26 +266,45 @@ const MomentDetailsPage = () => {
 					videoData.length > 0 &&
 					videoData.map((video: any, index: number) => {
 						console.log('video item', video);
-						// console.log('video.VideoURLs[0]====', video.VideoURLs[0]);
+						console.log('video?.VideoURLs[0]====', video?.VideoURLs?.[0]);
 						return (
 							<div
 								key={index}
 								className={`${activeVideoIndex !== index ? 'hidden' : ''}`}
 								// style={{ marginLeft: '30%', marginRight: '30%', width: '40%' }}
 							>
-								<div className="relative">
-									<div className="relative max-w-full w-[435px] h-[calc(100vh-140px)] bg-[#babac3] rounded-2xl group">
-										<iframe
-											className="absolute top-0 left-0 w-full h-full object-cover rounded-2xl"
-											// width="100%"
-											// height="500"
-											src={
-												`${video?.VideoURLs[0]}&loop=1` ??
-												'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-											}
-											allow="accelerometer; autoplay; clipboard-write; picture-in-picture;"
-											allowFullScreen
-										></iframe>
+								<div
+									className={cn(
+										'relative transition-all',
+										!showCommentSideBox ? 'w-[435px]' : 'w-[870px]'
+									)}
+								>
+									<div
+										className={cn(
+											'relative max-w-full w-[435px] h-[calc(100vh-140px)] bg-[#babac3] rounded-2xl group z-20',
+											showCommentSideBox
+												? 'rounded-tr-none rounded-br-none'
+												: ''
+										)}
+									>
+										{video?.VideoURLs?.[0] && (
+											<iframe
+												className={cn(
+													'absolute top-0 left-0 w-full h-full object-cover rounded-2xl',
+													showCommentSideBox
+														? 'rounded-tr-none rounded-br-none'
+														: ''
+												)}
+												// width="100%"
+												// height="500"
+												src={
+													`${video?.VideoURLs?.[0]}&loop=1` ??
+													'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+												}
+												allow="accelerometer; autoplay; clipboard-write; picture-in-picture;"
+												allowFullScreen
+											></iframe>
+										)}
 										<div className="absolute bottom-0 left-0 group-hover:hidden p-5">
 											<h1 className="text-white text-sm font-medium line-clamp-1">
 												{video?.ProfileEntryResponse?.Username ||
@@ -289,6 +321,45 @@ const MomentDetailsPage = () => {
 										totalReaction={totalReaction}
 										totalComment={video?.Comments?.length}
 										authUser={authUser}
+										onClickComment={() => setShowCommentSideBox(true)}
+										onClickShare={() => setShowShareModal(true)}
+										className={cn(
+											'absolute bottom-0',
+											showCommentSideBox
+												? 'right-[calc(100%_-_435px)]'
+												: '-right-[67px]'
+										)}
+									/>
+
+									{/* Moment's CommentBox ------------------- */}
+									<div
+										className={cn(
+											'absolute bottom-0 -right-0 py-6 rounded-2xl w-[435px] h-full border border-[#EBEBEB] bg-white opacity-0 overflow-hidden transition-all',
+											showCommentSideBox
+												? 'rounded-tl-none rounded-bl-none opacity-100 z-10 -right-[calc(100%_-_870px)]'
+												: ''
+										)}
+									>
+										<div
+											className="flex items-center justify-center w-8 h-8 bg-transparent hover:bg-slate-200 translate-all absolute top-2.5 right-2.5 cursor-pointer rounded-full"
+											onClick={() => setShowCommentSideBox(false)}
+										>
+											<XMarkIcon className="w-5 h-5" />
+										</div>
+										<CommentBox
+											PostHashHex={videoData?.PostHashHex}
+											commentCount={videoData?.CommentCount}
+											comments={videoComments(videoData?.Comments)}
+											authUser={authUser}
+										/>
+									</div>
+
+									{/* Socail Share Section ------------------- */}
+									<SocialSharePopup
+										open={showShareModal}
+										onClose={() => setShowShareModal(false)}
+										videoData={videoData}
+										videoUrl={videoUrl}
 									/>
 								</div>
 

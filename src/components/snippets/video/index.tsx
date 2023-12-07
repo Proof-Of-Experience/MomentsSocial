@@ -11,6 +11,7 @@ const VideoItem = memo((props: VideoItemProps) => {
 		onReactionClick,
 		isHorizontal,
 		hideUserProfilePhoto = false,
+		showVideoOnly = false,
 		...rest
 	} = props;
 
@@ -64,41 +65,64 @@ const VideoItem = memo((props: VideoItemProps) => {
 				'flex items-start justify-between gap-x-4': isHorizontal,
 			})}
 		>
-			<div
-				className={cn(
-					'relative overflow-hidden w-full h-[205px] rounded-lg bg-gradient-to-br from-gray-300 via-transparent to-[#BABABA] group',
-					{
-						'w-[170px] h-[100px]': isHorizontal,
-					}
-				)}
-				onClick={() => {
-					router.push(`/video/${item?.PostHashHex}`);
-				}}
-				onMouseOver={() => setIsVideoHovered(true)}
-				onMouseOut={() => setIsVideoHovered(false)}
-			>
-				<iframe
-					{...rest}
-					className="absolute top-0 left-0 right-0 bottom-0 w-full h-full rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-					src={videoUrl}
-					title="Moment video player"
-					allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-					allowFullScreen
-				></iframe>
+			{showVideoOnly ? (
 				<div
 					className={cn(
-						'absolute top-0 left-0 right-0 bottom-0 group-hover:-top-[55px] w-full h-full rounded-[8px] object-cover group-hover:opacity-0 transition-opacity duration-500',
+						'relative overflow-hidden w-full h-[205px] rounded-lg bg-gradient-to-br from-gray-300 via-transparent to-[#BABABA]',
 						{
-							'top-[20px]': isHorizontal,
+							'w-[170px] h-[100px]': isHorizontal,
 						}
 					)}
-				></div>
-				<img
-					src={thumbnailUrl}
-					alt="Video thumbnail"
-					className="absolute top-0 left-0 right-0 bottom-0 w-full h-full rounded-[8px] object-cover group-hover:opacity-0 group-hover:-z-10 transition-opacity duration-500"
-				/>
-			</div>
+					onClick={() => {
+						router.push(`/video/${item?.PostHashHex}`);
+					}}
+				>
+					<iframe
+						{...rest}
+						className="absolute top-0 left-0 right-0 bottom-0 w-full h-full rounded-lg"
+						src={videoUrl}
+						title="Moment video player"
+						allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+						allowFullScreen
+					></iframe>
+				</div>
+			) : (
+				<div
+					className={cn(
+						'relative overflow-hidden w-full h-[205px] rounded-lg bg-gradient-to-br from-gray-300 via-transparent to-[#BABABA] group',
+						{
+							'w-[170px] h-[100px]': isHorizontal,
+						}
+					)}
+					onClick={() => {
+						router.push(`/video/${item?.PostHashHex}`);
+					}}
+					onMouseOver={() => setIsVideoHovered(true)}
+					onMouseOut={() => setIsVideoHovered(false)}
+				>
+					<iframe
+						{...rest}
+						className="absolute top-0 left-0 right-0 bottom-0 w-full h-full rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+						src={videoUrl}
+						title="Moment video player"
+						allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+						allowFullScreen
+					></iframe>
+					<div
+						className={cn(
+							'absolute top-0 left-0 right-0 bottom-0 group-hover:-top-[55px] w-full h-full rounded-[8px] object-cover group-hover:opacity-0 transition-opacity duration-500',
+							{
+								'top-[20px]': isHorizontal,
+							}
+						)}
+					></div>
+					<img
+						src={thumbnailUrl}
+						alt="Video thumbnail"
+						className="absolute top-0 left-0 right-0 bottom-0 w-full h-full rounded-[8px] object-cover group-hover:opacity-0 group-hover:-z-10 transition-opacity duration-500"
+					/>
+				</div>
+			)}
 			<div
 				className={cn('flex flex-row justify-start mt-4', {
 					'flex-1 mt-0': isHorizontal,

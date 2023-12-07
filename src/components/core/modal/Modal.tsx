@@ -26,7 +26,7 @@ const Modal = (props: IModalProps) => {
 		>
 			<Dialog
 				as="div"
-				className="relative z-10"
+				className="relative z-30"
 				onClose={onClickClose}
 			>
 				<Transition.Child

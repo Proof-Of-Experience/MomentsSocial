@@ -43,6 +43,7 @@ const Videos = ({ videoData = [], onReactionClick, videoLoaded, ...rest }: any) 
 					item={item}
 					onReactionClick={() => onReactionClick(new Date())}
 					hideUserProfilePhoto={true}
+					showVideoOnly
 				/>
 			</div>
 		));
@@ -50,7 +51,7 @@ const Videos = ({ videoData = [], onReactionClick, videoLoaded, ...rest }: any) 
 
 	return (
 		<div>
-			<div className={`grid ${showGridCol()} gap-x-7 gap-y-12`}>{renderVideoItems()}</div>
+			<div className={`grid ${showGridCol()} gap-7`}>{renderVideoItems()}</div>
 		</div>
 	);
 };

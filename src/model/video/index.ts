@@ -5,4 +5,5 @@ export interface VideoItemProps {
 	desoResponse?: boolean;
 	isHorizontal?: boolean;
 	hideUserProfilePhoto?: boolean;
+	showVideoOnly?: boolean;
 }

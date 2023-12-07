@@ -9,7 +9,7 @@ import { getNFakeComments } from '@/data/comments';
 import SendTipButton, { SendTipButtonUI } from '@/components/snippets/tip/SendTipButton';
 import { DiamonLevel } from '@/services/tip';
 import { CommentIcon, ReactIcon, ShareIcon } from '@/components/icons';
-import { useMomentReaction } from '@/utils/hooks';
+import { useMomentReaction, useSidebar } from '@/utils/hooks';
 import TextDescription from '@/components/snippets/text-description';
 import CommentBox from '@/components/snippets/comments/commentBox';
 import RelatedVideoList from '@/components/snippets/video-details/relatedVideoList';
@@ -20,6 +20,7 @@ import SocialSharePopup from '@/components/snippets/social-share-popup';
 const VideoDetailsPage = () => {
 	const router = useRouter();
 	const authUser = useSelector(selectAuthUser);
+	const { setCollapseSidebar } = useSidebar();
 
 	const videoUrl = process.env.NEXT_PUBLIC_MOMENTS_DOMAIN_URL + router.asPath;
 	console.log('videoUrl:', videoUrl);
@@ -34,6 +35,10 @@ const VideoDetailsPage = () => {
 	const [isRelatedVideosLoading, setIsRelatedVideosLoading] = useState<boolean>(false);
 	const [relatedVideos, setRelatedVideos] = useState<any>([]);
 	const [showShareModal, setShowShareModal] = useState<boolean>(false);
+
+	useEffect(() => {
+		setCollapseSidebar(true);
+	}, []);
 
 	useEffect(() => {
 		if (!router.isReady) return;
@@ -159,13 +164,25 @@ const VideoDetailsPage = () => {
 							<div className="flex items-center justify-between flex-wrap gap-y-4 gap-x-7 flex-1">
 								<div className="flex items-center justify-start gap-x-4">
 									<img
-										className="w-12 h-12 object-cover rounded-full bg-gradient-to-br from-slate-200 to-slate-100 border border-slate-100"
+										className="w-12 h-12 object-cover rounded-full bg-gradient-to-br from-slate-200 to-slate-100 border border-slate-100 cursor-pointer"
 										src={`https://diamondapp.com/api/v0/get-single-profile-picture/${videoData?.ProfileEntryResponse?.PublicKeyBase58Check}?fallback=https://diamondapp.com/assets/img/default-profile-pic.png`}
 										alt={
 											videoData?.ProfileEntryResponse?.Username || 'username'
 										}
+										onClick={() => {
+											router.push(
+												`/user/${videoData?.ProfileEntryResponse?.Username}`
+											);
+										}}
 									/>
-									<h1 className="text-2xl text-[#1C1B1F] font-medium">
+									<h1
+										className="text-2xl text-[#1C1B1F] font-medium cursor-pointer"
+										onClick={() => {
+											router.push(
+												`/user/${videoData?.ProfileEntryResponse?.Username}`
+											);
+										}}
+									>
 										{videoData?.ProfileEntryResponse?.Username}
 									</h1>
 								</div>

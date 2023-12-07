@@ -149,13 +149,14 @@ const PublicProfile = () => {
 									})}
 								</Tab.List>
 
-								<Tab.Panels className="px-10 mt-2 mb-16">
-									<Tab.Panel>
+								<Tab.Panels className="p-7">
+									<Tab.Panel className="">
 										{videoData.length > 0 ? (
 											<Videos
 												desoResponse
 												videoData={videoData}
 												onReactionClick={onReactionClick}
+												showVideoOnly
 											/>
 										) : (
 											!isLoaded && (

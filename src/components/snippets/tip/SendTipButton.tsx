@@ -1,8 +1,10 @@
 import { DonateIcon } from '@/components/icons';
 import { DiamonLevel, sendTip } from '@/services/tip';
+import { selectAuthUser } from '@/slices/authSlice';
 import { cn } from '@/utils';
-import { CurrencyDollarIcon } from '@heroicons/react/24/outline';
 import { memo, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 export enum SendTipButtonUI {
 	ICON,
@@ -25,9 +27,16 @@ const SentText = 'Sent !';
 const SendTipButton = (props: SendTipButtonProps) => {
 	const { userId, postId, receiverId, diamonLevel, ui, buttonMiniClassName, buttonLgClassName } =
 		props;
+	const authUser = useSelector(selectAuthUser);
+
 	const [buttonText, setButtonText] = useState<string>(SendTipButtonText);
 
 	const handleClick = async () => {
+		if (!authUser) {
+			toast.dismiss();
+			return toast.error('Please login to send tip');
+		}
+
 		try {
 			await sendTip(userId, receiverId, postId, diamonLevel);
 
@@ -35,20 +44,21 @@ const SendTipButton = (props: SendTipButtonProps) => {
 
 			setTimeout(() => setButtonText(SendTipButtonText), 2000);
 		} catch (err: any) {
-			alert(err.message);
+			toast.dismiss();
+			toast.error(err.message);
 		}
 	};
 
 	if (ui === SendTipButtonUI.ICON) {
 		return (
 			<>
-				<CurrencyDollarIcon
+				<DonateIcon
 					className={cn('cursor-pointer', buttonMiniClassName)}
 					onClick={handleClick}
 				/>
-				<span className="text-[#939393] text-[10px] font-normal leading-none mt-[6px]">
+				{/* <span className="text-[#939393] text-[10px] font-normal leading-none mt-[6px]">
 					{buttonText}
-				</span>
+				</span> */}
 			</>
 		);
 	}

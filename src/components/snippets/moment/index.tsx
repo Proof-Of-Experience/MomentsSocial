@@ -2,16 +2,24 @@ import React, { memo, Fragment } from 'react';
 import { MomentProps } from '@/model/moment';
 import MomentSkeleton from '@/components/skeletons/moment';
 import EmojiReaction from '../emoji-reaction';
+import { useRouter } from 'next/router';
 
 const Moment = memo(({ className, onClick, item, isLoading }: MomentProps) => {
+	console.log('Moment Item: ', item);
+	const router = useRouter();
+
 	return isLoading ? (
 		<MomentSkeleton />
 	) : (
 		<div className={`block cursor-pointer h-[474px] ${className ? className : ''}`}>
 			<Fragment>
-				<div className="flex flex-wrap">
+				<div
+					className="flex flex-wrap"
+					onClick={() => router.push(`/moment/${item?.PostHashHex}`)}
+				>
 					<img
 						src={`${process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL}${item?.screenshot}`}
+						// src={item?.ImageURLs?.[0]}
 						alt={item?.Username}
 						className="w-full h-[370px] relative rounded-lg overflow-hidden bg-gradient-to-br from-lightgray via-transparent to-#7E7E7E"
 						onClick={onClick}
@@ -19,7 +27,10 @@ const Moment = memo(({ className, onClick, item, isLoading }: MomentProps) => {
 				</div>
 
 				<div className="mt-4">
-					<p className="text-[#1C1B1F] leading-6 font-inter font-medium text-lg line-clamp-2 h-[48px]">
+					<p
+						className="text-[#1C1B1F] leading-6 font-inter font-medium text-lg line-clamp-2 h-[48px]"
+						onClick={() => router.push(`/moment/${item?.PostHashHex}`)}
+					>
 						{item?.Body}
 					</p>
 					{/* <div className="mt-[16px] flex flex-row justify-between">
