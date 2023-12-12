@@ -66,8 +66,8 @@ const VideoDetailsPage = () => {
 		try {
 			let apiUrl = `/api/posts?limit=10&moment=false`;
 			if (tagParam) {
-				const tagWithHash = tagParam.startsWith('#') ? tagParam : `#${tagParam}`;
-				apiUrl += `&hashtag=${encodeURIComponent(tagWithHash)}`;
+				const tagWithHash = tagParam.startsWith('#') ? tagParam.splice(1) : tagParam; //: `#${tagParam}`;
+				apiUrl += `&hashtag=${tagWithHash}`;
 			}
 
 			const apiData: ApiDataType = {

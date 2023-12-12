@@ -67,7 +67,7 @@ const Tags: React.FC<TagsProps> = ({
 			await apiService(apiData, (res: any, err: any) => {
 				if (err) return err.response;
 
-				if (res?.length > 0) {
+				if (res.length > 0) {
 					setTags(res);
 				}
 			});
@@ -190,7 +190,7 @@ const Tags: React.FC<TagsProps> = ({
 									!tagParam
 										? ' border-b-[1px] border-[#00A1D4] text-[#00A1D4]'
 										: 'text-[#7B7788]'
-								} px-3 py-2 leading-trim font-inter text-base`}
+								} px-3 py-2 leading-trim font-inter text-base slider-class`}
 								title="All"
 								// disabled={!tagParam}
 								onClick={() => onClick('all')}
@@ -198,7 +198,7 @@ const Tags: React.FC<TagsProps> = ({
 								All
 							</button>
 						</div>
-						{tags?.lenght > 0 &&
+						{tags.length > 0 &&
 							tags.map((item: any, index: number) => {
 								return (
 									<div
@@ -210,7 +210,7 @@ const Tags: React.FC<TagsProps> = ({
 												tagParam == item?.name
 													? 'border-b-[1px] border-[#00A1D4] text-[#00A1D4]'
 													: 'text-[#7B7788]'
-											} px-3 py-2 leading-trim font-inter text-base`}
+											} px-3 py-2 leading-trim font-inter text-base tag-name`}
 											title={item?.name}
 											onClick={() => onClick(item?.name)}
 										>

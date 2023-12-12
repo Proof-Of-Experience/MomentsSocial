@@ -85,8 +85,6 @@ const constructBasicTransfer = (
 		return null;
 	}
 
-	console.log('TxnOutputResponses Transfer:', notification.TxnOutputResponses);
-
 	const amountNanos = notification.TxnOutputResponses[0].AmountNanos;
 	return {
 		data: {

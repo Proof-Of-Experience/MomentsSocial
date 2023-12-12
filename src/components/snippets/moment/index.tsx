@@ -5,7 +5,6 @@ import EmojiReaction from '../emoji-reaction';
 import { useRouter } from 'next/router';
 
 const Moment = memo(({ className, onClick, item, isLoading }: MomentProps) => {
-	console.log('Moment Item: ', item);
 	const router = useRouter();
 
 	return isLoading ? (

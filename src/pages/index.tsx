@@ -50,8 +50,8 @@ const Home: NextPage = () => {
 		try {
 			let apiUrl = `/api/posts?page=${page}&limit=8&moment=false`;
 			if (tagParam) {
-				const tagWithHash = tagParam.startsWith('#') ? tagParam : `#${tagParam}`;
-				apiUrl += `&hashtag=${encodeURIComponent(tagWithHash)}`;
+				const tagWithHash = tagParam.startsWith('#') ? tagParam.splice(1) : tagParam; //: `#${tagParam}`;
+				apiUrl += `&hashtag=${tagWithHash}`;
 			}
 
 			const apiData: ApiDataType = {
@@ -101,8 +101,8 @@ const Home: NextPage = () => {
 	const fetchMoments = async (page: number = 1) => {
 		let apiUrl = `/api/posts?page=${page}&limit=6&moment=true`;
 		if (tagParam) {
-			const tagWithHash = tagParam.startsWith('#') ? tagParam : `#${tagParam}`;
-			apiUrl += `&hashtag=${encodeURIComponent(tagWithHash)}`;
+			const tagWithHash = tagParam.startsWith('#') ? tagParam.splice(1) : tagParam; //: `#${tagParam}`;
+			apiUrl += `&hashtag=${tagWithHash}`;
 		}
 
 		const apiData: ApiDataType = {
@@ -135,13 +135,18 @@ const Home: NextPage = () => {
 		fetchVideos(videoCurrentPage);
 
 		if (!authUser) {
-			setDisplayPreference(true) // we still show the list
+			setDisplayPreference(true); // we still show the list
 			return;
 		}
 		setAuthUserId(authUser.PublicKeyBase58Check);
 		// user is logged in
 
-		if (wasPreferenceSavedBeforeLastXMinutes(authUser.PublicKeyBase58Check,getPreferencePopupRandomInterval())) {
+		if (
+			wasPreferenceSavedBeforeLastXMinutes(
+				authUser.PublicKeyBase58Check,
+				getPreferencePopupRandomInterval()
+			)
+		) {
 			// the preference have been saved current time - randomInterval minutes at least
 			// display preference
 			setDisplayPreference(true);
@@ -307,7 +312,6 @@ const Home: NextPage = () => {
 				</div>
 
 				{displayPreference && <AllPreferences userId={authUserId ? authUserId : null} />}
-
 			</VideoLayoutProvider>
 		</MainLayout>
 	);

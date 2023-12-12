@@ -40,8 +40,8 @@ const Moments: NextPage = () => {
 		try {
 			let apiUrl = `/api/posts?page=${page}&limit=8&moment=true`;
 			if (tagParam) {
-				const tagWithHash = tagParam.startsWith('#') ? tagParam : `#${tagParam}`;
-				apiUrl += `&hashtag=${encodeURIComponent(tagWithHash)}`;
+				const tagWithHash = tagParam.startsWith('#') ? tagParam.splice(1) : tagParam; //: `#${tagParam}`;
+				apiUrl += `&hashtag=${tagWithHash}`;
 			}
 
 			const apiData: ApiDataType = {
