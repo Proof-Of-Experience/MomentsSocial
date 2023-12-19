@@ -22,44 +22,62 @@ const SocialShare = memo(({ url, title }: any) => {
 			<FacebookShareButton
 				url={url}
 				quote={title}
-				// className=""
+				className="outline-none"
 			>
 				<FacebookIcon
 					size={56}
 					round
 				></FacebookIcon>
 			</FacebookShareButton>
-			<LinkedinShareButton url={url}>
+			<LinkedinShareButton
+				url={url}
+				className="outline-none"
+			>
 				<LinkedinIcon
 					size={56}
 					round
 				></LinkedinIcon>
 			</LinkedinShareButton>
-			<EmailShareButton url={url}>
+			<EmailShareButton
+				url={url}
+				className="outline-none"
+			>
 				<EmailIcon
 					size={56}
 					round
 				></EmailIcon>
 			</EmailShareButton>
-			<RedditShareButton url={url}>
+			<RedditShareButton
+				url={url}
+				className="outline-none"
+			>
 				<RedditIcon
 					size={56}
 					round
 				></RedditIcon>
 			</RedditShareButton>
-			<TwitterShareButton url={url}>
+			<TwitterShareButton
+				url={url}
+				className="outline-none"
+			>
 				<TwitterIcon
 					size={56}
 					round
 				></TwitterIcon>
 			</TwitterShareButton>
-			<TelegramShareButton url={url}>
+			<TelegramShareButton
+				url={url}
+				className="outline-none"
+			>
 				<TelegramIcon
 					size={56}
 					round
 				></TelegramIcon>
 			</TelegramShareButton>
-			<WhatsappShareButton url={url}>
+			<WhatsappShareButton
+				url={url}
+				className="outline-none"
+			>
 				<WhatsappIcon
 					size={56}
 					round

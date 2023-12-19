@@ -50,7 +50,7 @@ const Home: NextPage = () => {
 		try {
 			let apiUrl = `/api/posts?page=${page}&limit=8&moment=false`;
 			if (tagParam) {
-				const tagWithHash = tagParam.startsWith('#') ? tagParam.splice(1) : tagParam; //: `#${tagParam}`;
+				const tagWithHash = tagParam.startsWith('#') ? tagParam.splice(1) : tagParam; // : `#${tagParam}`;
 				apiUrl += `&hashtag=${tagWithHash}`;
 			}
 
@@ -101,7 +101,7 @@ const Home: NextPage = () => {
 	const fetchMoments = async (page: number = 1) => {
 		let apiUrl = `/api/posts?page=${page}&limit=6&moment=true`;
 		if (tagParam) {
-			const tagWithHash = tagParam.startsWith('#') ? tagParam.splice(1) : tagParam; //: `#${tagParam}`;
+			const tagWithHash = tagParam.startsWith('#') ? tagParam.splice(1) : tagParam; // : `#${tagParam}`;
 			apiUrl += `&hashtag=${tagWithHash}`;
 		}
 

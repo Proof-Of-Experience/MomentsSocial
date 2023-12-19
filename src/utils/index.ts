@@ -172,6 +172,12 @@ export const getVideoShareUrl = (postId: string) => {
 	return process.env.NEXT_PUBLIC_MOMENTS_DOMAIN_URL + '/video/' + postId;
 };
 
+export const getShareUrl = (postId: string, shareType: 'VIDEO' | 'MOMENT') => {
+	if (!postId || !shareType) return '';
+	if (shareType === 'VIDEO') return getVideoShareUrl(postId);
+	return getMomentShareUrl(postId);
+};
+
 export const cn = (...classNames: ClassValue[]) => {
 	return twMerge(clsx(classNames));
 };

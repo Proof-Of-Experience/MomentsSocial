@@ -19,11 +19,12 @@ import MomentOptionTray from '@/components/snippets/moment-details/OptionTray';
 import CommentBox from '@/components/snippets/comments/commentBox';
 import { XMarkIcon } from '@heroicons/react/20/solid';
 import SocialSharePopup from '@/components/snippets/social-share-popup';
+import MomentDetailsSingleItem from '@/components/snippets/moment-details/SingleItem';
 
 const MomentDetailsPage = () => {
 	const router = useRouter();
 	const { PostHashHex, Tag }: any = router.query;
-	const videoUrl = process.env.NEXT_PUBLIC_MOMENTS_DOMAIN_URL + router.asPath;
+	// const videoUrl = process.env.NEXT_PUBLIC_MOMENTS_DOMAIN_URL + router.asPath;
 	// console.log('videoUrl:', videoUrl);
 
 	const authUser = useSelector(selectAuthUser);
@@ -273,9 +274,15 @@ const MomentDetailsPage = () => {
 								className={`${activeVideoIndex !== index ? 'hidden' : ''}`}
 								// style={{ marginLeft: '30%', marginRight: '30%', width: '40%' }}
 							>
+								<MomentDetailsSingleItem
+									item={video}
+									videoData={videoData}
+									authUser={authUser}
+									videoUrl={video?.VideoURLs?.[0]}
+								/>
 								<div
 									className={cn(
-										'relative transition-all',
+										'hidden relative transition-all',
 										!showCommentSideBox ? 'w-[435px]' : 'w-[870px]'
 									)}
 								>
@@ -315,7 +322,6 @@ const MomentDetailsPage = () => {
 											</p>
 										</div>
 									</div>
-
 									<MomentOptionTray
 										video={video}
 										totalReaction={totalReaction}
@@ -330,7 +336,6 @@ const MomentDetailsPage = () => {
 												: '-right-[67px]'
 										)}
 									/>
-
 									{/* Moment's CommentBox ------------------- */}
 									<div
 										className={cn(
@@ -353,13 +358,12 @@ const MomentDetailsPage = () => {
 											authUser={authUser}
 										/>
 									</div>
-
 									{/* Socail Share Section ------------------- */}
 									<SocialSharePopup
 										open={showShareModal}
 										onClose={() => setShowShareModal(false)}
 										videoData={videoData}
-										videoUrl={videoUrl}
+										type={'MOMENT'}
 									/>
 								</div>
 

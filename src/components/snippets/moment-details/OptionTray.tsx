@@ -2,12 +2,13 @@ import CommentIcon from '@/components/icons/comment';
 import LikeIcon from '@/components/icons/like';
 import ShareIcon from '@/components/icons/share';
 import ThreeDotMenuIcon from '@/components/icons/three-dot-menu';
-import React from 'react';
+import React, { useState } from 'react';
 import SendTipButton, { SendTipButtonUI } from '../tip/SendTipButton';
 import { DiamonLevel } from '@/services/tip';
 import { useRouter } from 'next/router';
 import UserAvatar from '../user-avatar';
 import { cn } from '@/utils';
+import EmojiReactionTray from '../emoji-reaction-tray';
 
 interface IMomentOptionTray {
 	video?: any;
@@ -23,6 +24,7 @@ interface IMomentOptionTray {
 }
 
 interface ITrayOption {
+	name: string;
 	icon: JSX.Element;
 	text?: string | number | undefined | null;
 	onClick?: () => void;
@@ -45,10 +47,13 @@ const MomentOptionTray = (props: IMomentOptionTray) => {
 	const router = useRouter();
 	const userProfilePhotoKey = video?.ProfileEntryResponse?.PublicKeyBase58Check;
 
+	const [showReactTray, setShowReactTray] = useState<boolean>(false);
+
 	console.log('video userProfilePhotoKey', userProfilePhotoKey);
 
 	const trayOptions: ITrayOption[] = [
 		{
+			name: 'like',
 			icon: <LikeIcon className="group-hover:text-[#00A1D4]" />,
 			text: totalReaction || 'No Reaction',
 			onClick: () => {
@@ -57,6 +62,7 @@ const MomentOptionTray = (props: IMomentOptionTray) => {
 			},
 		},
 		{
+			name: 'comment',
 			icon: <CommentIcon className="group-hover:text-[#00A1D4]" />,
 			text: totalComment || 'No Comment',
 			onClick: () => {
@@ -65,6 +71,7 @@ const MomentOptionTray = (props: IMomentOptionTray) => {
 			},
 		},
 		{
+			name: 'share',
 			icon: <ShareIcon className="group-hover:text-[#00A1D4]" />,
 			text: 'Share',
 			onClick: () => {
@@ -73,6 +80,7 @@ const MomentOptionTray = (props: IMomentOptionTray) => {
 			},
 		},
 		{
+			name: 'tips',
 			icon: (
 				<SendTipButton
 					userId={authUser?.PublicKeyBase58Check}
@@ -90,6 +98,7 @@ const MomentOptionTray = (props: IMomentOptionTray) => {
 			},
 		},
 		{
+			name: 'menu',
 			icon: <ThreeDotMenuIcon className="group-hover:text-[#00A1D4]" />,
 			text: '',
 			onClick: () => {
@@ -98,6 +107,7 @@ const MomentOptionTray = (props: IMomentOptionTray) => {
 			},
 		},
 		{
+			name: 'avatar',
 			icon: (
 				<UserAvatar
 					imageKey={userProfilePhotoKey}
@@ -117,22 +127,40 @@ const MomentOptionTray = (props: IMomentOptionTray) => {
 				{trayOptions?.length > 0 &&
 					trayOptions.map((option: ITrayOption, index: number) => (
 						<div
+							className="relative mb-6 last:mb-0"
 							key={index}
-							className="flex flex-col items-center justify-center text-center mb-6 last:mb-0"
 						>
-							<div
-								className="w-10 h-10 rounded-full border border-[#D7D7D7] cursor-pointer flex items-center justify-center group bg-white hover:bg-slate-50 transition-all"
-								onClick={() => {
-									if (option?.onClick) option?.onClick();
-								}}
-							>
-								{option?.icon}
+							<div className="flex flex-col items-center justify-center text-center">
+								<div
+									className="w-10 h-10 rounded-full border border-[#D7D7D7] cursor-pointer flex items-center justify-center group bg-white hover:bg-slate-50 transition-all"
+									onClick={() => {
+										if (option?.onClick) option?.onClick();
+									}}
+									onMouseEnter={() => {
+										if (option?.name === 'like') {
+											setShowReactTray(true);
+										}
+									}}
+									onMouseLeave={() => {
+										if (option?.name === 'like') {
+											setShowReactTray(false);
+										}
+									}}
+								>
+									{option?.icon}
+									{option?.name === 'like' && showReactTray && (
+										<EmojiReactionTray
+											postHashHex={video?.PostHashHex}
+											className="absolute -top-1 right-12"
+										/>
+									)}
+								</div>
+								{option?.text && (
+									<span className="text-[#939393] text-[10px] font-normal leading-none mt-[6px]">
+										{option?.text}
+									</span>
+								)}
 							</div>
-							{option?.text && (
-								<span className="text-[#939393] text-[10px] font-normal leading-none mt-[6px]">
-									{option?.text}
-								</span>
-							)}
 						</div>
 					))}
 			</div>

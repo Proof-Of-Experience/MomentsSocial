@@ -1,13 +1,27 @@
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import SocialShare from '../social-share';
 import { Modal } from '@/components/core/modal';
-import { getVideoShareUrl } from '@/utils';
+import { getShareUrl } from '@/utils';
 import { toast } from 'react-toastify';
 
-const SocialSharePopup = (props: any) => {
-	const { open, onClose, videoData, videoUrl } = props;
+interface ISocialSharePopup {
+	open: boolean;
+	onClose: () => void;
+	videoData: any;
+	type: 'VIDEO' | 'MOMENT';
+}
+const SocialSharePopup = (props: ISocialSharePopup) => {
+	const { open, onClose, videoData, type } = props;
+
+	const [videoUrl, setVideoUrl] = useState('');
+
+	useEffect(() => {
+		if (videoData?.PostHashHex) {
+			setVideoUrl(getShareUrl(videoData?.PostHashHex, type));
+		}
+	}, [videoData?.PostHashHex]);
 
 	return (
 		<Modal
@@ -18,7 +32,7 @@ const SocialSharePopup = (props: any) => {
 		>
 			<div className="mt-12">
 				<SocialShare
-					url={getVideoShareUrl(videoData?.PostHashHex)}
+					url={getShareUrl(videoData?.PostHashHex, type)}
 					title={videoData?.Body}
 				></SocialShare>
 			</div>

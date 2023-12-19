@@ -16,6 +16,7 @@ import RelatedVideoList from '@/components/snippets/video-details/relatedVideoLi
 import VideoPlayerSkeleton from '@/components/skeletons/video-details/videoPlayer';
 import RelatedVideosSkeleton from '@/components/skeletons/video-details/relatedVideos';
 import SocialSharePopup from '@/components/snippets/social-share-popup';
+import EmojiReactionTray from '@/components/snippets/emoji-reaction-tray';
 
 const VideoDetailsPage = () => {
 	const router = useRouter();
@@ -35,6 +36,7 @@ const VideoDetailsPage = () => {
 	const [isRelatedVideosLoading, setIsRelatedVideosLoading] = useState<boolean>(false);
 	const [relatedVideos, setRelatedVideos] = useState<any>([]);
 	const [showShareModal, setShowShareModal] = useState<boolean>(false);
+	const [showReactTray, setShowReactTray] = useState<boolean>(false);
 
 	useEffect(() => {
 		setCollapseSidebar(true);
@@ -66,7 +68,7 @@ const VideoDetailsPage = () => {
 		try {
 			let apiUrl = `/api/posts?limit=10&moment=false`;
 			if (tagParam) {
-				const tagWithHash = tagParam.startsWith('#') ? tagParam.splice(1) : tagParam; //: `#${tagParam}`;
+				const tagWithHash = tagParam.startsWith('#') ? tagParam.splice(1) : tagParam; // : `#${tagParam}`;
 				apiUrl += `&hashtag=${tagWithHash}`;
 			}
 
@@ -187,15 +189,31 @@ const VideoDetailsPage = () => {
 									</h1>
 								</div>
 								<div className="flex items-center justify-start gap-x-4">
-									<button
-										className="px-3 pl-2 py-1 flex items-center gap-x-2 bg-[#EBFAFF] hover:bg-[#00A1D4] rounded-2xl cursor-pointer group transition-all"
-										onClick={() => console.log('on Clicked React Icon')}
+									<div
+										className="relative"
+										onMouseEnter={() => {
+											setShowReactTray(true);
+										}}
+										onMouseLeave={() => {
+											setShowReactTray(false);
+										}}
 									>
-										<ReactIcon className="group-hover:text-white transition-all" />
-										<span className="text-sm text-[#47474A] group-hover:text-white transition-all">
-											React
-										</span>
-									</button>
+										<button
+											className="px-3 pl-2 py-1 flex items-center gap-x-2 bg-[#EBFAFF] hover:bg-[#00A1D4] rounded-2xl cursor-pointer group transition-all"
+											onClick={() => console.log('on Clicked React Icon')}
+										>
+											<ReactIcon className="group-hover:text-white transition-all" />
+											<span className="text-sm text-[#47474A] group-hover:text-white transition-all">
+												React
+											</span>
+										</button>
+										{showReactTray && (
+											<EmojiReactionTray
+												postHashHex={videoData?.PostHashHex}
+												className="absolute -top-12 -right-10"
+											/>
+										)}
+									</div>
 									<button
 										className="px-3 pl-2 py-1 flex items-center gap-x-2 bg-[#EBFAFF] hover:bg-[#00A1D4] rounded-2xl cursor-pointer group transition-all"
 										onClick={handleClickComments}
@@ -324,7 +342,7 @@ const VideoDetailsPage = () => {
 					open={showShareModal}
 					onClose={() => setShowShareModal(false)}
 					videoData={videoData}
-					videoUrl={videoUrl}
+					type={'VIDEO'}
 				/>
 			</div>
 		</MainLayout>
