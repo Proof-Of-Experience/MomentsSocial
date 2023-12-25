@@ -26,7 +26,9 @@ const AuthButtons = () => {
 			};
 			const userData = await getSingleProfile(params);
 
-			dispatch(setAuthUser({ ...authUser, ...userData }));
+			const api_user = await getUserInfoFromUtils(authUser?.publicKeyBase58Check);
+
+			dispatch(setAuthUser({ ...authUser, ...userData, api_user }));
 		} catch (error) {
 			console.error('profile error', error);
 		}
@@ -54,6 +56,8 @@ const AuthButtons = () => {
 		try {
 			await apiService(apiData, (res: any, err: any) => {
 				if (err) return err.response;
+
+				return res;
 			});
 		} catch (error: any) {
 			console.error('error', error.response);

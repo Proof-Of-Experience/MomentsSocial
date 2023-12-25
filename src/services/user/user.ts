@@ -17,7 +17,7 @@ export const userLogin = async () => {
 	const { identity, getUsersStateless } = await import('deso-protocol');
 	const loggedInInfo: any = await identity.login();
 
-	getUserInfoFromUtils(loggedInInfo.publicKeyBase58Check);
+	const api_user = await getUserInfoFromUtils(loggedInInfo.publicKeyBase58Check);
 
 	const userParams = {
 		PublicKeysBase58Check: [loggedInInfo?.publicKeyBase58Check],
@@ -25,9 +25,8 @@ export const userLogin = async () => {
 	};
 	const userInfo: any = await getUsersStateless(userParams);
 
-	return { ...loggedInInfo, ...userInfo?.UserList[0] }
+	return { ...loggedInInfo, ...userInfo?.UserList[0], api_user };
 };
-
 
 export const getUserInfoFromUtils = async (userId: number) => {
 	const apiUrl = `/api/user`;
@@ -44,6 +43,8 @@ export const getUserInfoFromUtils = async (userId: number) => {
 	try {
 		await apiService(apiData, (res: any, err: any) => {
 			if (err) return err.response;
+
+			return res;
 		});
 	} catch (error: any) {
 		console.error('error', error.response);

@@ -25,6 +25,8 @@ const Home: NextPage = () => {
 	const loadMoreRef = useRef(null);
 	const authUser = useSelector(selectAuthUser);
 
+	console.log('x-xxx-x-x-xx', authUser);
+
 	const [isVideoPaginating, setIsVideoPaginating] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [initialLoadComplete, setInitialLoadComplete] = useState(false);

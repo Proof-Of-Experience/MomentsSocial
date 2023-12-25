@@ -13,14 +13,14 @@ const Moment = memo(({ className, onClick, item, isLoading }: MomentProps) => {
 		<div className={`block cursor-pointer h-[474px] ${className ? className : ''}`}>
 			<Fragment>
 				<div
-					className="flex flex-wrap"
+					className="flex flex-wrap w-full h-[370px] relative rounded-lg overflow-hidden bg-gradient-to-br from-lightgray via-transparent to-#7E7E7E"
 					onClick={() => router.push(`/moment/${item?.PostHashHex}`)}
 				>
 					<img
 						src={`${process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL}${item?.screenshot}`}
 						// src={item?.ImageURLs?.[0]}
 						alt={item?.Username}
-						className="w-full h-[370px] relative rounded-lg overflow-hidden bg-gradient-to-br from-lightgray via-transparent to-#7E7E7E"
+						className="absolute top-0 right-0 w-[110%] h-[110%] rounded-lg overflow-hidden object-cover object-center"
 						onClick={onClick}
 					/>
 				</div>
