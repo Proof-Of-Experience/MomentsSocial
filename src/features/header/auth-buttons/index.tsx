@@ -12,6 +12,7 @@ import {
 import { useRouter } from 'next/router';
 import { ApiDataType, apiService } from '@/utils/request';
 import { userLogin } from '@/services/user/user';
+import { GetUserProfile } from '@/services/user/api/profile';
 
 const AuthButtons = () => {
 	const router = useRouter();
@@ -26,9 +27,9 @@ const AuthButtons = () => {
 			};
 			const userData = await getSingleProfile(params);
 
-			const api_user = await getUserInfoFromUtils(authUser?.publicKeyBase58Check);
+			const apiUser = await GetUserProfile(authUser?.publicKeyBase58Check);
 
-			dispatch(setAuthUser({ ...authUser, ...userData, api_user }));
+			dispatch(setAuthUser({ ...authUser, ...userData, api_user: apiUser }));
 		} catch (error) {
 			console.error('profile error', error);
 		}
@@ -39,30 +40,6 @@ const AuthButtons = () => {
 			getUserInfo();
 		}
 	}, []);
-
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-	const getUserInfoFromUtils = async (userId: number) => {
-		const apiUrl = `/api/user`;
-		const data = {
-			userId,
-		};
-		const apiData: ApiDataType = {
-			method: 'post',
-			data,
-			url: apiUrl,
-			customUrl: process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL,
-		};
-
-		try {
-			await apiService(apiData, (res: any, err: any) => {
-				if (err) return err.response;
-
-				return res;
-			});
-		} catch (error: any) {
-			console.error('error', error.response);
-		}
-	};
 
 	const onClickLogin = async () => {
 		const user = await userLogin();

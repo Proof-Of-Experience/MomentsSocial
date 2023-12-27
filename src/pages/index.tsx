@@ -16,6 +16,8 @@ import {
 import { useSelector } from 'react-redux';
 import { selectAuthUser } from '@/slices/authSlice';
 import AllPreferences from '@/components/snippets/preferences/AllPreferences';
+import { PostSort } from '@/services/post';
+import { cn } from '@/utils';
 
 const Home: NextPage = () => {
 	const router = useRouter();
@@ -24,8 +26,6 @@ const Home: NextPage = () => {
 	const { gridView }: any = useContext(VideoLayoutContext);
 	const loadMoreRef = useRef(null);
 	const authUser = useSelector(selectAuthUser);
-
-	console.log('x-xxx-x-x-xx', authUser);
 
 	const [isVideoPaginating, setIsVideoPaginating] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -39,6 +39,27 @@ const Home: NextPage = () => {
 	const [momentsTotalPages, setMomentsTotalPages] = useState<number>(Infinity);
 	const [displayPreference, setDisplayPreference] = useState<boolean>(false);
 	const [authUserId, setAuthUserId] = useState<string | null>(null);
+	const [postSort, setPostSort] = useState<PostSort>(PostSort.LATEST);
+	const videoSortOptions = [
+		{
+			key: PostSort.MOST_LIKED,
+			value: 'Most Liked',
+		},
+		{
+			key: PostSort.MOST_COMMENTED,
+			value: 'Most Commented',
+		},
+		{
+			key: PostSort.LATEST,
+			value: 'Latest',
+		},
+	];
+
+	const setSortAndFetch = async (sortOption: PostSort, pageNumber: number) => {
+		setPostSort(sortOption);
+
+		fetchVideos(pageNumber);
+	};
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const fetchVideos = async (page: number) => {
@@ -50,7 +71,7 @@ const Home: NextPage = () => {
 		setIsVideoPaginating(true); // Set to loading state
 
 		try {
-			let apiUrl = `/api/posts?page=${page}&limit=8&moment=false`;
+			let apiUrl = `/api/posts?page=${page}&limit=8&moment=false&sort_by=${postSort.toString()}`;
 			if (tagParam) {
 				const tagWithHash = tagParam.startsWith('#') ? tagParam.splice(1) : tagParam; // : `#${tagParam}`;
 				apiUrl += `&hashtag=${tagWithHash}`;
@@ -301,8 +322,21 @@ const Home: NextPage = () => {
 					</div>
 				)}
 
-				<h2 className="text-[#1C1B1F] leading-none capitalize font-inter text-xl font-semibold mb-8">
-					Explore
+				<h2 className="space-x-2 text-[#1C1B1F] leading-none capitalize font-inter text-xl font-semibold mb-8">
+					<span>Explore</span>
+					{videoSortOptions.map((option: any, i: number) => (
+						<span key={i}
+							onClick={() => setSortAndFetch(option.key, videoCurrentPage)}
+							className={cn(
+								'rounded-md px-3 py-2 text-base cursor-pointer',
+								option.key.toString() === postSort
+									? 'text-blue-500 bg-blue-100/50'
+									: 'text-blue-400 bg-gray-50 font-medium'
+							)}
+						>
+							{option.value}
+						</span>
+					))}
 				</h2>
 
 				<div className={`grid ${showGridCol()} gap-x-7 gap-y-12`}>

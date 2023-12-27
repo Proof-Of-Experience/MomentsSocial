@@ -96,3 +96,13 @@ export const __get = async <T>(p: RequestParams): Promise<T> => {
 
 	return __fetch<T>(params);
 };
+
+
+export const __patch = async <T>(p: RequestParams): Promise<T> => {
+	const params: _RequestParams = {
+		...p,
+		method: 'PATCH',
+	};
+
+	return __fetch<T>(params);
+};

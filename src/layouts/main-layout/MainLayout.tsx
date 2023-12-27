@@ -21,7 +21,6 @@ const MainLayout = ({ title, isLoading, mainWrapClass, children }: MainLayoutPro
 	const { collapseSidebar, windowSize } = useSidebar();
 	const { isSmallDevice } = windowSize;
 
-	// console.log('windowWidth', windowWidth);
 	const [userState, setUserState] = useState({
 		currentUser: null,
 		alternateUsers: null,

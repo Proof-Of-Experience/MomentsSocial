@@ -169,6 +169,7 @@ const MomentDetailsPage = () => {
 		};
 
 		const singlePost: any = await getSinglePost(params);
+
 		setVideoData((prevVideoData: any) =>
 			mergeVideoData(prevVideoData, [singlePost?.PostFound])
 		);
@@ -202,7 +203,9 @@ const MomentDetailsPage = () => {
 						data.push(post);
 					}
 				});
+
 				data = mergeVideoData(data, videoData);
+				
 				setVideoData(data);
 			});
 		} catch (error: any) {

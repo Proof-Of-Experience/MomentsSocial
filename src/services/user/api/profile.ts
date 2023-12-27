@@ -8,3 +8,10 @@ export const GetUserProfile = (userId: string): Promise<UserProfileResponse> => 
 	};
 	return __get<UserProfileResponse>(params);
 };
+
+export const IsUserBlocked = (userId: string): Promise<any> => {
+	const params: RequestParams = {
+		path: `api/ban-user/${userId}/is-banned`,
+	};
+	return __get<UserProfileResponse>(params);
+};
