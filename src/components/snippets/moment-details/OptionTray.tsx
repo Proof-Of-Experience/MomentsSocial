@@ -9,6 +9,10 @@ import { useRouter } from 'next/router';
 import UserAvatar from '../user-avatar';
 import { cn } from '@/utils';
 import EmojiReactionTray from '../emoji-reaction-tray';
+import MenuOptions from './MenuOptions';
+import OutsideClickHandler from 'react-outside-click-handler';
+// import OutsideClickHandler from 'react-outside-click-handler';
+// import { Bars3CenterLeftIcon, SquaresPlusIcon } from '@heroicons/react/24/outline';
 
 interface IMomentOptionTray {
 	video?: any;
@@ -20,6 +24,8 @@ interface IMomentOptionTray {
 	onClickShare?: () => void;
 	onClickTip?: () => void;
 	onClickMenu?: () => void;
+	onClickDescription?: () => void;
+	onClickSavePlaylist?: () => void;
 	className?: string;
 }
 
@@ -41,15 +47,20 @@ const MomentOptionTray = (props: IMomentOptionTray) => {
 		onClickShare,
 		onClickMenu,
 		onClickTip,
+		onClickDescription,
+		onClickSavePlaylist,
 		className,
 	} = props;
-	console.log('video optionTray', video);
+	// console.log('video optionTray', video);
+	console.log('MomentOptionTray Props', props);
+	// console.log('onClickSavePlaylist optionTray', onClickSavePlaylist);
 	const router = useRouter();
 	const userProfilePhotoKey = video?.ProfileEntryResponse?.PublicKeyBase58Check;
 
 	const [showReactTray, setShowReactTray] = useState<boolean>(false);
+	const [showMenuOptions, setShowMenuOptions] = useState<boolean>(false);
 
-	console.log('video userProfilePhotoKey', userProfilePhotoKey);
+	// console.log('video userProfilePhotoKey', userProfilePhotoKey);
 
 	const trayOptions: ITrayOption[] = [
 		{
@@ -103,6 +114,7 @@ const MomentOptionTray = (props: IMomentOptionTray) => {
 			text: '',
 			onClick: () => {
 				if (onClickMenu) onClickMenu();
+				setShowMenuOptions((prev) => !prev);
 				console.log('On Clicked Menu');
 			},
 		},
@@ -153,6 +165,20 @@ const MomentOptionTray = (props: IMomentOptionTray) => {
 											postHashHex={video?.PostHashHex}
 											className="absolute -top-1 right-12"
 										/>
+									)}
+									{option?.name === 'menu' && showMenuOptions && (
+										<OutsideClickHandler
+											onOutsideClick={() => setShowMenuOptions(false)}
+										>
+											<MenuOptions
+												onClickDescription={() => {
+													if (onClickDescription) onClickDescription();
+												}}
+												onClickSavePlaylist={() => {
+													if (onClickSavePlaylist) onClickSavePlaylist();
+												}}
+											/>
+										</OutsideClickHandler>
 									)}
 								</div>
 								{option?.text && (

@@ -29,6 +29,7 @@ const VideoDetailsPage = () => {
 	const authUser = useSelector(selectAuthUser);
 	const { setCollapseSidebar } = useSidebar();
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	const videoUrl = process.env.NEXT_PUBLIC_MOMENTS_DOMAIN_URL + router.asPath;
 	const isAdmin = isUserAdmin(authUser);
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
@@ -392,7 +393,8 @@ const VideoDetailsPage = () => {
 				<PlaylistPopup
 					open={showPlaylistModal}
 					onClose={() => setShowPlaylistModal(false)}
-					videoData={undefined}
+					userId={authUser?.PublicKeyBase58Check}
+					videoData={videoData}
 					type={'VIDEO'}
 				/>
 

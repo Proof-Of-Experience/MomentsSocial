@@ -1,5 +1,6 @@
 import React from 'react';
 import { PrimaryButtonProps } from '@/model/core';
+import { cn } from '@/utils';
 
 interface ExtendedProps extends PrimaryButtonProps {
 	color?: 'primary' | 'warning' | 'error';
@@ -32,9 +33,11 @@ const PrimaryButton: React.FC<ExtendedProps> = ({
 		<button
 			{...rest}
 			disabled={disabled || loader ? true : false}
-			className={`${bgColor} text-white transition-all rounded-lg px-10 py-2 font-inter font-semibold disabled:bg-gray-400
-          ${className}
-        `}
+			className={cn(
+				bgColor,
+				'text-white transition-all rounded-lg px-10 py-2 font-inter font-semibold disabled:bg-gray-400',
+				className
+			)}
 		>
 			<span className={`${loader ? 'mr-3' : ''}`}>{text}</span>
 

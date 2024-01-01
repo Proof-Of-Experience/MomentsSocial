@@ -158,7 +158,7 @@ const Header = () => {
 										setShowNotification(false);
 									}}
 								>
-									<div className="absolute -right-2 top-[42px]">
+									<div className="absolute -right-2 top-[42px] z-30">
 										<Notifications notifications={notificationData} />
 									</div>
 								</OutsideClickHandler>

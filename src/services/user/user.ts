@@ -57,7 +57,7 @@ export const isUserAdmin = (user: any): boolean => {
 		return false;
 	}
 
-	return user.api_user.roles.includes('admin');
+	return user?.api_user?.roles.includes('admin');
 };
 
 export const getUserDBId = (user: any) => {

@@ -1,11 +1,13 @@
+import { useState } from 'react';
 import { getNFakeComments } from '@/data/comments';
 import MomentOptionTray from '@/components/snippets/moment-details/OptionTray';
 import CommentBox from '@/components/snippets/comments/commentBox';
-import { XMarkIcon } from '@heroicons/react/20/solid';
 import SocialSharePopup from '@/components/snippets/social-share-popup';
+import TextDescription from '@/components/snippets/text-description';
 import { cn } from '@/utils';
 import { useMomentReaction } from '@/utils/hooks';
-import { useState } from 'react';
+import PlaylistPopup from '../playlist-popup';
+import MomentSideBox from './SideBox';
 
 interface IMomentDetailsSIngleItem {
 	item: any;
@@ -28,8 +30,11 @@ const MomentDetailsSingleItem = (props: IMomentDetailsSIngleItem) => {
 		totalReaction,
 	} = useMomentReaction(item?.PostHashHex);
 
-	const [showCommentSideBox, setShowCommentSideBox] = useState<boolean>(false);
+	const [showSideBox, setShowSideBox] = useState<'COMMENT' | 'DESCRIPTION' | null>(null);
+	// const [showCommentSideBox, setShowCommentSideBox] = useState<boolean>(false);
 	const [showShareModal, setShowShareModal] = useState<boolean>(false);
+	const [showPlaylistModal, setShowPlaylistModal] = useState<boolean>(false);
+	// const [showDescriptionSideBox, setShowDescriptionSideBox] = useState<boolean>(false);
 
 	const videoComments = (comments: any) => {
 		if (!comments) {
@@ -40,24 +45,24 @@ const MomentDetailsSingleItem = (props: IMomentDetailsSIngleItem) => {
 		return comments;
 	};
 
+	const onClickSavePlaylist = () => {
+		// console.log('save playlist 5');
+		setShowPlaylistModal(true);
+	};
+
 	return (
-		<div
-			className={cn(
-				'relative transition-all',
-				!showCommentSideBox ? 'w-[435px]' : 'w-[870px]'
-			)}
-		>
+		<div className={cn('relative transition-all', !showSideBox ? 'w-[435px]' : 'w-[870px]')}>
 			<div
 				className={cn(
 					'relative max-w-full w-[435px] h-[calc(100vh-140px)] bg-[#babac3] rounded-2xl group z-20',
-					showCommentSideBox ? 'rounded-tr-none rounded-br-none' : ''
+					showSideBox ? 'rounded-tr-none rounded-br-none' : ''
 				)}
 			>
 				{item?.VideoURLs?.[0] && (
 					<iframe
 						className={cn(
 							'absolute top-0 left-0 w-full h-full object-cover rounded-2xl',
-							showCommentSideBox ? 'rounded-tr-none rounded-br-none' : ''
+							showSideBox ? 'rounded-tr-none rounded-br-none' : ''
 						)}
 						// width="100%"
 						// height="500"
@@ -84,41 +89,65 @@ const MomentDetailsSingleItem = (props: IMomentDetailsSIngleItem) => {
 				totalReaction={totalReaction}
 				totalComment={item?.Comments?.length}
 				authUser={authUser}
-				onClickComment={() => setShowCommentSideBox(true)}
+				// onClickComment={() => setShowCommentSideBox(true)}
+				onClickComment={() => setShowSideBox('COMMENT')}
 				onClickShare={() => setShowShareModal(true)}
+				onClickSavePlaylist={() => {
+					onClickSavePlaylist();
+				}}
+				// onClickDescription={() => setShowDescriptionSideBox(true)}
+				onClickDescription={() => setShowSideBox('DESCRIPTION')}
 				className={cn(
 					'absolute bottom-0',
-					showCommentSideBox ? 'right-[calc(100%_-_435px)]' : '-right-[67px]'
+					showSideBox ? 'right-[calc(100%_-_435px)]' : '-right-[67px]'
 				)}
 			/>
 
-			{/* Moment's CommentBox ------------------- */}
-			<div
-				className={cn(
-					'absolute bottom-0 -right-0 py-6 rounded-2xl w-[435px] h-full border border-[#EBEBEB] bg-white opacity-0 overflow-hidden transition-all',
-					showCommentSideBox
-						? 'rounded-tl-none rounded-bl-none opacity-100 z-10 -right-[calc(100%_-_870px)]'
-						: ''
-				)}
+			{/* Moment's Description Box ------------------- */}
+			{/* <MomentSideBox
+				open={showDescriptionSideBox}
+				onClose={() => setShowDescriptionSideBox(false)}
 			>
-				<div
-					className="flex items-center justify-center w-8 h-8 bg-transparent hover:bg-slate-200 translate-all absolute top-2.5 right-2.5 cursor-pointer rounded-full"
-					onClick={() => setShowCommentSideBox(false)}
-				>
-					<XMarkIcon className="w-5 h-5" />
+				<div className="">
+					<TextDescription description={item?.Body} />
 				</div>
-				<CommentBox
-					PostHashHex={item?.PostHashHex}
-					commentCount={item?.CommentCount}
-					comments={videoComments(item?.Comments)}
-					authUser={authUser}
-				/>
-			</div>
+			</MomentSideBox> */}
+
+			{/* Moment's CommentBox ------------------- */}
+			<MomentSideBox
+				// open={showCommentSideBox}
+				// onClose={() => setShowCommentSideBox(false)}
+				open={showSideBox === 'COMMENT' || showSideBox === 'DESCRIPTION'}
+				onClose={() => setShowSideBox(null)}
+			>
+				{showSideBox === 'COMMENT' && (
+					<CommentBox
+						PostHashHex={item?.PostHashHex}
+						commentCount={item?.CommentCount}
+						comments={videoComments(item?.Comments)}
+						authUser={authUser}
+					/>
+				)}
+				{showSideBox === 'DESCRIPTION' && (
+					<div className="">
+						<TextDescription description={item?.Body} />
+					</div>
+				)}
+			</MomentSideBox>
 
 			{/* Socail Share Section ------------------- */}
 			<SocialSharePopup
 				open={showShareModal}
 				onClose={() => setShowShareModal(false)}
+				videoData={item}
+				type={'VIDEO'}
+			/>
+
+			{/* Playlist Popup Section ------------------- */}
+			<PlaylistPopup
+				open={showPlaylistModal}
+				onClose={() => setShowPlaylistModal(false)}
+				userId={authUser?.PublicKeyBase58Check}
 				videoData={item}
 				type={'VIDEO'}
 			/>

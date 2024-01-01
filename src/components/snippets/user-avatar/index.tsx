@@ -14,8 +14,8 @@ const UserAvatar = (props: IUserAvatar) => {
 		? `https://diamondapp.com/api/v0/get-single-profile-picture/${imageKey}`
 		: 'https://diamondapp.com/assets/img/default-profile-pic.png';
 
-	console.log('UserAvatar props', props);
-	console.log('UserAvatar Image', avatar);
+	// console.log('UserAvatar props', props);
+	// console.log('UserAvatar Image', avatar);
 
 	return (
 		<div
