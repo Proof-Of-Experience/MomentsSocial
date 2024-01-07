@@ -13,7 +13,6 @@ const MomentDetailsPage = () => {
 	const router = useRouter();
 	const { PostHashHex, Tag }: any = router.query;
 	// const videoUrl = process.env.NEXT_PUBLIC_MOMENTS_DOMAIN_URL + router.asPath;
-	// console.log('videoUrl:', videoUrl);
 
 	const authUser = useSelector(selectAuthUser);
 	const { setCollapseSidebar } = useSidebar();
@@ -175,8 +174,6 @@ const MomentDetailsPage = () => {
 		}
 	};
 
-	// console.log('currentReaction----', currentReaction);
-
 	return (
 		<MainLayout>
 			<div
@@ -188,8 +185,6 @@ const MomentDetailsPage = () => {
 				) : (
 					videoData.length > 0 &&
 					videoData.map((video: any, index: number) => {
-						// console.log('video item', video);
-						// console.log('video?.VideoURLs[0]====', video?.VideoURLs?.[0]);
 						return (
 							<div
 								key={index}

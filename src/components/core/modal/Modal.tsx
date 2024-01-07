@@ -8,14 +8,53 @@ interface IModalProps {
 	onClose?: () => void;
 	title?: string;
 	children?: React.ReactNode;
+	className?: string;
 	titleClassName?: string;
+	bodyClassName?: string;
+	width?:
+		| 'xs'
+		| 'sm'
+		| 'md'
+		| 'lg'
+		| 'xl'
+		| '2xl'
+		| '3xl'
+		| '4xl'
+		| '5xl'
+		| '6xl'
+		| '7xl'
+		| 'full';
 }
 
 const Modal = (props: IModalProps) => {
-	const { open, onClose, title, children, titleClassName } = props;
+	const {
+		open,
+		onClose,
+		title,
+		children,
+		className,
+		titleClassName,
+		bodyClassName,
+		width = 'lg',
+	} = props;
 
 	const onClickClose = () => {
 		if (onClose) onClose();
+	};
+
+	const WIDTH = {
+		xs: 'max-w-xs',
+		sm: 'max-w-sm',
+		md: 'max-w-md',
+		lg: 'max-w-lg',
+		xl: 'max-w-xl',
+		'2xl': 'max-w-2xl',
+		'3xl': 'max-w-3xl',
+		'4xl': 'max-w-4xl',
+		'5xl': 'max-w-5xl',
+		'6xl': 'max-w-6xl',
+		'7xl': 'max-w-7xl',
+		full: 'max-w-full',
 	};
 
 	return (
@@ -26,7 +65,7 @@ const Modal = (props: IModalProps) => {
 		>
 			<Dialog
 				as="div"
-				className="relative z-30"
+				className={cn('relative z-30', className)}
 				onClose={onClickClose}
 			>
 				<Transition.Child
@@ -52,8 +91,13 @@ const Modal = (props: IModalProps) => {
 							leaveFrom="opacity-100 scale-100"
 							leaveTo="opacity-0 scale-95"
 						>
-							<Dialog.Panel className="w-full max-w-lg transform overflow-hidden rounded-2xl bg-white px-6 py-8 my-5 text-left align-middle shadow-xl transition-all relative z-50">
-								<div className="">
+							<Dialog.Panel
+								className={cn(
+									'w-full transform overflow-hidden rounded-2xl bg-white  my-5 text-left align-middle shadow-xl transition-all relative z-50',
+									WIDTH[width]
+								)}
+							>
+								<div className="px-6 pt-6">
 									{title && (
 										<Dialog.Title
 											as="h3"
@@ -73,7 +117,7 @@ const Modal = (props: IModalProps) => {
 									</div>
 								</div>
 
-								<div className="mt-5">{children}</div>
+								<div className={cn('px-6 pb-6', bodyClassName)}>{children}</div>
 							</Dialog.Panel>
 						</Transition.Child>
 					</div>

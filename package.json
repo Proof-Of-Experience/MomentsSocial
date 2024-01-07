@@ -20,6 +20,7 @@
 		"@headlessui/react": "^1.7.13",
 		"@heroicons/react": "^2.0.16",
 		"@livepeer/react": "^2.4.0",
+		"@mdi/font": "^7.4.47",
 		"@reduxjs/toolkit": "^1.9.3",
 		"@tailwindcss/line-clamp": "^0.4.2",
 		"@types/node": "18.14.6",

@@ -59,7 +59,6 @@ const Settings = () => {
 			await apiService(apiData, (res: any, err: any) => {
 				if (err) return err.response;
 				// eslint-disable-next-line no-console
-				console.log(res.accounts);
 				setAccounts(res?.accounts);
 				setYoutubeAccessToken(res?.youtubeAccessToken);
 			});
@@ -86,8 +85,6 @@ const Settings = () => {
 			.then((res) => {
 				setAccounts(res.accounts);
 			})
-			.catch((err: any) => console.log(err))
-			.finally(() => console.log('finally its done'));
 	};
 
 	useEffect(() => {

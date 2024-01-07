@@ -99,8 +99,6 @@ const ThirdParty = () => {
 		setPostProcessing(true);
 		const exists = await checkIfYoutubeUrlExists(url, youtubeAccessToken);
 
-		console.log('exists', exists);
-
 		if (exists) {
 			const isOwner = await checkVideoOwnership(
 				youtubeAccessToken,

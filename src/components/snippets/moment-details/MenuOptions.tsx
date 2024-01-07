@@ -26,9 +26,7 @@ const MenuOptions = (props: IMenuOptionsProps) => {
 			<div>
 				<button
 					onClick={() => {
-						console.log('onCLick Playlist -- 1');
 						if (onClickSavePlaylist) {
-							console.log('onCLick Playlist -- 2');
 							onClickSavePlaylist();
 						}
 					}}

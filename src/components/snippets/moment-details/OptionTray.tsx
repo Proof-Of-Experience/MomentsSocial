@@ -51,16 +51,11 @@ const MomentOptionTray = (props: IMomentOptionTray) => {
 		onClickSavePlaylist,
 		className,
 	} = props;
-	// console.log('video optionTray', video);
-	console.log('MomentOptionTray Props', props);
-	// console.log('onClickSavePlaylist optionTray', onClickSavePlaylist);
 	const router = useRouter();
 	const userProfilePhotoKey = video?.ProfileEntryResponse?.PublicKeyBase58Check;
 
 	const [showReactTray, setShowReactTray] = useState<boolean>(false);
 	const [showMenuOptions, setShowMenuOptions] = useState<boolean>(false);
-
-	// console.log('video userProfilePhotoKey', userProfilePhotoKey);
 
 	const trayOptions: ITrayOption[] = [
 		{
@@ -69,7 +64,6 @@ const MomentOptionTray = (props: IMomentOptionTray) => {
 			text: totalReaction || 'No Reaction',
 			onClick: () => {
 				if (onClickReaction) onClickReaction();
-				console.log('On Clicked Like');
 			},
 		},
 		{
@@ -78,7 +72,6 @@ const MomentOptionTray = (props: IMomentOptionTray) => {
 			text: totalComment || 'No Comment',
 			onClick: () => {
 				if (onClickComment) onClickComment();
-				console.log('On Clicked Comment');
 			},
 		},
 		{
@@ -87,7 +80,6 @@ const MomentOptionTray = (props: IMomentOptionTray) => {
 			text: 'Share',
 			onClick: () => {
 				if (onClickShare) onClickShare();
-				console.log('On Clicked Share');
 			},
 		},
 		{
@@ -105,7 +97,6 @@ const MomentOptionTray = (props: IMomentOptionTray) => {
 			text: 'Send Tip',
 			onClick: () => {
 				if (onClickTip) onClickTip();
-				console.log('On Clicked Tip');
 			},
 		},
 		{
@@ -115,7 +106,6 @@ const MomentOptionTray = (props: IMomentOptionTray) => {
 			onClick: () => {
 				if (onClickMenu) onClickMenu();
 				setShowMenuOptions((prev) => !prev);
-				console.log('On Clicked Menu');
 			},
 		},
 		{

@@ -7,7 +7,6 @@ interface NotificationProps {
 }
 
 const Notifications = ({ notifications }: NotificationProps) => {
-	// console.log('notifications: ---', notifications);
 	return (
 		<div className="bg-white mt-[10px] py-4 w-[350px] origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transform opacity-100 scale-100">
 			<h3 className="font-semibold text-base mx-5 pb-3 mb-3 border-b border-b-slate-400">

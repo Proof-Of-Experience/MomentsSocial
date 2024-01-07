@@ -5,6 +5,7 @@ import {
 	FireIcon,
 	ArrowPathRoundedSquareIcon,
 	ArrowUpTrayIcon,
+	SquaresPlusIcon,
 } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
@@ -19,8 +20,6 @@ const LeftSidebar = () => {
 	const { width: windowWidth } = windowSize;
 
 	const [activeItem, setActiveItem] = useState('/');
-
-	// console.log('windowWidth', windowWidth);
 
 	// useEffect(() => {
 	// 	if (windowWidth < 1024) {
@@ -103,6 +102,22 @@ const LeftSidebar = () => {
 			url: '/trending',
 			onclick: () => onClickItem('/trending'),
 			showItem: true,
+		},
+		{
+			title: 'Playlist',
+			label: 'Playlist',
+			icon: (
+				<SquaresPlusIcon
+					className={`h-[20px] w-[20px] group-hover:text-[#00A1D4] ${
+						activeItem === '/playlist'
+							? 'bg-[#F0F9FC]  text-[#00A1D4]'
+							: 'text-[#1C1B1F]'
+					}`}
+				/>
+			),
+			url: '/playlist',
+			onclick: () => onClickItem('/playlist'),
+			showItem: authUser,
 		},
 		{
 			title: 'Upload',

@@ -28,11 +28,9 @@ const EmojiReactionTray = (props: IEmojiReactionTray) => {
 						onClick={async () => {
 							const response = await handleReactionSelect(emojiItem);
 							if (response?.error) {
-								console.log('onClickReaction error: ', response?.error);
 								toast.error(response?.error);
 							}
 							if (response?.result) {
-								console.log('onClickReaction result: ', response?.result);
 							}
 						}}
 						title={emojiItem?.name}

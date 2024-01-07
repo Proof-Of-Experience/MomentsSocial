@@ -68,7 +68,6 @@ const useMomentReaction = (props: IProps) => {
 			};
 
 			resultOnReact = await createPostAssociation(reactionParams);
-			console.log('handleReactionSelect resultOnReact:', resultOnReact);
 
 			// if (onReactionClick) {
 			// 	onReactionClick();

@@ -2,11 +2,15 @@ import React, { memo } from 'react';
 import TextDescription from '@/components/snippets/text-description';
 
 const CommentItem = memo(({ comment }: any) => {
+	const profilePhoto = comment.PosterPublicKeyBase58Check
+		? `https://diamondapp.com/api/v0/get-single-profile-picture/${comment.PosterPublicKeyBase58Check}`
+		: 'https://diamondapp.com/assets/img/default-profile-pic.png';
+
 	return (
 		<div className="flex justify-start items-start gap-x-3 w-full">
 			<img
 				className="w-12 h-12 rounded-full"
-				src={comment?.ProfileEntryResponse?.ExtraData?.FeaturedImageURL}
+				src={profilePhoto}
 				alt={comment?.ProfileEntryResponse?.Username}
 			/>
 			<div className="flex flex-col items-start flex-grow gap-y-4">

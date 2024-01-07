@@ -7,8 +7,6 @@ const Videos = ({ videoData = [], onReactionClick, videoLoaded, ...rest }: any) 
 	const { gridView }: any = useContext(VideoLayoutContext);
 	const SKELETON_COUNT = 5;
 
-	// console.log('videoData----', videoData);
-
 	const showGridCol = () => {
 		if (gridView === 'grid') {
 			return 'grid-cols-4';

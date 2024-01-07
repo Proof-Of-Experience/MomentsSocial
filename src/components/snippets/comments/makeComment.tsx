@@ -3,17 +3,17 @@ import { selectAuthUser } from '@/slices/authSlice';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
-const MakeComment = memo(({ postId, userId }: any) => {
+const MakeComment = memo(({ postId, userId, newCommentCreatedHandler }: any) => {
 	const authUser = useSelector(selectAuthUser);
 	const [commentFormData, setFormData] = useState<string>('');
+	const [commenting, setCommenting] = useState<boolean>(false);
 
 	const profilePhoto = authUser?.Profile?.PublicKeyBase58Check
 		? `https://diamondapp.com/api/v0/get-single-profile-picture/${authUser?.Profile?.PublicKeyBase58Check}`
 		: 'https://diamondapp.com/assets/img/default-profile-pic.png';
 
-	// console.log('authUser---', authUser);
-
 	const makeComment = async (e: React.FormEvent) => {
+		setCommenting(true);
 		e.preventDefault();
 
 		if (!authUser) {
@@ -33,10 +33,13 @@ const MakeComment = memo(({ postId, userId }: any) => {
 			},
 		};
 
-		const res = await submitPost(params);
-		console.log(res);
+		await submitPost(params);
 
 		setFormData('');
+
+		setCommenting(false);
+
+		newCommentCreatedHandler();
 	};
 
 	const handleInputChange = (
@@ -51,11 +54,6 @@ const MakeComment = memo(({ postId, userId }: any) => {
 			onSubmit={makeComment}
 			method="POST"
 		>
-			{/* <textarea
-				className="rounded-md p-2"
-				value={commentFormData}
-				onChange={handleInputChange}
-			></textarea> */}
 			<div className="w-full flex items-center justify-center gap-x-3">
 				<img
 					src={profilePhoto}
@@ -74,6 +72,7 @@ const MakeComment = memo(({ postId, userId }: any) => {
 				// className="justify-end bg-gray-200 rounded-md mt-4"
 				className="h-11 py-3 px-6 rounded-2xl bg-[#ABABAB] text-white text-sm font-normal text-center hover:bg-[#00A1D4]"
 				type="submit"
+				disabled={commenting}
 			>
 				Comment
 			</button>

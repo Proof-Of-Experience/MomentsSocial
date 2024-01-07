@@ -23,8 +23,6 @@ const MomentDetailsSingleItem = (props: IMomentDetailsSIngleItem) => {
 		// videoUrl,
 	} = props;
 
-	console.log('MomentDetailsSingleItem props-----', props);
-
 	const {
 		// currentReaction,
 		totalReaction,
@@ -36,17 +34,7 @@ const MomentDetailsSingleItem = (props: IMomentDetailsSIngleItem) => {
 	const [showPlaylistModal, setShowPlaylistModal] = useState<boolean>(false);
 	// const [showDescriptionSideBox, setShowDescriptionSideBox] = useState<boolean>(false);
 
-	const videoComments = (comments: any) => {
-		if (!comments) {
-			// return [];
-			return getNFakeComments(5);
-		}
-
-		return comments;
-	};
-
 	const onClickSavePlaylist = () => {
-		// console.log('save playlist 5');
 		setShowPlaylistModal(true);
 	};
 
@@ -87,7 +75,7 @@ const MomentDetailsSingleItem = (props: IMomentDetailsSIngleItem) => {
 			<MomentOptionTray
 				video={item}
 				totalReaction={totalReaction}
-				totalComment={item?.Comments?.length}
+				totalComment={item?.CommentCount}
 				authUser={authUser}
 				// onClickComment={() => setShowCommentSideBox(true)}
 				onClickComment={() => setShowSideBox('COMMENT')}
@@ -123,8 +111,6 @@ const MomentDetailsSingleItem = (props: IMomentDetailsSIngleItem) => {
 				{showSideBox === 'COMMENT' && (
 					<CommentBox
 						PostHashHex={item?.PostHashHex}
-						commentCount={item?.CommentCount}
-						comments={videoComments(item?.Comments)}
 						authUser={authUser}
 					/>
 				)}
@@ -147,7 +133,7 @@ const MomentDetailsSingleItem = (props: IMomentDetailsSIngleItem) => {
 			<PlaylistPopup
 				open={showPlaylistModal}
 				onClose={() => setShowPlaylistModal(false)}
-				userId={authUser?.PublicKeyBase58Check}
+				userId={authUser?.api_user?._id}
 				videoData={item}
 				type={'VIDEO'}
 			/>

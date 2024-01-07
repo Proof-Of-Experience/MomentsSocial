@@ -92,10 +92,7 @@ const ProfileWallet = ({ username, publicKey, userDetails }: any) => {
 		const response = await getProfiles(profileParams);
 		setIsLoadedProfiles(false);
 		setAllProfiles(response?.ProfilesFound);
-		console.log('response', response);
 	};
-
-	console.log('authUser', authUser);
 
 	const handleCopy = async () => {
 		await navigator.clipboard.writeText(authUser?.PublicKeyBase58Check);

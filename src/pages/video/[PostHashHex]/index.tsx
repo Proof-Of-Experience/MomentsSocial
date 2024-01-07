@@ -5,7 +5,7 @@ import { ApiDataType, apiService } from '@/utils/request';
 import { cn, numerify, toCapitalize } from '@/utils';
 import { selectAuthUser } from '@/slices/authSlice';
 import { useSelector } from 'react-redux';
-import { getNFakeComments } from '@/data/comments';
+// import { getNFakeComments } from '@/data/comments';
 import SendTipButton, { SendTipButtonUI } from '@/components/snippets/tip/SendTipButton';
 import { DiamonLevel } from '@/services/tip';
 import { CommentIcon, ReactIcon, ShareIcon } from '@/components/icons';
@@ -27,6 +27,7 @@ import { ContnetIsBlocked } from '@/components/snippets/block/contentIsblocked';
 const VideoDetailsPage = () => {
 	const router = useRouter();
 	const authUser = useSelector(selectAuthUser);
+	// console.log('authUser----', authUser);
 	const { setCollapseSidebar } = useSidebar();
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
@@ -118,15 +119,6 @@ const VideoDetailsPage = () => {
 		}
 	};
 
-	const videoComments = (comments: any) => {
-		if (!comments) {
-			// return [];
-			return getNFakeComments(7);
-		}
-
-		return comments;
-	};
-
 	const handleClickComments = () => {
 		const element = document.getElementById('video-comments');
 		if (element) {
@@ -138,10 +130,7 @@ const VideoDetailsPage = () => {
 
 	const handleClickPlaylist = () => {
 		setShowPlaylistModal(true);
-		console.log('handleClickPlaylist');
 	};
-
-	console.log('videoData: ', videoData);
 
 	return (
 		<MainLayout title="Video Details">
@@ -227,12 +216,7 @@ const VideoDetailsPage = () => {
 													setShowReactTray(false);
 												}}
 											>
-												<button
-													className="px-3 pl-2 py-1 flex items-center gap-x-2 bg-[#EBFAFF] hover:bg-[#00A1D4] rounded-2xl cursor-pointer group transition-all"
-													onClick={() =>
-														console.log('on Clicked React Icon')
-													}
-												>
+												<button className="px-3 pl-2 py-1 flex items-center gap-x-2 bg-[#EBFAFF] hover:bg-[#00A1D4] rounded-2xl cursor-pointer group transition-all">
 													<ReactIcon className="group-hover:text-white transition-all" />
 													<span className="text-sm text-[#47474A] group-hover:text-white transition-all">
 														React
@@ -307,8 +291,6 @@ const VideoDetailsPage = () => {
 									>
 										<CommentBox
 											PostHashHex={videoData?.PostHashHex}
-											commentCount={videoData?.CommentCount}
-											comments={videoComments(videoData?.Comments)}
 											authUser={authUser}
 										/>
 									</div>
@@ -390,13 +372,15 @@ const VideoDetailsPage = () => {
 				</div>
 
 				{/* Playlist Popup Section ------------------- */}
-				<PlaylistPopup
-					open={showPlaylistModal}
-					onClose={() => setShowPlaylistModal(false)}
-					userId={authUser?.PublicKeyBase58Check}
-					videoData={videoData}
-					type={'VIDEO'}
-				/>
+				{showPlaylistModal && (
+					<PlaylistPopup
+						open={showPlaylistModal}
+						onClose={() => setShowPlaylistModal(false)}
+						userId={authUser?.api_user?._id}
+						videoData={videoData}
+						type={'VIDEO'}
+					/>
+				)}
 
 				{/* Socail Share Section ------------------- */}
 				<SocialSharePopup

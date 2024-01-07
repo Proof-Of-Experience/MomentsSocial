@@ -23,34 +23,60 @@ const PlaylistPopup = (props: IPlaylistPopupProps) => {
 		videoData,
 		// type
 	} = props;
-	const { playlistsAll } = useGlobalState();
+	const { setPlaylists, playlists, loadingPlaylist, setShouldLoadPlaylist } = useGlobalState();
 	const [showPlaylistCreateForm, setShowPlaylistCreateForm] = useState<boolean>(false);
 	const [playlistName, setPlaylistName] = useState<string>('');
 	const [loadingCreate, setLoadingCreate] = useState<boolean>(false);
 	const [errorMsg, setErrorMsg] = useState<string>('');
+	// console.log('playlists------', playlists);
 
-	const handleClickSaveToPlaylist = () => {
-		console.log('handleClickSaveToPlaylist');
+	const handleClickUpdateToPlaylist = async (isChecked: boolean, playlistItem: any) => {
+		// console.log('handleClickUpdateToPlaylist----', isChecked, playlistItem);
+		const newPlaylists = playlists.map((item: any) => {
+			if (item?._id === playlistItem?._id) {
+				return {
+					...item,
+					checked: isChecked,
+				};
+			}
+			return item;
+		});
+		setPlaylists(newPlaylists);
+
+		const apiData: ApiDataType = {
+			method: 'post',
+			url: `/api/playlists/${isChecked ? 'add-multiple' : 'remove-multiple'}`,
+			data: {
+				playlistIds: [playlistItem?._id],
+				postIds: [videoData?.PostHashHex],
+			},
+			customUrl: process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL,
+		};
+
+		await apiService(apiData, (res: any, err: any) => {
+			if (res) {
+				// console.log('handleClickUpdateToPlaylist res: ', res?.data);
+				return res?.data;
+			}
+			if (err) {
+				console.error('handleClickUpdateToPlaylist error: ', err?.response?.message);
+				toast.error(err?.response?.message || 'Something went wrong, failed to update.');
+				setShouldLoadPlaylist(true);
+			}
+		});
 	};
 
 	const handleCreatePlaylist = async (event: any) => {
-		console.log('handleCreatePlaylist');
 		event?.preventDefault();
 		if (!userId) return toast.error('Please login to create playlist');
 
 		if (!playlistName) return setErrorMsg('Enter Playlist Name');
 
-		console.log('handleCreatePlaylist forData: ', {
-			name: playlistName,
-			userId,
-			postIds: [videoData?.PostHashHex],
-		});
-
 		setLoadingCreate(true);
 
 		const apiData: ApiDataType = {
 			method: 'post',
-			url: `/playlists/`,
+			url: `/api/playlists/`,
 			data: {
 				name: playlistName,
 				userId,
@@ -60,14 +86,16 @@ const PlaylistPopup = (props: IPlaylistPopupProps) => {
 		};
 
 		await apiService(apiData, (res: any, err: any) => {
-			if (err) {
-				toast.error(err?.response?.message);
-			}
 			if (res) {
-				console.log('res playlist create', res);
+				// console.log('handleCreatePlaylist res: ', res);
 				setShowPlaylistCreateForm(false);
 				setPlaylistName('');
 				setErrorMsg('');
+				setShouldLoadPlaylist(true);
+			}
+			if (err) {
+				toast.error(err?.response?.message || 'Something went wrong, failed to create.');
+				console.error('handleCreatePlaylist error: ', err);
 			}
 		});
 		setLoadingCreate(false);
@@ -80,25 +108,45 @@ const PlaylistPopup = (props: IPlaylistPopupProps) => {
 		setShowPlaylistCreateForm(false);
 	};
 
+	// console.log('playlists----', playlists);
+
 	return (
 		<Modal
 			title={'Save on playlist'}
 			open={open}
 			onClose={onClosePopup}
 			titleClassName="text-center"
+			bodyClassName="px-0"
+			width="sm"
 		>
-			<div className="mt-5">
-				<div className="min-h-[200px] flex flex-col items-center justify-center">
-					{playlistsAll.length > 0 ? (
-						<div className="">
-							{playlistsAll.map((item: any, index: any) => (
-								<Checkbox
-									key={`playlist-${index}`}
-									label="Test Playlist One"
-									className="mb-8"
-								/>
-							))}
+			<div className="">
+				<div className="relative max-h-[320px] px-6 my-6 overflow-y-scroll flex flex-col items-center justify-start">
+					{loadingPlaylist && (
+						<div className="absolute top-0 left-0 w-full h-full flex items-center justify-center text-lg font-semibold bg-white/10 z-10">
+							Loading...
 						</div>
+					)}
+					{playlists?.length > 0 ? (
+						<>
+							{playlists.map((item: any, index: any) => (
+								<div
+									className="mb-3.5 last:mb-0 w-full"
+									key={`playlist-${index}`}
+								>
+									<Checkbox
+										id={item?._id}
+										label={item?.name}
+										className="w-full"
+										inputClassName=""
+										labelClassName="flex-1 line-clamp-1"
+										checked={item?.checked}
+										onChange={(e: any) => {
+											handleClickUpdateToPlaylist(e?.target?.checked, item);
+										}}
+									/>
+								</div>
+							))}
+						</>
 					) : (
 						<div className="flex flex-col items-center justify-center">
 							<SquaresPlusIcon className="group-hover:text-white transition-all h-6 w-6" />
@@ -106,7 +154,7 @@ const PlaylistPopup = (props: IPlaylistPopupProps) => {
 						</div>
 					)}
 				</div>
-				<div className="">
+				<div className="px-6">
 					{showPlaylistCreateForm ? (
 						<form onSubmit={handleCreatePlaylist}>
 							<div className="flex items-center justify-between gap-x-3">
@@ -119,6 +167,7 @@ const PlaylistPopup = (props: IPlaylistPopupProps) => {
 										`w-full border py-1.5 px-4 text-md rounded-full focus:outline-none`,
 										errorMsg ? 'border-red-600' : 'border-[#5798fb]'
 									)}
+									autoFocus
 								/>
 								<PrimaryButton
 									// type="submit"
@@ -137,7 +186,6 @@ const PlaylistPopup = (props: IPlaylistPopupProps) => {
 					) : (
 						<button
 							className="flex items-center justify-center bg-[#00A1D4] text-white rounded-full w-full py-2 text-base font-semibold"
-							// onClick={handleClickSaveToPlaylist}
 							onClick={() => setShowPlaylistCreateForm(true)}
 						>
 							<PlusIcon className="h-6 w-6" />

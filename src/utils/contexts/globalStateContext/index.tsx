@@ -1,5 +1,6 @@
 import { selectAuthUser } from '@/slices/authSlice';
 import { ApiDataType, apiService } from '@/utils/request';
+import { useRouter } from 'next/router';
 import {
 	// Dispatch,
 	// SetStateAction,
@@ -11,10 +12,12 @@ import {
 import { useSelector } from 'react-redux';
 
 export interface IGlobalStateContextProps {
+	setPlaylists: (data: any[]) => void;
 	playlists: any[];
 	playlistsAll: any[];
 	loadingPlaylist: boolean;
-	getPlaylists: () => void;
+	shouldLoadPlaylist: boolean;
+	setShouldLoadPlaylist: (data: boolean) => void;
 }
 
 export const GlobalStateContext = createContext<IGlobalStateContextProps | undefined>(undefined);
@@ -25,22 +28,32 @@ interface IGlobalProviderProps {
 
 export const GlobalStateProvider = ({ children }: IGlobalProviderProps) => {
 	const authUser = useSelector(selectAuthUser);
-	const userId = authUser?.PublicKeyBase58Check;
+	const userId = authUser?.api_user?._id;
+	const router = useRouter();
+	const isVideoRoute = router?.route === '/video/[PostHashHex]' || '/moment/[PostHashHex]';
+	const videoHash = isVideoRoute ? router?.query?.PostHashHex : null;
+
 	const [playlistsAll, setPlaylistsAll] = useState<any[]>([]);
 	const [playlists, setPlaylists] = useState<any[]>([]);
 	const [loadingPlaylist, setLoadingPlaylist] = useState<boolean>(false);
+	const [shouldLoadPlaylist, setShouldLoadPlaylist] = useState<boolean>(false);
 
 	useEffect(() => {
-		getPlaylists();
-	}, []);
+		if (userId && videoHash) getPlaylists();
+	}, [userId, videoHash]);
 
-	console.log('playlistAll', playlistsAll);
-	console.log('playlist', playlists);
+	useEffect(() => {
+		if (shouldLoadPlaylist) getPlaylists();
+	}, [shouldLoadPlaylist]);
 
-	const getPlaylists = async () => async () => {
+	// console.log('shouldLoadPlaylist----', shouldLoadPlaylist);
+	// console.log('playlistAll', playlistsAll);
+	// console.log('playlist', playlists);
+
+	const getPlaylists = async () => {
 		const apiData: ApiDataType = {
 			method: 'get',
-			url: `/playlists/users/${userId}`,
+			url: `/api/playlists/users/${userId}`,
 			customUrl: process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL,
 		};
 
@@ -49,8 +62,21 @@ export const GlobalStateProvider = ({ children }: IGlobalProviderProps) => {
 				if (err) return err.response;
 
 				if (res.length > 0) {
+					// console.log('getPlaylists res', res);
 					setPlaylistsAll(res);
-					setPlaylists(res);
+					const mappedPlaylists = res.map((playlist: any) => {
+						const playlistPostIds = playlist?.postIds;
+						const hasPost = playlistPostIds?.some(
+							(post: any) => post?.PostHashHex === videoHash
+						);
+						return {
+							...playlist,
+							checked: hasPost,
+						};
+					});
+					// console.log('mappedPlaylists', mappedPlaylists);
+					setPlaylists(videoHash ? mappedPlaylists : res);
+					if (shouldLoadPlaylist) setShouldLoadPlaylist(false);
 				}
 			});
 		} catch (error: any) {
@@ -63,10 +89,12 @@ export const GlobalStateProvider = ({ children }: IGlobalProviderProps) => {
 	return (
 		<GlobalStateContext.Provider
 			value={{
+				setPlaylists,
 				playlists,
 				playlistsAll,
-				getPlaylists,
 				loadingPlaylist,
+				shouldLoadPlaylist,
+				setShouldLoadPlaylist,
 			}}
 		>
 			{children}

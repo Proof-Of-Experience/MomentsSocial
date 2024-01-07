@@ -15,8 +15,6 @@ const VideoItem = memo((props: VideoItemProps) => {
 		...rest
 	} = props;
 
-	// console.log('Video Item: ', item);
-	// console.log('Video Item Props: ', props);
 	const [isVideoHovered, setIsVideoHovered] = useState<boolean>(false);
 	const [videoUrl, setVideoUrl] = useState<string>('');
 	const router = useRouter();
@@ -56,8 +54,6 @@ const VideoItem = memo((props: VideoItemProps) => {
 	};
 	// const videoUrl = sanitizeURL(desoResponse ? item?.VideoURLs[0] : item?.VideoURL);
 	const thumbnailUrl = `${process.env.NEXT_PUBLIC_MOMENTS_UTIL_URL}${item?.screenshot}`;
-
-	console.log('videoUrl', videoUrl);
 
 	return (
 		<div

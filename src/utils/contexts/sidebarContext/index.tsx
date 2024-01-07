@@ -20,8 +20,6 @@ export const SidebarProvider = ({ children }: ISidebarProviderProps) => {
 		setCollapseSidebar(isSmallDevice ? true : false);
 	}, [isSmallDevice]);
 
-	console.log('collapseSidebar', collapseSidebar);
-
 	return (
 		<SidebarContext.Provider
 			value={{
