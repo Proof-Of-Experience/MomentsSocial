@@ -55,7 +55,6 @@ const useMomentReaction = (props: IProps) => {
 		if (!selectedItem) return { error: 'Please select a reaction emoji!', result: null };
 		if (!authUser) return { error: 'Please login to react!', result: null };
 
-		setSelectedReaction([...new Set(selectedItem?.emoji + currentReaction)].join(''));
 		const { createPostAssociation } = await import('deso-protocol');
 		try {
 			const reactionParams = {
@@ -73,9 +72,11 @@ const useMomentReaction = (props: IProps) => {
 			// 	onReactionClick();
 			// }
 			getReactions();
+			setSelectedReaction([...new Set(selectedItem?.emoji + currentReaction)].join(''));
 			return { error: null, result: resultOnReact };
 		} catch (error) {
 			console.error('reaction error', error);
+			return { error, result: null };
 		}
 	};
 

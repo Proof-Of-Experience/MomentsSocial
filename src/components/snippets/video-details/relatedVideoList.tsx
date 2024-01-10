@@ -1,8 +1,8 @@
 import React from 'react';
 import RelatedVideoItem from './relatedVideoItem';
 
-const RelatedVideoList = (props: { videos: any[] }) => {
-	const { videos } = props;
+const RelatedVideoList = (props: { videos: any[]; playlistId?: string }) => {
+	const { videos, playlistId } = props;
 
 	return (
 		<>
@@ -12,6 +12,7 @@ const RelatedVideoList = (props: { videos: any[] }) => {
 						<RelatedVideoItem
 							key={index}
 							item={item}
+							playlistId={playlistId}
 						/>
 					))}
 				</>

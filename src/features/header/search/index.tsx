@@ -59,8 +59,9 @@ const Search = ({
 						leaveFrom="opacity-100"
 						leaveTo="opacity-0"
 						afterLeave={() => setQuery('')}
+						className="absolute w-full"
 					>
-						<div className="relative mt-1 w-full bg-white py-1 text-base border focus:outline-none sm:text-sm max-h-64 overflow-auto">
+						<div className="relative mt-1 w-full bg-white py-1 text-base border focus:outline-none sm:text-sm max-h-64 overflow-auto scrollbar-thin scrollbar-thumb-slate-300">
 							<Combobox.Options>
 								{loadedQuery ? (
 									<div className="relative cursor-default select-none py-2 px-4 text-gray-700">
@@ -74,7 +75,7 @@ const Search = ({
 											className={({ active }) =>
 												`relative cursor-pointer select-none py-2 pl-5 pr-4 ${
 													active
-														? 'bg-gray-400 text-white'
+														? 'bg-[#F0F9FC] text-[#00A1D4]'
 														: 'text-gray-900'
 												}`
 											}

@@ -13,7 +13,7 @@ const Moment = memo(({ className, onClick, item, isLoading }: MomentProps) => {
 		<div className={`block cursor-pointer h-[474px] ${className ? className : ''}`}>
 			<Fragment>
 				<div
-					className="flex flex-wrap w-full h-[370px] relative rounded-lg overflow-hidden bg-gradient-to-br from-lightgray via-transparent to-#7E7E7E"
+					className="flex flex-wrap w-full h-[370px] relative rounded-lg overflow-hidden bg-gradient-to-br from-gray-300 via-transparent to-[#BABABA]"
 					onClick={() => router.push(`/moment/${item?.PostHashHex}`)}
 				>
 					<img
@@ -38,7 +38,10 @@ const Moment = memo(({ className, onClick, item, isLoading }: MomentProps) => {
               </div> */}
 
 					<div className="flex justify-between mt-4">
-						<EmojiReaction postHashHex={item?.PostHashHex} />
+						<EmojiReaction
+							// onReactionClick={onReactionClick}
+							postHashHex={item?.PostHashHex}
+						/>
 						<button className="flex items-center font-semibold text-gray-700">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"

@@ -25,7 +25,7 @@ const Playlist = () => {
 		setActivePlaylist(item);
 	};
 	// console.log('page palylists----', playlists);
-	// console.log('activePlaylist----', activePlaylist);
+	console.log('activePlaylist----', activePlaylist);
 
 	return (
 		<MainLayout
@@ -80,7 +80,10 @@ const Playlist = () => {
 								</h2>
 								{activePlaylist?.postIds?.length > 0 ? (
 									<div className="flex flex-col gap-y-5">
-										<RelatedVideoList videos={activePlaylist?.postIds} />
+										<RelatedVideoList
+											videos={activePlaylist?.postIds}
+											playlistId={activePlaylist?._id}
+										/>
 									</div>
 								) : (
 									<div className="flex flex-col items-center justify-center h-60 my-10">

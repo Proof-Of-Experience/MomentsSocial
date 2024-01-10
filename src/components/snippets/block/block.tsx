@@ -1,22 +1,23 @@
-import { DonateIcon } from '@/components/icons';
+// import { DonateIcon } from '@/components/icons';
 import { NoSymbolIcon } from '@heroicons/react/20/solid';
-import { DiamonLevel, sendTip } from '@/services/tip';
+// import { DiamonLevel, sendTip } from '@/services/tip';
 import { blockPermanently, getUserDBId, isUserAdmin } from '@/services/user/user';
 import { selectAuthUser } from '@/slices/authSlice';
 import { cn } from '@/utils';
-import { memo, useState } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 interface BlockButtonProps {
 	userToBeBannedId: string;
+	onSuccessBlock?: () => void;
 }
 
 const DefaultButtonText = 'Block';
 const BlockedText = 'Blocked !';
 
 export const BlockButton = (props: BlockButtonProps) => {
-	const { userToBeBannedId } = props;
+	const { userToBeBannedId, onSuccessBlock } = props;
 	const authUser = useSelector(selectAuthUser);
 	const [buttonText, setButtonText] = useState<string>(DefaultButtonText);
 
@@ -28,7 +29,7 @@ export const BlockButton = (props: BlockButtonProps) => {
 
 			setButtonText(BlockedText);
 
-			setTimeout(() => location.reload(), 2000);
+			if (onSuccessBlock) onSuccessBlock();
 		} catch (err: any) {
 			toast.dismiss();
 			toast.error(err.message);

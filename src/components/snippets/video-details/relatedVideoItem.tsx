@@ -2,14 +2,19 @@
 import React from 'react';
 import VideoItem from '../video';
 
-const RelatedVideoItem = (props: { item: any }) => {
-	const { item, ...rest } = props;
+interface IRelatedVideoItemProps {
+	item: any;
+	playlistId?: string;
+}
+const RelatedVideoItem = (props: IRelatedVideoItemProps) => {
+	const { item, playlistId, ...rest } = props;
 
 	// const router = useRouter();
 
 	return (
 		<VideoItem
 			item={item}
+			playlistId={playlistId}
 			isHorizontal
 			{...rest}
 		/>

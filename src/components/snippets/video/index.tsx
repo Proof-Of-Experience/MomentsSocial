@@ -12,12 +12,14 @@ const VideoItem = memo((props: VideoItemProps) => {
 		isHorizontal,
 		hideUserProfilePhoto = false,
 		showVideoOnly = false,
+		playlistId,
 		...rest
 	} = props;
 
 	const [isVideoHovered, setIsVideoHovered] = useState<boolean>(false);
 	const [videoUrl, setVideoUrl] = useState<string>('');
 	const router = useRouter();
+	console.log('playlistId----', playlistId);
 
 	useEffect(() => {
 		setVideoUrl(
@@ -70,7 +72,11 @@ const VideoItem = memo((props: VideoItemProps) => {
 						}
 					)}
 					onClick={() => {
-						router.push(`/video/${item?.PostHashHex}`);
+						const params = playlistId ? `?playlist=${playlistId}` : '';
+						if (item?.moment) {
+							return router.push(`/moment/${item?.PostHashHex}${params}`);
+						}
+						router.push(`/video/${item?.PostHashHex}${params}`);
 					}}
 				>
 					<iframe
@@ -91,7 +97,11 @@ const VideoItem = memo((props: VideoItemProps) => {
 						}
 					)}
 					onClick={() => {
-						router.push(`/video/${item?.PostHashHex}`);
+						const params = playlistId ? `?playlist=${playlistId}` : '';
+						if (item?.moment) {
+							return router.push(`/moment/${item?.PostHashHex}${params}`);
+						}
+						router.push(`/video/${item?.PostHashHex}${params}`);
 					}}
 					onMouseOver={() => setIsVideoHovered(true)}
 					onMouseOut={() => setIsVideoHovered(false)}
@@ -111,7 +121,13 @@ const VideoItem = memo((props: VideoItemProps) => {
 								'top-[20px]': isHorizontal,
 							}
 						)}
-					></div>
+					>
+						{item?.moment && (
+							<div className="absolute -top-2.5 right-2.5 bg-[#00A1D4] rounded-md text-xs text-white px-1.5 z-10">
+								MOMENT
+							</div>
+						)}
+					</div>
 					<img
 						src={thumbnailUrl}
 						alt="Video thumbnail"
@@ -150,7 +166,11 @@ const VideoItem = memo((props: VideoItemProps) => {
 								}
 							)}
 							onClick={() => {
-								router.push(`/video/${item?.PostHashHex}`);
+								const params = playlistId ? `?playlist=${playlistId}` : '';
+								if (item?.moment) {
+									return router.push(`/moment/${item?.PostHashHex}${params}`);
+								}
+								router.push(`/video/${item?.PostHashHex}${params}`);
 							}}
 						>
 							{item?.Body}

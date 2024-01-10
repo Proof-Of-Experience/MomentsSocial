@@ -27,19 +27,19 @@ export const ContnetIsBlocked = (props: LiftBanProps) => {
 
 	return (
 		<div className="w-full flex flex-col max-w-7xl mx-auto justify-center items-center py-28">
-			<div className="text-5xl text-gray-600">Sorry!</div>
-			<div className="text-3xl text-gray-600 ">Content blocked</div>
+			<div className="text-4xl text-gray-600 mb-4">Sorry!</div>
+			<div className="text-2xl text-gray-600 font-medium mb-6">Content blocked</div>
 
 			{isAdmin && (
 				<>
-					<div className="text-base mt-2 text-gray-700">
+					<div className="text-base mt-2 text-green-800 mb-4">
 						As an admin, you can unblock this user.
 					</div>
 
 					<div>
 						<button
 							onClick={attemptToLiftBan}
-							className="px-3 py-2 bg-green-100 text-green-500 rounded-md"
+							className="px-3 py-2 bg-green-100 text-green-700 font-medium rounded-md"
 						>
 							Unblock?
 						</button>

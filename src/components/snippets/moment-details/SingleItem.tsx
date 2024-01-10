@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getNFakeComments } from '@/data/comments';
+// import { getNFakeComments } from '@/data/comments';
 import MomentOptionTray from '@/components/snippets/moment-details/OptionTray';
 import CommentBox from '@/components/snippets/comments/commentBox';
 import SocialSharePopup from '@/components/snippets/social-share-popup';
@@ -115,7 +115,7 @@ const MomentDetailsSingleItem = (props: IMomentDetailsSIngleItem) => {
 					/>
 				)}
 				{showSideBox === 'DESCRIPTION' && (
-					<div className="">
+					<div className="px-6">
 						<TextDescription description={item?.Body} />
 					</div>
 				)}

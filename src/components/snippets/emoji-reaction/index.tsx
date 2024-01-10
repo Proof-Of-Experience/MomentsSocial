@@ -2,6 +2,7 @@ import React, { useEffect, memo, useState } from 'react';
 import { emojiList } from '@/enums/emojis';
 import { useSelector } from 'react-redux';
 import { selectAuthUser } from '@/slices/authSlice';
+import { toast } from 'react-toastify';
 
 const EmojiReaction = memo(({ onReactionClick, postHashHex }: any) => {
 	const authUser = useSelector(selectAuthUser);
@@ -45,7 +46,6 @@ const EmojiReaction = memo(({ onReactionClick, postHashHex }: any) => {
 	};
 
 	const handleReactionSelect = async (reactionName: string, selectedReaction: string) => {
-		setSelectedReaction([...new Set(selectedReaction + currentReaction)].join(''));
 		const { createPostAssociation } = await import('deso-protocol');
 		try {
 			const reactionParams = {
@@ -61,31 +61,37 @@ const EmojiReaction = memo(({ onReactionClick, postHashHex }: any) => {
 			if (onReactionClick) {
 				onReactionClick();
 			}
+			setSelectedReaction([...new Set(selectedReaction + currentReaction)].join(''));
+			setIsReactionHovered(false);
 			getReactions();
 		} catch (error) {
+			toast.dismiss();
+			toast.error('Failed to react, something went wrong!');
 			console.error('reaction error', error);
 		}
 	};
 
 	return (
 		<div
-			className="flex items-center font-semibold text-gray-700 mr-2"
+			className="relative flex items-center font-semibold text-gray-700 mr-2"
 			onMouseEnter={handleButtonHover}
 			onMouseLeave={handleButtonMouseLeave}
 		>
-			<span className={`${selectedReaction ? 'w-[auto]' : 'w-[24px]'} h-[auto] mr-1`}>
-				{selectedReaction ? selectedReaction : '👍'}
-			</span>
-			<span className="text-[#7B7788] leading-trim font-inter font-normal leading-normal">
-				{totalReaction?.Total || ''}
-			</span>
-			<span className="text-[#7B7788] leading-trim text-[13px] font-inter font-normal leading-normal">
-				{totalReaction?.Total > 0 ? '' : 'No Reaction'}
-			</span>
+			<div>
+				<span className={`${selectedReaction ? 'w-[auto]' : 'w-[24px]'} h-[auto] mr-1`}>
+					{selectedReaction ? selectedReaction : '👍'}
+				</span>
+				<span className="text-[#7B7788] leading-trim font-inter font-normal leading-normal">
+					{totalReaction?.Total || ''}
+				</span>
+				<span className="text-[#7B7788] leading-trim text-[13px] font-inter font-normal leading-normal">
+					{totalReaction?.Total > 0 ? '' : 'No Reaction'}
+				</span>
+			</div>
 
 			{isReactionHovered && (
 				<div
-					className={`absolute bottom-7 left-0 bg-white font-[16px] text-[#1C1B1F] rounded-3xl border-2 shadow px-3`}
+					className={`absolute bottom-5 left-0 bg-white font-[16px] text-[#1C1B1F] rounded-3xl border-2 shadow px-3`}
 				>
 					<div className="relative inline-flex items-center">
 						{emojiList.map((emojiItem) => (
