@@ -31,7 +31,6 @@ const AllPreferences = ({ userId }: ProfilePreferencesProps) => {
 	const router = useRouter();
 	const dispatch = useDispatch();
 
-	const [existingHashTags, setExistingHashtags] = useState<HashTagOption[]>([]);
 	const [selectedOptions, setSelectedOptions] = useState<HashTagOption[]>([]);
 	const [availableOptions, setAvailableOptions] = useState<HashTagOption[]>([]);
 	const [savingId, setSavingId] = useState<string>('');
@@ -41,27 +40,38 @@ const AllPreferences = ({ userId }: ProfilePreferencesProps) => {
 	const [updatingUserHashtags, setUpdatingUserHashtags] = useState<boolean>(false);
 
 	useEffect(() => {
-		if (!router.isReady) return;
-
+		if (!router.isReady) {
+			return;
+		}
 		// First we get all the user's selected hashtags
+		fetchData(userId);
+	}, [router.isReady, userId]);
+
+	const fetchData = async (userId: string | null) => {
+		setFetchingAllHastags(true);
+
+		const hashtagsRes = await fetchHashtags();
+
+		const mappedHashtags = await hashtagsRes.map((entity: HashtagEntity) =>
+			toHashtagOption(entity)
+		);
+
+		// setExistingHashtags(mappedHashtags);
+
+		setFetchingAllHastags(false);
+
 		if (userId) {
 			setFetchingUserHastags(true);
-			fetchUserHashtags(userId)
-				.then((res) => {
-					updateUserPreferenceState(res as HashtagEntity[]);
-				})
-				.finally(() => setFetchingUserHastags(false));
-		}
-		// then we get all the hashtags in the db
-		setFetchingAllHastags(true);
-		fetchHashtags()
-			.then((res) => {
-				setExistingHashtags(res.map((entity: HashtagEntity) => toHashtagOption(entity)));
-			})
-			.finally(() => setFetchingAllHastags(false));
+			const userHashtags = await fetchUserHashtags(userId);
 
-		filterAndSetAvailableHashtags();
-	}, [router.isReady]);
+			const mappedUserHashtags = userHashtags as HashtagEntity[];
+			updateUserPreferenceState(mappedUserHashtags);
+
+			setFetchingUserHastags(false);
+		}
+
+		filterAndSetAvailableHashtags(mappedHashtags);
+	};
 
 	const toHashtagOption = (entity: HashtagEntity): HashTagOption => {
 		return { value: entity._id, label: entity.name };
@@ -79,20 +89,16 @@ const AllPreferences = ({ userId }: ProfilePreferencesProps) => {
 		setSelectedOptions(userExistingPreference);
 	};
 
-	/**
-	 * It filters out the user's existing hashtags
-	 */
-	const filterAndSetAvailableHashtags = () => {
+	const filterAndSetAvailableHashtags = (tags: ValueType[]) => {
 		let filteredHashTags: HashTagOption[] = [];
 
 		if (selectedOptions.length === 0) {
-			filteredHashTags = existingHashTags;
+			filteredHashTags = tags;
 		} else {
-			filteredHashTags = existingHashTags.filter(
+			filteredHashTags = tags.filter(
 				(tag) => !selectedOptions.map((selected) => selected.value).includes(tag.value)
 			);
 		}
-
 		setAvailableOptions(filteredHashTags);
 	};
 
@@ -132,7 +138,6 @@ const AllPreferences = ({ userId }: ProfilePreferencesProps) => {
 				setSavingId(option.value);
 
 				setTimeout(() => {
-					//
 					availableOptions.splice(index, 1);
 				}, 1500);
 			})
@@ -147,7 +152,6 @@ const AllPreferences = ({ userId }: ProfilePreferencesProps) => {
 				}, 2000);
 			});
 	};
-
 	return (
 		<div className="flex flex-col text-lg text-gray-700">
 			{!fetchingAllHashtags && !fetchingUserHashtags ? (
@@ -169,7 +173,7 @@ const AllPreferences = ({ userId }: ProfilePreferencesProps) => {
 					))}
 				</div>
 			) : (
-				<>Loading data asd...</>
+				<>Loading data...</>
 			)}
 		</div>
 	);

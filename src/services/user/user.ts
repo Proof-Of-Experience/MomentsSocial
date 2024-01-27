@@ -2,7 +2,7 @@
 import { ApiDataType, RequestParams, __fetch, __patch, apiService } from '@/utils/request';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 import { UserProfileResponse } from './data/user';
-import { IsUserBlocked } from './api/profile';
+import { isUserBlocked } from './api/profile';
 
 export const getUserProfile = async (username: string) => {
 	const { getSingleProfile } = await import('deso-protocol');
@@ -18,7 +18,7 @@ export const userLogin = async () => {
 	const { identity, getUsersStateless } = await import('deso-protocol');
 	const loggedInInfo: any = await identity.login();
 
-	const api_user = await getUserInfoFromUtils(loggedInInfo.publicKeyBase58Check);
+	const apiUser = await getUserInfoFromUtils(loggedInInfo.publicKeyBase58Check);
 
 	const userParams = {
 		PublicKeysBase58Check: [loggedInInfo?.publicKeyBase58Check],
@@ -26,7 +26,7 @@ export const userLogin = async () => {
 	};
 	const userInfo: any = await getUsersStateless(userParams);
 
-	return { ...loggedInInfo, ...userInfo?.UserList[0], api_user };
+	return { ...loggedInInfo, ...userInfo?.UserList[0], api_user: apiUser };
 };
 
 export const getUserInfoFromUtils = async (userId: number) => {
@@ -112,11 +112,7 @@ export const liftBan = async (bannedUserId: string, authUserId: string) => {
 };
 
 export const isUserBanned = async (userId: string): Promise<boolean> => {
-	try {
-		const blockedResponse = await IsUserBlocked(userId);
+	const blockedResponse = await isUserBlocked(userId);
 
-		return blockedResponse.is_banned;
-	} catch (err) {
-		throw err;
-	}
+	return blockedResponse.is_banned;
 };

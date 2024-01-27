@@ -12,7 +12,7 @@ import { isVideoIdInVideoData } from '@/utils/video';
 import { handleYoutubeAuthentication } from '@/utils/youtube';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 import { Account, UserProfileResponse } from '@/services/user/data/user';
-import { GetUserProfile } from '@/services/user/api/profile';
+import { getUserProfile } from '@/services/user/api/profile';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 import { GetTiktokRedirectOptions } from '@/services/tiktok/oauth';
 
@@ -81,10 +81,9 @@ const Settings = () => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	const doSomething = (id: string) => {
 		// eslint-disable-next-line new-cap
-		GetUserProfile(id)
-			.then((res) => {
-				setAccounts(res.accounts);
-			})
+		getUserProfile(id).then((res) => {
+			setAccounts(res.accounts);
+		});
 	};
 
 	useEffect(() => {

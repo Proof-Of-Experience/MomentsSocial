@@ -46,7 +46,7 @@ const CommentBox = (props: any) => {
 
 		setCommentsCount(res.PostFound?.CommentCount || 0);
 
-		let _comments: any[] = res.PostFound?.Comments || [];
+		const _comments: any[] = res.PostFound?.Comments || [];
 
 		setComments((prevComments) => [...prevComments, ..._comments]);
 

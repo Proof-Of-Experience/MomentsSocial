@@ -16,10 +16,16 @@ const MakeComment = memo(({ postId, userId, newCommentCreatedHandler }: any) => 
 		setCommenting(true);
 		e.preventDefault();
 
+
 		if (!authUser) {
 			toast.dismiss();
 			return toast.error('Please login to comment');
 		}
+
+
+		if (commentFormData === "") {
+		 return ;
+    }
 
 		const { submitPost } = await import('deso-protocol');
 
@@ -72,7 +78,7 @@ const MakeComment = memo(({ postId, userId, newCommentCreatedHandler }: any) => 
 				// className="justify-end bg-gray-200 rounded-md mt-4"
 				className="h-11 py-3 px-6 rounded-2xl bg-[#ABABAB] text-white text-sm font-normal text-center hover:bg-[#00A1D4]"
 				type="submit"
-				disabled={commenting}
+				disabled={commenting || commentFormData === ""}
 			>
 				Comment
 			</button>

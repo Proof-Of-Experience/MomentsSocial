@@ -3,6 +3,7 @@ import { MomentProps } from '@/model/moment';
 import MomentSkeleton from '@/components/skeletons/moment';
 import EmojiReaction from '../emoji-reaction';
 import { useRouter } from 'next/router';
+import { NO_TITLE } from '@/enums/common';
 
 const Moment = memo(({ className, onClick, item, isLoading }: MomentProps) => {
 	const router = useRouter();
@@ -30,18 +31,11 @@ const Moment = memo(({ className, onClick, item, isLoading }: MomentProps) => {
 						className="text-[#1C1B1F] leading-6 font-inter font-medium text-lg line-clamp-2 h-[48px]"
 						onClick={() => router.push(`/moment/${item?.PostHashHex}`)}
 					>
-						{item?.Body}
+						{item?.Body || NO_TITLE}
 					</p>
-					{/* <div className="mt-[16px] flex flex-row justify-between">
-                <p className="text-[#7E7E7E] leading-trim text-capitalize font-inter text-base font-normal leading-normal">12M views</p>
-                <p className="text-[#7E7E7E] leading-trim text-capitalize font-inter text-base font-normal leading-normal">12K reaction</p>
-              </div> */}
 
 					<div className="flex justify-between mt-4">
-						<EmojiReaction
-							// onReactionClick={onReactionClick}
-							postHashHex={item?.PostHashHex}
-						/>
+						<EmojiReaction postHashHex={item?.PostHashHex} />
 						<button className="flex items-center font-semibold text-gray-700">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"

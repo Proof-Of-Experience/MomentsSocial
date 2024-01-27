@@ -4,7 +4,10 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { ApiDataType, apiService } from '@/utils/request';
 import { useRouter } from 'next/router';
-import { capitalizeFirstLetter, cn } from '@/utils';
+import {
+	// capitalizeFirstLetter,
+	cn,
+} from '@/utils';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 import TagSkeleton from '@/components/skeletons/tag';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
@@ -36,6 +39,8 @@ const Tags: React.FC<TagsProps> = ({
 	const [tags, setTags] = useState<any>([]);
 	const [showSearchTag, setShowSearchTag] = useState<boolean>(true);
 	// const [currentSlide, setCurrentSlide] = useState(0);
+
+	console.log('tags', tags);
 
 	useEffect(() => {
 		setShowSearchTag(!isSmallDevice ? true : false);
@@ -151,24 +156,35 @@ const Tags: React.FC<TagsProps> = ({
 				</label>
 			)}
 			{(showSearchTag || !isSmallDevice) && (
-				<div className="flex items-center border rounded-md px-3 w-[172px] mr-3">
-					<span className="mr-1 text-sm text-[#7B7788] font-medium">#</span>
-					<input
-						type="text"
-						placeholder="Search Hashtags"
-						id="search-tag"
-						className="w-[115px] h-[32px] text-sm focus:outline-none leading-none p-[5px]"
-						value={tagSearch}
-						onChange={onChangeTagSearch}
-					/>
-					{tagSearch && (
-						<ArrowRightIcon
-							className="ml-0.5 w-4 h-4 text-blue-500 cursor-pointer"
-							role="button"
-							onClick={onPressTagSearch}
+				<form
+					onSubmit={(event: any) => {
+						event.preventDefault();
+						if (onPressTagSearch) onPressTagSearch();
+					}}
+				>
+					<div className="flex items-center border rounded-md px-3 w-[172px] mr-3">
+						<span className="mr-1 text-sm text-[#7B7788] font-medium">#</span>
+						<input
+							type="text"
+							placeholder="Search Hashtags"
+							id="search-tag"
+							className="w-[115px] h-[32px] text-sm focus:outline-none leading-none p-[5px]"
+							value={tagSearch}
+							onChange={onChangeTagSearch}
 						/>
-					)}
-				</div>
+						{tagSearch && (
+							<button
+								type="submit"
+								onClick={onPressTagSearch}
+							>
+								<ArrowRightIcon
+									className="ml-0.5 w-4 h-4 text-blue-500 cursor-pointer"
+									role="button"
+								/>
+							</button>
+						)}
+					</div>
+				</form>
 			)}
 			<div
 				className={cn('max-w-[calc(100%_-_284px)] overflow-hidden h-[41px]', {
@@ -214,7 +230,7 @@ const Tags: React.FC<TagsProps> = ({
 											title={item?.name}
 											onClick={() => onClick(item?.name)}
 										>
-											{'#' + capitalizeFirstLetter(item?.name)}
+											{'#' + item?.name}
 										</button>
 									</div>
 								);

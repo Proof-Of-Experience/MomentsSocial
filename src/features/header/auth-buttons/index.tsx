@@ -10,9 +10,8 @@ import {
 	UserCircleIcon,
 } from '@heroicons/react/20/solid';
 import { useRouter } from 'next/router';
-import { ApiDataType, apiService } from '@/utils/request';
 import { userLogin } from '@/services/user/user';
-import { GetUserProfile } from '@/services/user/api/profile';
+import { getUserProfile } from '@/services/user/api/profile';
 
 const AuthButtons = () => {
 	const router = useRouter();
@@ -27,7 +26,7 @@ const AuthButtons = () => {
 			};
 			const userData = await getSingleProfile(params);
 
-			const apiUser = await GetUserProfile(authUser?.publicKeyBase58Check);
+			const apiUser = await getUserProfile(authUser?.publicKeyBase58Check);
 
 			dispatch(setAuthUser({ ...authUser, ...userData, api_user: apiUser }));
 		} catch (error) {

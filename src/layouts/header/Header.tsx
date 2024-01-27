@@ -136,34 +136,35 @@ const Header = () => {
 						<MagnifyingGlassIcon className="h-7 w-7" />
 					</span>
 					{authUser && (
-						<div className="relative mr-7">
-							{notificationCount > 0 && (
-								<span className="absolute -top-2 bg-red-600 inline-block rounded-full w-4 mx-auto text-center leading-5 h-5 text-white z-10 text-xs">
-									{notificationCount}
-								</span>
-							)}
-
-							<NotificationIcon
-								className={cn(
-									'h-7 w-7 hover:text-[#00A1D4] cursor-pointer transition-all',
-									showNotification ? 'text-[#00A1D4]' : ''
+						<>
+							<div className="relative mr-7">
+								{notificationCount > 0 && (
+									<span className="absolute -top-2 bg-red-600 inline-block rounded-full w-4 mx-auto text-center leading-5 h-5 text-white z-10 text-xs">
+										{notificationCount}
+									</span>
 								)}
-								aria-hidden="true"
-								onClick={onClickNotification}
-							/>
 
+								<NotificationIcon
+									className={cn(
+										'h-7 w-7 hover:text-[#00A1D4] cursor-pointer transition-all',
+										showNotification ? 'text-[#00A1D4]' : ''
+									)}
+									aria-hidden="true"
+									onClick={onClickNotification}
+								/>
+							</div>
 							{showNotification && (
 								<OutsideClickHandler
 									onOutsideClick={() => {
 										setShowNotification(false);
 									}}
 								>
-									<div className="absolute -right-2 top-[42px] z-30">
+									<div className="absolute right-0 min-[420px]:right-[50px] sm:right-[100px] top-[68px] z-30">
 										<Notifications notifications={notificationData} />
 									</div>
 								</OutsideClickHandler>
 							)}
-						</div>
+						</>
 					)}
 
 					<AuthButtons />

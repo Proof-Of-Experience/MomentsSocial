@@ -85,11 +85,11 @@ const LeftSidebar = () => {
 			),
 			url: '/explore',
 			onclick: () => onClickItem('/explore'),
-			showItem: true,
+			showItem: false, // DOCU:: this Item is not showing on sidebar
 		},
 		{
-			title: 'Trending',
-			label: 'Trending',
+			title: 'Recent', // 'Trending',
+			label: 'Recent', // 'Trending',
 			icon: (
 				<FireIcon
 					className={`h-[20px] w-[20px] group-hover:text-[#00A1D4] ${
@@ -138,7 +138,7 @@ const LeftSidebar = () => {
 	return (
 		<div
 			className={cn(
-				'fixed lg:left-0 pt-4 border-r border-[#D7D7D7] flex flex-col bg-white h-full  ease-in-out duration-500 transition-all z-10',
+				'fixed lg:left-0 pt-4 border-r border-[#D7D7D7] flex flex-col bg-white h-full  ease-in-out duration-500 transition-all z-20',
 				{
 					'px-7 lg:px-4 w-[261px] lg:w-[110px] -left-[261px]': collapseSidebar,
 					'px-7 left-0 w-[261px]': !collapseSidebar,

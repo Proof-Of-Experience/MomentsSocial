@@ -23,11 +23,11 @@ import { isUserBanned, isUserAdmin } from '@/services/user/user';
 import { BlockButton } from '@/components/snippets/block/block';
 import { getVideoPosterPublicKey } from '@/services/video';
 import { ContnetIsBlocked } from '@/components/snippets/block/contentIsblocked';
+import { NO_TITLE } from '@/enums/common';
 
 const VideoDetailsPage = () => {
 	const router = useRouter();
 	const authUser = useSelector(selectAuthUser);
-	// console.log('authUser----', authUser);
 	const { setCollapseSidebar } = useSidebar();
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
@@ -180,7 +180,7 @@ const VideoDetailsPage = () => {
 									<h2 className="text-[#1C1B1F] text-xl line-clamp-1">
 										{isBlocked
 											? 'Video Content is blocked!'
-											: toCapitalize(videoData?.Body)}
+											: toCapitalize(videoData?.Body || NO_TITLE)}
 									</h2>
 									<div className="flex items-center justify-start">
 										<span className="flex items-center justify-start gap-x-2">

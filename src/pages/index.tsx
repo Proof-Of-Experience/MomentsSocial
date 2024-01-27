@@ -18,6 +18,12 @@ import { selectAuthUser } from '@/slices/authSlice';
 import AllPreferences from '@/components/snippets/preferences/AllPreferences';
 import { PostSort } from '@/services/post';
 import { cn } from '@/utils';
+import { VideoCameraSlashIcon } from '@heroicons/react/24/outline';
+
+type videoSort = {
+	key: string;
+	value: string;
+};
 
 const Home: NextPage = () => {
 	const router = useRouter();
@@ -39,8 +45,9 @@ const Home: NextPage = () => {
 	const [momentsTotalPages, setMomentsTotalPages] = useState<number>(Infinity);
 	const [displayPreference, setDisplayPreference] = useState<boolean>(false);
 	const [authUserId, setAuthUserId] = useState<string | null>(null);
-	const [postSort, setPostSort] = useState<PostSort>(PostSort.LATEST);
-	const videoSortOptions = [
+	const [postSort, setPostSort] = useState<PostSort|string>(PostSort.LATEST);
+
+	const videoSortOptions: videoSort[] = [
 		{
 			key: PostSort.MOST_LIKED,
 			value: 'Most Liked',
@@ -55,23 +62,23 @@ const Home: NextPage = () => {
 		},
 	];
 
-	const setSortAndFetch = async (sortOption: PostSort, pageNumber: number) => {
-		setPostSort(sortOption);
+	const setSortAndFetch = async (sortOption: PostSort|string, pageNumber: number) => {
+		setPostSort(() => sortOption);
 
-		fetchVideos(pageNumber);
+		fetchVideos(pageNumber, sortOption);
 	};
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const fetchVideos = async (page: number) => {
+	const fetchVideos = async (page: number, sortBy: PostSort|string = PostSort.LATEST) => {
 		if (page > videoTotalPages || isVideoPaginating) {
 			setIsVideoPaginating(false);
 			return; // Exit early if already fetching or if current page is beyond videoTotalPages.
 		}
-
 		setIsVideoPaginating(true); // Set to loading state
 
 		try {
-			let apiUrl = `/api/posts?page=${page}&limit=8&moment=false&sort_by=${postSort.toString()}`;
+			let apiUrl = `/api/posts?page=${page}&limit=8&moment=false&sort_by=${sortBy.toString()}`;
+
 			if (tagParam) {
 				const tagWithHash = tagParam.startsWith('#') ? tagParam.splice(1) : tagParam; // : `#${tagParam}`;
 				apiUrl += `&hashtag=${tagWithHash}`;
@@ -159,6 +166,7 @@ const Home: NextPage = () => {
 
 		if (!authUser) {
 			setDisplayPreference(true); // we still show the list
+			console.log("we are still showing it")
 			return;
 		}
 		setAuthUserId(authUser.PublicKeyBase58Check);
@@ -225,11 +233,18 @@ const Home: NextPage = () => {
 				query: { ...router.query, tag: value },
 			});
 		}
+		if (currentTag) setCurrentTag('');
 	};
 
 	const onPressTagSearch = () => {
+		setIsLoading(true);
 		setVideoCurrentPage(1);
+		setVideoTotalPages(1);
 		setMomentsCurrentPage(1);
+		setMomentsTotalPages(1);
+		setVideoData([]);
+		setMomentsData([]);
+
 		if (currentTag === 'all') {
 			router.replace('/', undefined, { shallow: true });
 		} else {
@@ -273,6 +288,14 @@ const Home: NextPage = () => {
 		}
 
 		// Display video items when loaded
+		if (videoData?.length <= 0) {
+			return (
+				<div className="flex flex-col items-center justify-center h-80">
+					<VideoCameraSlashIcon className="group-hover:text-white transition-all h-10 w-10" />
+					<p className="text-lg mt-5">No video found</p>
+				</div>
+			);
+		}
 		return videoData.map((item: any, index: any) => (
 			<div
 				key={`moment-${index}`}
@@ -291,11 +314,7 @@ const Home: NextPage = () => {
 			mainWrapClass="p-7"
 		>
 			<VideoLayoutProvider>
-				<div
-					className={`${
-						videoData.length > 0 ? 'pb-6 mb-6 border-b border-[#E8E8E8]' : ''
-					}`}
-				>
+				<div className={`pb-6 mb-6 border-b border-[#E8E8E8]`}>
 					<Tags
 						tagParam={tagParam}
 						onClick={onClickTag}
@@ -324,9 +343,10 @@ const Home: NextPage = () => {
 
 				<h2 className="space-x-2 text-[#1C1B1F] leading-none capitalize font-inter text-xl font-semibold mb-8">
 					<span>Explore</span>
-					{videoSortOptions.map((option: any, i: number) => (
-						<span key={i}
-							onClick={() => setSortAndFetch(option.key, videoCurrentPage)}
+					{videoSortOptions.map((option: videoSort, i: number) => (
+						<span
+							key={i}
+							onClick={() => setSortAndFetch(option?.key, videoCurrentPage)}
 							className={cn(
 								'rounded-md px-3 py-2 text-base cursor-pointer',
 								option.key.toString() === postSort
@@ -339,7 +359,13 @@ const Home: NextPage = () => {
 					))}
 				</h2>
 
-				<div className={`grid ${showGridCol()} gap-x-7 gap-y-12`}>
+
+				<div
+					className={cn(
+						'grid gap-x-7 gap-y-12',
+						videoData?.length > 0 ? showGridCol() : ''
+					)}
+				>
 					{renderVideoItems()}
 
 					{/* Loader and Intersection Observer trigger */}
@@ -348,6 +374,7 @@ const Home: NextPage = () => {
 				</div>
 
 				{displayPreference && <AllPreferences userId={authUserId ? authUserId : null} />}
+
 			</VideoLayoutProvider>
 		</MainLayout>
 	);

@@ -8,6 +8,7 @@ import { cn } from '@/utils';
 import { useMomentReaction } from '@/utils/hooks';
 import PlaylistPopup from '../playlist-popup';
 import MomentSideBox from './SideBox';
+import { NO_TITLE } from '@/enums/common';
 
 interface IMomentDetailsSIngleItem {
 	item: any;
@@ -67,7 +68,7 @@ const MomentDetailsSingleItem = (props: IMomentDetailsSIngleItem) => {
 						{item?.ProfileEntryResponse?.Username || item?.Username}
 					</h1>
 					<p className="mt-3 text-white text-sm font-normal line-clamp-2 ">
-						{item?.Body}
+						{item?.Body || NO_TITLE}
 					</p>
 				</div>
 			</div>
@@ -91,20 +92,8 @@ const MomentDetailsSingleItem = (props: IMomentDetailsSIngleItem) => {
 				)}
 			/>
 
-			{/* Moment's Description Box ------------------- */}
-			{/* <MomentSideBox
-				open={showDescriptionSideBox}
-				onClose={() => setShowDescriptionSideBox(false)}
-			>
-				<div className="">
-					<TextDescription description={item?.Body} />
-				</div>
-			</MomentSideBox> */}
-
 			{/* Moment's CommentBox ------------------- */}
 			<MomentSideBox
-				// open={showCommentSideBox}
-				// onClose={() => setShowCommentSideBox(false)}
 				open={showSideBox === 'COMMENT' || showSideBox === 'DESCRIPTION'}
 				onClose={() => setShowSideBox(null)}
 			>

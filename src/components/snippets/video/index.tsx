@@ -3,6 +3,7 @@ import { VideoItemProps } from '@/model/video';
 import EmojiReaction from '../emoji-reaction';
 import { useRouter } from 'next/router';
 import { cn } from '@/utils';
+import { NO_TITLE } from '@/enums/common';
 
 const VideoItem = memo((props: VideoItemProps) => {
 	const {
@@ -19,7 +20,6 @@ const VideoItem = memo((props: VideoItemProps) => {
 	const [isVideoHovered, setIsVideoHovered] = useState<boolean>(false);
 	const [videoUrl, setVideoUrl] = useState<string>('');
 	const router = useRouter();
-	console.log('playlistId----', playlistId);
 
 	useEffect(() => {
 		setVideoUrl(
@@ -173,7 +173,7 @@ const VideoItem = memo((props: VideoItemProps) => {
 								router.push(`/video/${item?.PostHashHex}${params}`);
 							}}
 						>
-							{item?.Body}
+							{item?.Body || NO_TITLE}
 						</p>
 						<p
 							className={cn(

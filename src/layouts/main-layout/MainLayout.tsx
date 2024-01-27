@@ -18,7 +18,7 @@ const MainLayout = ({ title, isLoading, mainWrapClass, children }: MainLayoutPro
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	const authUser = useSelector(selectAuthUser);
 
-	const { collapseSidebar, windowSize } = useSidebar();
+	const { collapseSidebar, setCollapseSidebar, windowSize } = useSidebar();
 	const { isSmallDevice } = windowSize;
 
 	const [userState, setUserState] = useState({
@@ -152,7 +152,7 @@ const MainLayout = ({ title, isLoading, mainWrapClass, children }: MainLayoutPro
 	return (
 		<>
 			<MetaData title={title} />
-			<>
+			<div className="relative">
 				<Header />
 				<ToastContainer />
 
@@ -169,6 +169,13 @@ const MainLayout = ({ title, isLoading, mainWrapClass, children }: MainLayoutPro
 						<LeftSidebar />
 					</div>
 					<div
+						className={cn(
+							'block lg:hidden absolute -top-[80px] bg-black/0 w-full h-full z-10',
+							collapseSidebar ? '-left-full' : 'left-0'
+						)}
+						onClick={() => setCollapseSidebar(true)}
+					></div>
+					<div
 						className={cn('w-full ease-in-out duration-500 transition-all', {
 							'lg:w-[calc(100%_-_110px)]': !isSmallDevice && collapseSidebar,
 							'lg:w-[calc(100%_-_261px)]': !isSmallDevice && !collapseSidebar,
@@ -181,7 +188,7 @@ const MainLayout = ({ title, isLoading, mainWrapClass, children }: MainLayoutPro
 						<div className={`${mainWrapClass ? mainWrapClass : 'p-7'}`}>{children}</div>
 					</div>
 				</div>
-			</>
+			</div>
 		</>
 	);
 };
